@@ -1,0 +1,137 @@
+<!-- ============================================
+   PRODUCTS PAGE
+   ============================================ -->
+<main class="main-content">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{t 'nav.home'}}</a></li>
+        <li class="breadcrumb-item active">{{t 'nav.products'}}</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-title">
+      <h1>{{t 'products.title'}}</h1>
+      <p class="subtitle" id="productsCount">{{t 'filters.showing'}} 0 {{t 'filters.results'}}</p>
+    </div>
+
+    <!-- Products Container -->
+    <div class="products-container">
+      <!-- Sidebar -->
+      {{> layouts/sidebar.html }}
+
+      <!-- Products Grid -->
+      <div>
+        <!-- Sort & Filter Bar -->
+        <div class="products-toolbar">
+          <div class="toolbar-left">
+            <span id="productsCountDisplay">{{t 'filters.showing'}} 0 {{t 'filters.results'}}</span>
+          </div>
+          <div class="toolbar-right">
+            <select id="sortSelect" class="form-control">
+              <option value="createdAt:desc">{{t 'filters.sortNewest'}}</option>
+              <option value="price:asc">{{t 'filters.sortPriceLow'}}</option>
+              <option value="price:desc">{{t 'filters.sortPriceHigh'}}</option>
+              <option value="salesCount:desc">{{t 'filters.sortPopular'}}</option>
+              <option value="averageRating:desc">{{t 'filters.sortRating'}}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="productsGrid">
+          <!-- Products will be dynamically rendered -->
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="productsLoading" class="text-center" style="display:none;">
+          <div class="spinner"></div>
+        </div>
+
+        <!-- No Results -->
+        <div id="noProducts" class="text-center" style="display:none;">
+          <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>{{t 'products.noProducts'}}</h3>
+            <p>{{t 'products.noProductsMessage'}}</p>
+            <button class="btn btn-primary" id="clearAllFilters">
+              {{t 'filters.clear'}}
+            </button>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="productsPagination">
+          <!-- Pagination will be dynamically rendered -->
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Products Page CSS -->
+<style>
+.products-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.products-toolbar .toolbar-left {
+  font-size: var(--font-size-sm);
+  color: var(--gray-600);
+}
+
+.products-toolbar .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.products-toolbar .toolbar-right .form-control {
+  width: 180px;
+}
+
+.empty-state {
+  padding: var(--spacing-3xl) var(--spacing-xl);
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-state h3 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-state p {
+  color: var(--gray-500);
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (max-width: 576px) {
+  .products-toolbar {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .products-toolbar .toolbar-right {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .products-toolbar .toolbar-right .form-control {
+    width: 100%;
+  }
+}
+</style>

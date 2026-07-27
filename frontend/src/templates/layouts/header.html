@@ -1,0 +1,272 @@
+<!-- ============================================
+   HEADER LAYOUT
+   ============================================ -->
+<header class="header" id="main-header">
+  <div class="header-inner">
+    <!-- Logo -->
+    <a href="/" class="logo" aria-label="Homepage">
+      <img src="/assets/images/logo.svg" alt="E-Commerce Logo" />
+      <span>E-Commerce</span>
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Search Bar -->
+    <div class="header-search" id="search-container">
+      <form action="/search" method="GET" role="search">
+        <input 
+          type="text" 
+          class="form-control" 
+          id="search-input"
+          placeholder="{{t 'nav.search'}}" 
+          name="q"
+          autocomplete="off"
+          aria-label="Search products"
+        />
+        <button type="submit" class="search-btn" aria-label="Submit search">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+      <!-- Search Results Dropdown -->
+      <div class="search-results" id="search-results"></div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <!-- Wishlist -->
+      <a href="/wishlist" class="btn btn-outline-secondary" aria-label="Wishlist">
+        <i class="fas fa-heart"></i>
+        <span class="badge" id="wishlist-badge" style="display:none;">0</span>
+      </a>
+
+      <!-- Cart -->
+      <a href="/cart" class="btn btn-outline-secondary" aria-label="Shopping Cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge" id="cart-badge" style="display:none;">0</span>
+      </a>
+
+      <!-- User Menu -->
+      <div class="dropdown" id="userMenu">
+        <button class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" aria-label="User Menu">
+          <i class="fas fa-user"></i>
+          <span data-auth="true" style="display:none;">{{user.name}}</span>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="userMenu">
+          <!-- Guest Menu -->
+          <div data-auth="false">
+            <a href="/login" class="dropdown-item">
+              <i class="fas fa-sign-in-alt"></i> {{t 'nav.login'}}
+            </a>
+            <a href="/register" class="dropdown-item">
+              <i class="fas fa-user-plus"></i> {{t 'nav.register'}}
+            </a>
+          </div>
+          
+          <!-- Authenticated Menu -->
+          <div data-auth="true" style="display:none;">
+            <div class="dropdown-header">
+              <span class="user-name">{{user.name}}</span>
+              <span class="user-email">{{user.email}}</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="/profile" class="dropdown-item">
+              <i class="fas fa-user-circle"></i> {{t 'nav.profile'}}
+            </a>
+            <a href="/orders" class="dropdown-item">
+              <i class="fas fa-box"></i> {{t 'nav.orders'}}
+            </a>
+            <a href="/wishlist" class="dropdown-item">
+              <i class="fas fa-heart"></i> {{t 'nav.wishlist'}}
+            </a>
+            <!-- Admin Link -->
+            <a href="/admin" class="dropdown-item" data-admin style="display:none;">
+              <i class="fas fa-tachometer-alt"></i> {{t 'nav.admin'}}
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item text-danger" data-action="logout">
+              <i class="fas fa-sign-out-alt"></i> {{t 'nav.logout'}}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark Mode Toggle -->
+      <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle Dark Mode">
+        <span class="toggle-slider"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" id="mobileNav" style="display:none;">
+    <ul>
+      <li><a href="/">{{t 'nav.home'}}</a></li>
+      <li><a href="/products">{{t 'nav.products'}}</a></li>
+      <li><a href="/cart">{{t 'nav.cart'}}</a></li>
+      <li><a href="/wishlist">{{t 'nav.wishlist'}}</a></li>
+      <li><a href="/orders" data-auth="true" style="display:none;">{{t 'nav.orders'}}</a></li>
+      <li><a href="/profile" data-auth="true" style="display:none;">{{t 'nav.profile'}}</a></li>
+      <li><a href="/admin" data-admin style="display:none;">{{t 'nav.admin'}}</a></li>
+      <li><a href="/login" data-auth="false">{{t 'nav.login'}}</a></li>
+      <li><a href="/register" data-auth="false">{{t 'nav.register'}}</a></li>
+      <li><button data-action="logout" data-auth="true" style="display:none;">{{t 'nav.logout'}}</button></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- CSS for Dropdown -->
+<style>
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: var(--z-dropdown);
+  min-width: 200px;
+  padding: var(--spacing-sm) 0;
+  margin: var(--spacing-xs) 0 0;
+  background: var(--white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  display: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-header {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--gray-600);
+  font-size: var(--font-size-sm);
+}
+
+.dropdown-header .user-name {
+  display: block;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.dropdown-header .user-email {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.dropdown-divider {
+  height: 0;
+  margin: var(--spacing-sm) 0;
+  border-top: 1px solid var(--gray-200);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-size: var(--font-size-base);
+}
+
+.dropdown-item:hover {
+  background: var(--gray-50);
+  color: var(--primary-color);
+}
+
+.dropdown-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.dropdown-item.text-danger {
+  color: var(--danger);
+}
+
+.dropdown-item.text-danger:hover {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.mobile-nav {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--white);
+  z-index: var(--z-fixed);
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+}
+
+.mobile-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.mobile-nav ul li a,
+.mobile-nav ul li button {
+  display: block;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  color: var(--gray-700);
+  font-size: var(--font-size-lg);
+  transition: background var(--transition-fast);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-nav ul li a:hover,
+.mobile-nav ul li button:hover {
+  background: var(--gray-50);
+  color: var(--primary-color);
+}
+
+.mobile-nav ul li a[data-auth="true"],
+.mobile-nav ul li button[data-auth="true"] {
+  display: none;
+}
+
+.mobile-nav ul li a[data-admin],
+.mobile-nav ul li button[data-admin] {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .header-actions .btn span {
+    display: none;
+  }
+  
+  .dropdown-menu {
+    right: -20px;
+  }
+}
+</style>

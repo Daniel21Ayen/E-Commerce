@@ -1,0 +1,140 @@
+<!-- ============================================
+   CART PAGE
+   ============================================ -->
+<main class="main-content">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{t 'nav.home'}}</a></li>
+        <li class="breadcrumb-item active">{{t 'nav.cart'}}</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-title">
+      <h1>{{t 'cart.title'}}</h1>
+    </div>
+
+    <!-- Cart Container -->
+    <div class="cart-container">
+      <!-- Cart Items -->
+      <div class="cart-items" id="cartItems">
+        <div class="cart-header">
+          <h3>{{t 'cart.items'}} (<span id="cartItemCount">0</span>)</h3>
+        </div>
+        <div id="cartItemList">
+          <!-- Cart items will be dynamically rendered -->
+        </div>
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <div class="summary-card">
+          <h4>{{t 'cart.summary'}}</h4>
+          
+          <div class="summary-row">
+            <span class="label">{{t 'cart.subtotal'}}</span>
+            <span class="value" id="cartSubtotal">$0.00</span>
+          </div>
+          
+          <div class="summary-row discount" id="cartDiscountRow" style="display:none;">
+            <span class="label">{{t 'cart.discount'}}</span>
+            <span class="value" id="cartDiscount">-$0.00</span>
+          </div>
+          
+          <div class="summary-row">
+            <span class="label">{{t 'cart.shipping'}}</span>
+            <span class="value" id="cartShipping">$0.00</span>
+          </div>
+          
+          <div class="summary-row">
+            <span class="label">{{t 'cart.tax'}}</span>
+            <span class="value" id="cartTax">$0.00</span>
+          </div>
+          
+          <div class="summary-row total">
+            <span class="label">{{t 'cart.total'}}</span>
+            <span class="value" id="cartTotal">$0.00</span>
+          </div>
+
+          <!-- Promo Code -->
+          <div class="promo-section">
+            <div class="promo-input">
+              <input type="text" id="promoInput" placeholder="{{t 'cart.enterPromo'}}" />
+              <button class="btn btn-primary" id="applyPromoBtn">
+                {{t 'cart.apply'}}
+              </button>
+            </div>
+            <div id="promoApplied" style="display:none;" class="promo-applied">
+              <span class="promo-code" id="promoCodeDisplay"></span>
+              <button class="promo-remove" id="removePromoBtn">&times;</button>
+            </div>
+          </div>
+
+          <!-- Checkout Actions -->
+          <div class="checkout-actions">
+            <button class="btn btn-primary btn-lg" id="checkoutBtn">
+              {{t 'cart.checkout'}}
+            </button>
+            <a href="/products" class="btn btn-outline-secondary">
+              {{t 'cart.continueShopping'}}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Cart CSS -->
+<style>
+.cart-empty {
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  text-align: center;
+}
+
+.cart-empty .empty-icon {
+  font-size: 4rem;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-lg);
+}
+
+.cart-empty h3 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.cart-empty p {
+  color: var(--gray-500);
+  margin-bottom: var(--spacing-lg);
+}
+
+.summary-row.discount .value {
+  color: var(--danger);
+}
+
+@media (max-width: 992px) {
+  .cart-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .cart-item {
+    flex-wrap: wrap;
+  }
+
+  .cart-item .item-details {
+    width: 100%;
+    padding: var(--spacing-sm) 0;
+  }
+
+  .cart-item .item-quantity {
+    margin: var(--spacing-sm) 0;
+  }
+
+  .cart-item .item-total {
+    min-width: auto;
+  }
+}
+</style>

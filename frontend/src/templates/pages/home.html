@@ -1,0 +1,185 @@
+<!-- ============================================
+   HOME PAGE
+   ============================================ -->
+<main class="main-content">
+  <div class="container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1>{{t 'home.hero.title'}}</h1>
+        <p>{{t 'home.hero.subtitle'}}</p>
+        <a href="/products" class="btn btn-primary btn-lg">
+          {{t 'home.hero.cta'}}
+        </a>
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+      <h2>{{t 'home.categories.title'}}</h2>
+      <div class="categories-grid" id="categoriesGrid">
+        <!-- Categories will be dynamically rendered -->
+      </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="featured-products-section">
+      <div class="section-header">
+        <h2>{{t 'home.featured.title'}}</h2>
+        <a href="/products" class="btn btn-outline-primary">
+          {{t 'home.featured.viewAll'}}
+        </a>
+      </div>
+      <div class="products-grid" id="featuredProducts">
+        <!-- Featured products will be dynamically rendered -->
+      </div>
+    </section>
+
+    <!-- Recently Viewed Section -->
+    <section class="recently-viewed-section" id="recentlyViewedSection" style="display:none;">
+      <h2>{{t 'home.recentlyViewed.title'}}</h2>
+      <div class="products-grid" id="recentlyViewedProducts">
+        <!-- Recently viewed products will be dynamically rendered -->
+      </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="promo-banner">
+      <div class="promo-content">
+        <h3>{{t 'home.promo.title'}}</h3>
+        <p>{{t 'home.promo.subtitle'}}</p>
+        <a href="/products" class="btn btn-light">
+          {{t 'home.promo.cta'}}
+        </a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Home Page CSS -->
+<style>
+.hero-section {
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: var(--border-radius-lg);
+  color: var(--white);
+  text-align: center;
+}
+
+.hero-section .hero-content h1 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.hero-section .hero-content p {
+  font-size: var(--font-size-lg);
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto var(--spacing-lg);
+}
+
+.categories-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-lg);
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  text-align: center;
+}
+
+.category-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.category-item .category-icon {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-sm);
+}
+
+.category-item .category-name {
+  font-weight: 500;
+}
+
+.featured-products-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.section-header h2 {
+  margin-bottom: 0;
+}
+
+.recently-viewed-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.promo-banner {
+  padding: var(--spacing-2xl);
+  background: linear-gradient(135deg, var(--gray-800), var(--gray-900));
+  border-radius: var(--border-radius-lg);
+  color: var(--white);
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.promo-banner h3 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-sm);
+}
+
+.promo-banner p {
+  opacity: 0.8;
+  margin-bottom: var(--spacing-lg);
+}
+
+.promo-banner .btn-light {
+  color: var(--gray-900);
+  background: var(--white);
+}
+
+.promo-banner .btn-light:hover {
+  background: var(--gray-100);
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .hero-section .hero-content h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .section-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    text-align: center;
+  }
+}
+</style>

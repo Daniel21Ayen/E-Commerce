@@ -1,0 +1,202 @@
+<!-- ============================================
+   SIDEBAR LAYOUT (Filters & Categories)
+   ============================================ -->
+<aside class="filters-sidebar" id="filtersSidebar">
+  <!-- Category Filter -->
+  <div class="filter-section">
+    <h4>{{t 'filters.category'}}</h4>
+    <div id="categoryFilter">
+      <!-- Categories will be dynamically rendered -->
+    </div>
+  </div>
+
+  <!-- Price Range Filter -->
+  <div class="filter-section">
+    <h4>{{t 'filters.price'}}</h4>
+    <div class="price-range">
+      <div class="price-inputs">
+        <input 
+          type="number" 
+          id="minPrice" 
+          placeholder="{{t 'filters.minPrice'}}" 
+          min="0"
+          step="0.01"
+        />
+        <input 
+          type="number" 
+          id="maxPrice" 
+          placeholder="{{t 'filters.maxPrice'}}" 
+          min="0"
+          step="0.01"
+        />
+      </div>
+      <input 
+        type="range" 
+        class="price-slider" 
+        id="priceSlider"
+        min="0" 
+        max="1000" 
+        step="1"
+      />
+      <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);color:var(--gray-500);">
+        <span id="priceMinLabel">$0</span>
+        <span id="priceMaxLabel">$1000</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rating Filter -->
+  <div class="filter-section">
+    <h4>{{t 'filters.rating'}}</h4>
+    <div id="ratingFilter">
+      <label class="filter-option">
+        <input type="radio" name="rating" value="4" />
+        <span class="stars">★★★★★</span>
+        <span class="count">4+ {{t 'filters.rating'}}</span>
+      </label>
+      <label class="filter-option">
+        <input type="radio" name="rating" value="3" />
+        <span class="stars">★★★☆☆</span>
+        <span class="count">3+ {{t 'filters.rating'}}</span>
+      </label>
+      <label class="filter-option">
+        <input type="radio" name="rating" value="2" />
+        <span class="stars">★★☆☆☆</span>
+        <span class="count">2+ {{t 'filters.rating'}}</span>
+      </label>
+      <label class="filter-option">
+        <input type="radio" name="rating" value="1" />
+        <span class="stars">★☆☆☆☆</span>
+        <span class="count">1+ {{t 'filters.rating'}}</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Stock Filter -->
+  <div class="filter-section">
+    <h4>{{t 'filters.availability'}}</h4>
+    <label class="filter-option">
+      <input type="checkbox" id="inStock" />
+      <span>{{t 'filters.inStock'}}</span>
+    </label>
+  </div>
+
+  <!-- Filter Actions -->
+  <div class="filter-actions">
+    <button class="btn btn-primary" id="applyFilters">
+      {{t 'filters.apply'}}
+    </button>
+    <button class="btn btn-outline-secondary" id="clearFilters">
+      {{t 'filters.clear'}}
+    </button>
+  </div>
+</aside>
+
+<!-- Sidebar CSS -->
+<style>
+.filters-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.filters-sidebar .filter-section .filter-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.filters-sidebar .filter-section .filter-option:hover {
+  color: var(--primary-color);
+}
+
+.filters-sidebar .filter-section .filter-option input[type="checkbox"],
+.filters-sidebar .filter-section .filter-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.filters-sidebar .filter-section .filter-option .count {
+  margin-left: auto;
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.filters-sidebar .filter-section .filter-option .stars {
+  color: var(--warning);
+  font-size: var(--font-size-sm);
+  letter-spacing: 1px;
+}
+
+.filters-sidebar .filter-section .filter-option .stars .empty {
+  color: var(--gray-300);
+}
+
+.filter-section .price-range {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.filter-section .price-range .price-inputs {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.filter-section .price-range .price-inputs input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  width: 100%;
+}
+
+.filter-section .price-range .price-inputs input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.filter-section .price-range .price-slider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--gray-300);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+}
+
+.filter-section .price-range .price-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+.filter-section .price-range .price-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  border: none;
+}
+
+.filter-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.filter-actions .btn {
+  flex: 1;
+}
+</style>

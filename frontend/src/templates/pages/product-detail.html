@@ -1,0 +1,369 @@
+<!-- ============================================
+   PRODUCT DETAIL PAGE
+   ============================================ -->
+<main class="main-content">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb" id="productBreadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{t 'nav.home'}}</a></li>
+        <li class="breadcrumb-item"><a href="/products">{{t 'nav.products'}}</a></li>
+        <li class="breadcrumb-item active" id="productBreadcrumbName">{{t 'products.title'}}</li>
+      </ol>
+    </nav>
+
+    <!-- Product Detail -->
+    <div class="product-detail-container" id="productDetail">
+      <!-- Gallery -->
+      <div class="product-gallery">
+        <div class="main-image">
+          <img id="mainProductImage" src="/placeholder.jpg" alt="Product Image" />
+          <span class="product-badges" id="productBadges"></span>
+        </div>
+        <div class="thumbnail-list" id="thumbnailList">
+          <!-- Thumbnails will be dynamically rendered -->
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="product-brand" id="productBrand"></div>
+        <h1 id="productName">{{t 'products.title'}}</h1>
+        
+        <div class="product-rating">
+          <div class="stars" id="productStars"></div>
+          <span class="rating-text" id="productRatingText"></span>
+        </div>
+
+        <div class="product-price">
+          <span class="current" id="productPrice"></span>
+          <span class="original" id="productComparePrice"></span>
+          <span class="discount" id="productDiscount"></span>
+        </div>
+
+        <div class="product-description" id="productDescription"></div>
+
+        <div class="product-meta" id="productMeta">
+          <div class="meta-item">
+            <span class="label">{{t 'products.sku'}}</span>
+            <span class="value" id="productSku"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">{{t 'products.category'}}</span>
+            <span class="value" id="productCategory"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">{{t 'products.stock'}}</span>
+            <span class="value" id="productStock"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">{{t 'products.brand'}}</span>
+            <span class="value" id="productBrandMeta"></span>
+          </div>
+        </div>
+
+        <!-- Product Attributes -->
+        <div class="product-attributes" id="productAttributes">
+          <!-- Attributes will be dynamically rendered -->
+        </div>
+
+        <!-- Quantity -->
+        <div class="product-quantity">
+          <label for="productQuantity">{{t 'products.quantity'}}</label>
+          <div class="quantity-control">
+            <button id="quantityDecrease" aria-label="Decrease quantity">-</button>
+            <input type="number" id="productQuantity" value="1" min="1" />
+            <button id="quantityIncrease" aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="product-actions">
+          <button class="btn btn-primary btn-add-cart" id="addToCartBtn">
+            <i class="fas fa-shopping-cart"></i>
+            {{t 'products.addToCart'}}
+          </button>
+          <button class="btn btn-outline-secondary btn-wishlist" id="wishlistBtn">
+            <i class="fas fa-heart"></i>
+          </button>
+        </div>
+
+        <!-- Share -->
+        <div class="product-share">
+          <span>{{t 'products.share'}}</span>
+          <button class="share-btn" data-platform="facebook">
+            <i class="fab fa-facebook-f"></i>
+          </button>
+          <button class="share-btn" data-platform="twitter">
+            <i class="fab fa-twitter"></i>
+          </button>
+          <button class="share-btn" data-platform="pinterest">
+            <i class="fab fa-pinterest-p"></i>
+          </button>
+          <button class="share-btn" data-platform="email">
+            <i class="fas fa-envelope"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <section class="product-reviews" id="productReviews">
+      <div class="reviews-header">
+        <h3>{{t 'products.reviews'}} (<span id="reviewCount">0</span>)</h3>
+        <button class="btn btn-primary" id="writeReviewBtn">
+          {{t 'products.writeReview'}}
+        </button>
+      </div>
+
+      <!-- Review Summary -->
+      <div class="review-summary" id="reviewSummary"></div>
+
+      <!-- Reviews List -->
+      <div id="reviewsList">
+        <!-- Reviews will be dynamically rendered -->
+      </div>
+
+      <!-- Review Pagination -->
+      <div class="pagination" id="reviewsPagination"></div>
+    </section>
+
+    <!-- Related Products -->
+    <section class="featured-products-section">
+      <h3>{{t 'products.related'}}</h3>
+      <div class="products-grid" id="relatedProducts">
+        <!-- Related products will be dynamically rendered -->
+      </div>
+    </section>
+
+    <!-- Review Modal -->
+    <div class="modal" id="reviewModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>{{t 'reviews.write'}}</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="reviewForm">
+            <input type="hidden" name="productId" id="reviewProductId" />
+            
+            <div class="form-group">
+              <label class="form-label">{{t 'reviews.rating'}} <span class="required">*</span></label>
+              <div class="rating-input" id="ratingInput">
+                <button type="button" data-value="1">★</button>
+                <button type="button" data-value="2">★</button>
+                <button type="button" data-value="3">★</button>
+                <button type="button" data-value="4">★</button>
+                <button type="button" data-value="5">★</button>
+              </div>
+              <input type="hidden" name="rating" id="ratingValue" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{t 'reviews.titleLabel'}} <span class="required">*</span></label>
+              <input type="text" class="form-control" name="title" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{t 'reviews.description'}} <span class="required">*</span></label>
+              <textarea class="form-control" name="description" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{t 'reviews.images'}}</label>
+              <input type="file" class="form-control-file" name="images" multiple accept="image/*" />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              {{t 'reviews.submit'}}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Product Detail CSS -->
+<style>
+.product-share {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--gray-200);
+}
+
+.product-share span {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--gray-300);
+  background: transparent;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.share-btn:hover {
+  background: var(--primary-color);
+  color: var(--white);
+  border-color: var(--primary-color);
+}
+
+.reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.reviews-header h3 {
+  margin-bottom: 0;
+}
+
+.review-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--gray-50);
+  border-radius: var(--border-radius-lg);
+}
+
+.review-summary .summary-rating {
+  text-align: center;
+}
+
+.review-summary .summary-rating .big-stars {
+  font-size: var(--font-size-2xl);
+  color: var(--warning);
+}
+
+.review-summary .summary-rating .rating-number {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+}
+
+.review-summary .summary-bars {
+  flex: 1;
+}
+
+.review-summary .summary-bars .bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.review-summary .summary-bars .bar-row .bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--gray-200);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+
+.review-summary .summary-bars .bar-row .bar-track .bar-fill {
+  height: 100%;
+  background: var(--warning);
+  border-radius: var(--border-radius-sm);
+}
+
+.rating-input {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.rating-input button {
+  font-size: var(--font-size-2xl);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray-300);
+  transition: color var(--transition-fast);
+  padding: 0;
+}
+
+.rating-input button.active {
+  color: var(--warning);
+}
+
+.rating-input button:hover {
+  color: var(--warning);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-modal-backdrop);
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-header h3 {
+  margin-bottom: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+  color: var(--gray-500);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+}
+
+@media (max-width: 576px) {
+  .review-summary {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .reviews-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+}
+</style>

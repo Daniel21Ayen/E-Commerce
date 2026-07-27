@@ -1,0 +1,312 @@
+<!-- ============================================
+   CHECKOUT PAGE
+   ============================================ -->
+<main class="main-content">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{t 'nav.home'}}</a></li>
+        <li class="breadcrumb-item"><a href="/cart">{{t 'nav.cart'}}</a></li>
+        <li class="breadcrumb-item active">{{t 'checkout.title'}}</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-title">
+      <h1>{{t 'checkout.title'}}</h1>
+    </div>
+
+    <!-- Checkout Form -->
+    <form id="checkoutForm" class="checkout-form">
+      <div class="checkout-container">
+        <!-- Billing & Shipping -->
+        <div class="checkout-left">
+          <!-- Shipping Address -->
+          <div class="checkout-section">
+            <h3>{{t 'checkout.shippingAddress'}}</h3>
+            <div class="form-group">
+              <label class="form-label">{{t 'checkout.fullName'}} <span class="required">*</span></label>
+              <input type="text" class="form-control" name="shippingName" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">{{t 'checkout.email'}} <span class="required">*</span></label>
+              <input type="email" class="form-control" name="shippingEmail" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">{{t 'checkout.phone'}} <span class="required">*</span></label>
+              <input type="tel" class="form-control" name="shippingPhone" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">{{t 'checkout.address'}} <span class="required">*</span></label>
+              <input type="text" class="form-control" name="shippingAddress" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">{{t 'checkout.city'}} <span class="required">*</span></label>
+                <input type="text" class="form-control" name="shippingCity" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">{{t 'checkout.state'}} <span class="required">*</span></label>
+                <input type="text" class="form-control" name="shippingState" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">{{t 'checkout.zipCode'}} <span class="required">*</span></label>
+                <input type="text" class="form-control" name="shippingZip" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">{{t 'checkout.country'}} <span class="required">*</span></label>
+                <select class="form-control" name="shippingCountry" required>
+                  <option value="US">{{t 'checkout.countries.us'}}</option>
+                  <option value="CA">{{t 'checkout.countries.ca'}}</option>
+                  <option value="UK">{{t 'checkout.countries.uk'}}</option>
+                  <option value="AU">{{t 'checkout.countries.au'}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Billing Address -->
+          <div class="checkout-section">
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="sameAsShipping" checked />
+                {{t 'checkout.sameAsShipping'}}
+              </label>
+            </div>
+            <div id="billingAddress">
+              <h3>{{t 'checkout.billingAddress'}}</h3>
+              <div class="form-group">
+                <label class="form-label">{{t 'checkout.fullName'}}</label>
+                <input type="text" class="form-control" name="billingName" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">{{t 'checkout.address'}}</label>
+                <input type="text" class="form-control" name="billingAddress" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">{{t 'checkout.city'}}</label>
+                  <input type="text" class="form-control" name="billingCity" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">{{t 'checkout.state'}}</label>
+                  <input type="text" class="form-control" name="billingState" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">{{t 'checkout.zipCode'}}</label>
+                  <input type="text" class="form-control" name="billingZip" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">{{t 'checkout.country'}}</label>
+                  <select class="form-control" name="billingCountry">
+                    <option value="US">{{t 'checkout.countries.us'}}</option>
+                    <option value="CA">{{t 'checkout.countries.ca'}}</option>
+                    <option value="UK">{{t 'checkout.countries.uk'}}</option>
+                    <option value="AU">{{t 'checkout.countries.au'}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="checkout-section">
+            <h3>{{t 'checkout.paymentMethod'}}</h3>
+            <div class="payment-methods">
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="credit_card" checked />
+                <div class="payment-card">
+                  <i class="fas fa-credit-card"></i>
+                  {{t 'checkout.creditCard'}}
+                </div>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="paypal" />
+                <div class="payment-card">
+                  <i class="fab fa-paypal"></i>
+                  {{t 'checkout.paypal'}}
+                </div>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="bank_transfer" />
+                <div class="payment-card">
+                  <i class="fas fa-university"></i>
+                  {{t 'checkout.bankTransfer'}}
+                </div>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="cash_on_delivery" />
+                <div class="payment-card">
+                  <i class="fas fa-money-bill-wave"></i>
+                  {{t 'checkout.cashOnDelivery'}}
+                </div>
+              </label>
+            </div>
+
+            <!-- Credit Card Details -->
+            <div id="cardDetails">
+              <div class="form-group">
+                <label class="form-label">{{t 'checkout.cardNumber'}} <span class="required">*</span></label>
+                <input type="text" class="form-control" name="cardNumber" placeholder="4111 1111 1111 1111" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">{{t 'checkout.expiry'}} <span class="required">*</span></label>
+                  <input type="text" class="form-control" name="expiry" placeholder="MM/YY" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">{{t 'checkout.cvv'}} <span class="required">*</span></label>
+                  <input type="text" class="form-control" name="cvv" placeholder="123" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="checkout-right">
+          <div class="summary-card">
+            <h4>{{t 'checkout.orderSummary'}}</h4>
+            <div id="checkoutItems">
+              <!-- Order items will be dynamically rendered -->
+            </div>
+            <div class="summary-row">
+              <span class="label">{{t 'cart.subtotal'}}</span>
+              <span class="value" id="checkoutSubtotal">$0.00</span>
+            </div>
+            <div class="summary-row discount" id="checkoutDiscountRow" style="display:none;">
+              <span class="label">{{t 'cart.discount'}}</span>
+              <span class="value" id="checkoutDiscount">-$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span class="label">{{t 'cart.shipping'}}</span>
+              <span class="value" id="checkoutShipping">$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span class="label">{{t 'cart.tax'}}</span>
+              <span class="value" id="checkoutTax">$0.00</span>
+            </div>
+            <div class="summary-row total">
+              <span class="label">{{t 'cart.total'}}</span>
+              <span class="value" id="checkoutTotal">$0.00</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block">
+              {{t 'checkout.placeOrder'}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- Checkout CSS -->
+<style>
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--spacing-xl);
+}
+
+.checkout-section {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow);
+}
+
+.checkout-section h3 {
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.payment-option {
+  cursor: pointer;
+}
+
+.payment-option input {
+  display: none;
+}
+
+.payment-card {
+  padding: var(--spacing-md);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.payment-option input:checked + .payment-card {
+  border-color: var(--primary-color);
+  background: var(--gray-50);
+}
+
+.payment-card i {
+  display: block;
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-sm);
+  color: var(--gray-600);
+}
+
+.payment-option input:checked + .payment-card i {
+  color: var(--primary-color);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+#billingAddress {
+  margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 992px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-right {
+    order: -1;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

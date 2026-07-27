@@ -1,0 +1,123 @@
+<!-- ============================================
+   FOOTER LAYOUT
+   ============================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <!-- About Column -->
+      <div class="col-12 col-md-4">
+        <h5>{{t 'app.name'}}</h5>
+        <p>{{t 'app.tagline'}}</p>
+        <p style="font-size: var(--font-size-sm);">
+          {{t 'footer.description'}}
+        </p>
+        <!-- Social Links -->
+        <div class="social-links">
+          <a href="#" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links Column -->
+      <div class="col-6 col-md-2">
+        <h5>{{t 'footer.quickLinks'}}</h5>
+        <ul>
+          <li><a href="/">{{t 'nav.home'}}</a></li>
+          <li><a href="/products">{{t 'nav.products'}}</a></li>
+          <li><a href="/cart">{{t 'nav.cart'}}</a></li>
+          <li><a href="/wishlist">{{t 'nav.wishlist'}}</a></li>
+        </ul>
+      </div>
+
+      <!-- Support Column -->
+      <div class="col-6 col-md-2">
+        <h5>{{t 'footer.support'}}</h5>
+        <ul>
+          <li><a href="/faq">{{t 'footer.faq'}}</a></li>
+          <li><a href="/contact">{{t 'footer.contact'}}</a></li>
+          <li><a href="/returns">{{t 'footer.returns'}}</a></li>
+          <li><a href="/shipping">{{t 'footer.shipping'}}</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal Column -->
+      <div class="col-12 col-md-4">
+        <h5>{{t 'footer.contactUs'}}</h5>
+        <ul>
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            {{t 'footer.address'}}
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            {{t 'footer.phone'}}
+          </li>
+          <li>
+            <i class="fas fa-envelope"></i>
+            {{t 'footer.email'}}
+          </li>
+          <li>
+            <i class="fas fa-clock"></i>
+            {{t 'footer.hours'}}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <p>
+        &copy; <span data-year>{{year}}</span> {{t 'app.name'}}. 
+        {{t 'footer.rights'}}
+      </p>
+      <p>
+        <a href="/privacy">{{t 'footer.privacy'}}</a>
+        &nbsp;|&nbsp;
+        <a href="/terms">{{t 'footer.terms'}}</a>
+        &nbsp;|&nbsp;
+        <a href="/cookies">{{t 'footer.cookies'}}</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Footer CSS -->
+<style>
+.footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer ul li {
+  padding: var(--spacing-xs) 0;
+}
+
+.footer ul li a {
+  color: var(--gray-400);
+  transition: color var(--transition-fast);
+}
+
+.footer ul li a:hover {
+  color: var(--white);
+}
+
+.footer ul li i {
+  width: 20px;
+  margin-right: var(--spacing-sm);
+  color: var(--primary-color);
+}
+</style>

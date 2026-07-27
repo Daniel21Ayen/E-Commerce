@@ -1,0 +1,253 @@
+<!-- ============================================
+   ORDERS PAGE
+   ============================================ -->
+<main class="main-content">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{t 'nav.home'}}</a></li>
+        <li class="breadcrumb-item active">{{t 'nav.orders'}}</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-title">
+      <h1>{{t 'orders.title'}}</h1>
+    </div>
+
+    <!-- Orders Container -->
+    <div id="ordersContainer">
+      <!-- Order Stats -->
+      <div class="order-stats" id="orderStats">
+        <div class="stat-item">
+          <span class="stat-value" id="totalOrders">0</span>
+          <span class="stat-label">{{t 'orders.total'}}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="pendingOrders">0</span>
+          <span class="stat-label">{{t 'orders.status.pending'}}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="processingOrders">0</span>
+          <span class="stat-label">{{t 'orders.status.processing'}}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="deliveredOrders">0</span>
+          <span class="stat-label">{{t 'orders.status.delivered'}}</span>
+        </div>
+      </div>
+
+      <!-- Orders List -->
+      <div id="ordersList">
+        <!-- Orders will be dynamically rendered -->
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="ordersLoading" class="text-center" style="display:none;">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- No Orders -->
+      <div id="noOrders" class="text-center" style="display:none;">
+        <div class="empty-state">
+          <i class="fas fa-box-open"></i>
+          <h3>{{t 'orders.empty'}}</h3>
+          <p>{{t 'orders.emptyMessage'}}</p>
+          <a href="/products" class="btn btn-primary">
+            {{t 'orders.startShopping'}}
+          </a>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="ordersPagination"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Orders CSS -->
+<style>
+.order-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.order-stats .stat-item {
+  background: var(--white);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.order-stats .stat-item .stat-value {
+  display: block;
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.order-stats .stat-item .stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.order-card {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  margin-bottom: var(--spacing-md);
+  overflow: hidden;
+}
+
+.order-card .order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.order-card .order-header .order-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.order-card .order-header .order-info .order-number {
+  font-weight: 600;
+}
+
+.order-card .order-header .order-info .order-date {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.order-card .order-header .order-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.order-card .order-body {
+  padding: var(--spacing-lg);
+}
+
+.order-card .order-body .order-items {
+  margin-bottom: var(--spacing-md);
+}
+
+.order-card .order-body .order-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.order-card .order-body .order-item:last-child {
+  border-bottom: none;
+}
+
+.order-card .order-body .order-item .item-image {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  background: var(--gray-100);
+  flex-shrink: 0;
+}
+
+.order-card .order-body .order-item .item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.order-card .order-body .order-item .item-details {
+  flex: 1;
+}
+
+.order-card .order-body .order-item .item-details .item-name {
+  font-weight: 500;
+}
+
+.order-card .order-body .order-item .item-details .item-variant {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.order-card .order-body .order-item .item-total {
+  font-weight: 500;
+}
+
+.order-card .order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-200);
+}
+
+.order-card .order-footer .order-total {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.order-card .order-footer .order-total .total-amount {
+  color: var(--primary-color);
+}
+
+.order-card .order-footer .order-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-state h3 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-state p {
+  color: var(--gray-500);
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (max-width: 576px) {
+  .order-card .order-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+
+  .order-card .order-header .order-info {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    align-items: flex-start;
+  }
+
+  .order-card .order-footer {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: stretch;
+  }
+
+  .order-card .order-footer .order-actions {
+    flex-direction: column;
+  }
+
+  .order-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+</style>

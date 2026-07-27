@@ -1,0 +1,151 @@
+<!-- ============================================
+   WISHLIST PAGE
+   ============================================ -->
+<main class="main-content">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{t 'nav.home'}}</a></li>
+        <li class="breadcrumb-item active">{{t 'nav.wishlist'}}</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-title">
+      <h1>{{t 'wishlist.title'}}</h1>
+    </div>
+
+    <!-- Wishlist Container -->
+    <div id="wishlistContainer">
+      <!-- Wishlist Actions -->
+      <div class="wishlist-actions">
+        <button class="btn btn-primary" id="moveAllToCart">
+          <i class="fas fa-shopping-cart"></i>
+          {{t 'wishlist.moveAll'}}
+        </button>
+      </div>
+
+      <!-- Wishlist Grid -->
+      <div class="products-grid" id="wishlistGrid">
+        <!-- Wishlist items will be dynamically rendered -->
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="wishlistLoading" class="text-center" style="display:none;">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Empty Wishlist -->
+      <div id="emptyWishlist" class="text-center" style="display:none;">
+        <div class="empty-state">
+          <i class="fas fa-heart"></i>
+          <h3>{{t 'wishlist.empty'}}</h3>
+          <p>{{t 'wishlist.emptyMessage'}}</p>
+          <a href="/products" class="btn btn-primary">
+            {{t 'wishlist.startShopping'}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Wishlist CSS -->
+<style>
+.wishlist-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-lg);
+}
+
+.wishlist-item {
+  position: relative;
+}
+
+.wishlist-item .wishlist-remove {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  color: var(--gray-400);
+  transition: all var(--transition-fast);
+  z-index: 1;
+}
+
+.wishlist-item .wishlist-remove:hover {
+  color: var(--danger);
+  transform: scale(1.1);
+}
+
+.wishlist-item .wishlist-notes {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  padding: var(--spacing-sm);
+  background: var(--gray-50);
+  border-radius: var(--border-radius-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.wishlist-item .wishlist-actions-btn {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.wishlist-item .wishlist-actions-btn .btn {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  padding: 0.375rem 0.75rem;
+}
+
+.wishlist-item .product-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wishlist-item .product-card .product-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.wishlist-item .product-card .product-body .product-actions {
+  margin-top: auto;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-state h3 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-state p {
+  color: var(--gray-500);
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (max-width: 576px) {
+  .wishlist-actions {
+    justify-content: center;
+  }
+
+  .wishlist-item .wishlist-actions-btn {
+    flex-direction: column;
+  }
+}
+</style>
