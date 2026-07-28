@@ -59,7 +59,7 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', () => {
   console.log('Offline');
   // Show offline notification
-  import('./utils').then(({ showNotification }) => {
+  import('./modules/utils').then(({ showNotification }) => {
     showNotification('You are offline. Some features may not work.', 'warning');
   });
 });
