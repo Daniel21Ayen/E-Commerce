@@ -1,0 +1,746 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================
+// USER MODEL
+// =============================================
+model User {
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                 String                 @unique
+  passwordHash          String
+  name                  String
+  phone                 String?
+  role                  String                 @default("customer")
+  isActive              Boolean                @default(true)
+  isEmailVerified       Boolean                @default(false)
+  lastLogin             DateTime?
+  resetPasswordToken    String?
+  resetPasswordExpires  DateTime?
+  tokenVersion          Int                    @default(0)
+  googleId              String?
+  facebookId            String?
+  githubId              String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+
+  // Relations
+  profile               UserProfile?
+  addresses             Address[]
+  products              Product[]              @relation("ProductCreatedBy")
+  reviews               Review[]
+  reviewLikes           ReviewLike[]
+  wishlist              Wishlist[]
+  cart                  Cart?
+  orders                Order[]
+  orderNotifications    OrderNotification[]
+  paymentTransactions   PaymentTransaction[]
+  sessions              Session[]
+  recentlyViewed        RecentlyViewed[]
+  searchLogs            SearchLog[]
+  userActivityLogs      UserActivityLog[]
+  auditLogs             AuditLog[]
+  adminAuditLogs        AdminAuditLog[]        @relation("AdminAuditCreatedBy")
+  promoCodeUsages       PromoCodeUsage[]
+  promoCodeCreated      PromoCode[]            @relation("PromoCodeCreatedBy")
+  inventoryCreated      Inventory[]            @relation("InventoryCreatedBy")
+  cancelledOrders       Order[]                @relation("OrderCancelledBy")
+  adminPermissions      AdminPermission[]
+  adminSettings         AdminSettings?
+
+  @@map("users")
+}
+
+// =============================================
+// USER PROFILE MODEL
+// =============================================
+model UserProfile {
+  id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                  String   @unique @db.Uuid
+  avatarUrl               String?
+  bio                     String?
+  dateOfBirth             DateTime?
+  gender                  String?
+  preferredLanguage       String   @default("en")
+  notificationPreferences Json     @default("{\"email\": true, \"push\": true}")
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// =============================================
+// ADDRESS MODEL
+// =============================================
+model Address {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @db.Uuid
+  addressType String   @default("shipping")
+  street      String
+  city        String
+  state       String
+  zipCode     String
+  country     String
+  isDefault   Boolean  @default(false)
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+// =============================================
+// CATEGORY MODEL
+// =============================================
+model Category {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  parentId    String?   @db.Uuid
+  iconUrl     String?
+  imageUrl    String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  parent      Category? @relation("CategoryParent", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryParent")
+  products    Product[]
+
+  @@map("categories")
+}
+
+// =============================================
+// PRODUCT MODEL
+// =============================================
+model Product {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  slug              String    @unique
+  sku               String    @unique
+  description       String?
+  shortDescription  String?
+  price             Float
+  comparePrice      Float?
+  costPrice         Float?
+  categoryId        String?   @db.Uuid
+  brand             String?
+  weight            Float?
+  dimensions        Json?
+  stockQuantity     Int       @default(0)
+  lowStockThreshold Int       @default(5)
+  isPhysical        Boolean   @default(true)
+  isDigital         Boolean   @default(false)
+  isActive          Boolean   @default(true)
+  isFeatured        Boolean   @default(false)
+  viewsCount        Int       @default(0)
+  salesCount        Int       @default(0)
+  averageRating     Float     @default(0)
+  totalReviews      Int       @default(0)
+  metaTitle         String?
+  metaDescription   String?
+  metaKeywords      String?
+  createdBy         String?   @db.Uuid
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  // Relations
+  category          Category? @relation(fields: [categoryId], references: [id])
+  creator           User?     @relation("ProductCreatedBy", fields: [createdBy], references: [id])
+  images            ProductImage[]
+  attributes        ProductAttribute[]
+  variants          ProductVariant[]
+  inventory         Inventory[]
+  cartItems         CartItem[]
+  orderItems        OrderItem[]
+  reviews           Review[]
+  wishlists         Wishlist[]
+  recentlyViewed    RecentlyViewed[]
+
+  @@map("products")
+}
+
+// =============================================
+// PRODUCT IMAGE MODEL
+// =============================================
+model ProductImage {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId   String   @db.Uuid
+  imageUrl    String
+  altText     String?
+  sortOrder   Int      @default(0)
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// =============================================
+// PRODUCT ATTRIBUTE MODEL
+// =============================================
+model ProductAttribute {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId       String   @db.Uuid
+  attributeName   String
+  attributeValue  String
+  isFilterable    Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  // Relations
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, attributeName, attributeValue])
+  @@map("product_attributes")
+}
+
+// =============================================
+// PRODUCT VARIANT MODEL
+// =============================================
+model ProductVariant {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId       String   @db.Uuid
+  sku             String   @unique
+  attributes      Json
+  price           Float
+  stockQuantity   Int      @default(0)
+  imageUrl        String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  wishlists       Wishlist[]
+  inventory       Inventory[]
+
+  @@map("product_variants")
+}
+
+// =============================================
+// INVENTORY MODEL
+// =============================================
+model Inventory {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId         String   @db.Uuid
+  variantId         String?  @db.Uuid
+  quantityChange    Int
+  previousQuantity  Int
+  newQuantity       Int
+  reason            String
+  referenceType     String?
+  referenceId       String?  @db.Uuid
+  notes             String?
+  createdBy         String?  @db.Uuid
+  createdAt         DateTime @default(now())
+
+  // Relations
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant           ProductVariant? @relation(fields: [variantId], references: [id])
+  creator           User?    @relation("InventoryCreatedBy", fields: [createdBy], references: [id])
+
+  @@map("inventory")
+}
+
+// =============================================
+// CART MODEL
+// =============================================
+model Cart {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String?   @unique @db.Uuid
+  sessionId       String?   @unique
+  totalItems      Int       @default(0)
+  totalPrice      Float     @default(0)
+  discountAmount  Float     @default(0)
+  finalPrice      Float     @default(0)
+  promoCodeId     String?   @db.Uuid
+  expiresAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           CartItem[]
+  promoCode       PromoCode? @relation(fields: [promoCodeId], references: [id])
+
+  @@map("carts")
+}
+
+// =============================================
+// CART ITEM MODEL
+// =============================================
+model CartItem {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cartId      String    @db.Uuid
+  productId   String    @db.Uuid
+  variantId   String?   @db.Uuid
+  quantity    Int
+  price       Float
+  totalPrice  Float
+  attributes  Json?
+  addedAt     DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  cart        Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id])
+  variant     ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@unique([cartId, productId, variantId])
+  @@map("cart_items")
+}
+
+// =============================================
+// ORDER MODEL
+// =============================================
+model Order {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderNumber           String   @unique
+  userId                String   @db.Uuid
+  status                String   @default("pending")
+  paymentStatus         String   @default("pending")
+  paymentMethod         String
+  paymentTransactionId  String?
+  subtotal              Float
+  discountAmount        Float    @default(0)
+  taxAmount             Float    @default(0)
+  shippingAmount        Float    @default(0)
+  totalAmount           Float
+  currency              String   @default("USD")
+  promoCodeId           String?  @db.Uuid
+  promoDiscount         Float    @default(0)
+  shippingAddress       Json
+  billingAddress        Json?
+  shippingMethod        String?
+  estimatedDeliveryDate DateTime?
+  actualDeliveryDate    DateTime?
+  trackingNumber        String?
+  trackingCarrier       String?
+  notes                 String?
+  cancellationReason    String?
+  cancelledBy           String?  @db.Uuid
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  user                  User     @relation(fields: [userId], references: [id])
+  items                 OrderItem[]
+  promoCode             PromoCode? @relation(fields: [promoCodeId], references: [id])
+  canceller             User?    @relation("OrderCancelledBy", fields: [cancelledBy], references: [id])
+  tracking              OrderTracking[]
+  notifications         OrderNotification[]
+  payments              PaymentTransaction[]
+  reviews               Review[]
+  promoCodeUsages       PromoCodeUsage[]
+
+  @@map("orders")
+}
+
+// =============================================
+// ORDER ITEM MODEL
+// =============================================
+model OrderItem {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId           String   @db.Uuid
+  productId         String   @db.Uuid
+  variantId         String?  @db.Uuid
+  productName       String
+  productSku        String
+  quantity          Int
+  price             Float
+  totalPrice        Float
+  attributes        Json?
+  refundedQuantity  Int      @default(0)
+  refundedAmount    Float    @default(0)
+  createdAt         DateTime @default(now())
+
+  // Relations
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product           Product  @relation(fields: [productId], references: [id])
+  variant           ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@map("order_items")
+}
+
+// =============================================
+// ORDER TRACKING MODEL
+// =============================================
+model OrderTracking {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId     String   @db.Uuid
+  status      String
+  location    String?
+  description String?
+  isCurrent   Boolean  @default(false)
+  timestamp   DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  // Relations
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_tracking")
+}
+
+// =============================================
+// ORDER NOTIFICATION MODEL
+// =============================================
+model OrderNotification {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId     String   @db.Uuid
+  userId      String   @db.Uuid
+  type        String
+  subject     String?
+  message     String?
+  status      String   @default("pending")
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("order_notifications")
+}
+
+// =============================================
+// PAYMENT TRANSACTION MODEL
+// =============================================
+model PaymentTransaction {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId         String   @db.Uuid
+  userId          String   @db.Uuid
+  amount          Float
+  currency        String   @default("USD")
+  paymentMethod   String
+  transactionId   String
+  status          String
+  refundAmount    Float?
+  refundReason    String?
+  refundDate      DateTime?
+  errorMessage    String?
+  paymentData     Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  order           Order    @relation(fields: [orderId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@map("payment_transactions")
+}
+
+// =============================================
+// WISHLIST MODEL
+// =============================================
+model Wishlist {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @db.Uuid
+  productId   String   @db.Uuid
+  variantId   String?  @db.Uuid
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant     ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@unique([userId, productId, variantId])
+  @@map("wishlists")
+}
+
+// =============================================
+// REVIEW MODEL
+// =============================================
+model Review {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId           String   @db.Uuid
+  userId              String   @db.Uuid
+  orderId             String?  @db.Uuid
+  rating              Int
+  title               String
+  description         String
+  isVerifiedPurchase  Boolean  @default(false)
+  isApproved          Boolean  @default(false)
+  isFeatured          Boolean  @default(false)
+  helpfulCount        Int      @default(0)
+  notHelpfulCount     Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  product             Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order               Order?   @relation(fields: [orderId], references: [id])
+  images              ReviewImage[]
+  likes               ReviewLike[]
+
+  @@unique([productId, userId])
+  @@map("reviews")
+}
+
+// =============================================
+// REVIEW IMAGE MODEL
+// =============================================
+model ReviewImage {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reviewId    String   @db.Uuid
+  imageUrl    String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  review      Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@map("review_images")
+}
+
+// =============================================
+// REVIEW LIKE MODEL
+// =============================================
+model ReviewLike {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reviewId    String   @db.Uuid
+  userId      String   @db.Uuid
+  isLike      Boolean
+  createdAt   DateTime @default(now())
+
+  // Relations
+  review      Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@map("review_likes")
+}
+
+// =============================================
+// PROMO CODE MODEL
+// =============================================
+model PromoCode {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                String   @unique
+  description         String?
+  discountType        String
+  discountValue       Float
+  minPurchase         Float    @default(0)
+  maxDiscount         Float?
+  usageLimit          Int?
+  usageCount          Int      @default(0)
+  perUserLimit        Int      @default(1)
+  isActive            Boolean  @default(true)
+  startsAt            DateTime?
+  expiresAt           DateTime?
+  applicableProducts  Json?
+  applicableCategories Json?
+  excludedProducts    Json?
+  createdBy           String?  @db.Uuid
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  creator             User?    @relation("PromoCodeCreatedBy", fields: [createdBy], references: [id])
+  usages              PromoCodeUsage[]
+  carts               Cart[]
+  orders              Order[]
+
+  @@map("promo_codes")
+}
+
+// =============================================
+// PROMO CODE USAGE MODEL
+// =============================================
+model PromoCodeUsage {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  promoCodeId     String   @db.Uuid
+  userId          String   @db.Uuid
+  orderId         String?  @db.Uuid
+  discountAmount  Float
+  usedAt          DateTime @default(now())
+
+  // Relations
+  promoCode       PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order           Order?   @relation(fields: [orderId], references: [id])
+
+  @@unique([promoCodeId, userId, orderId])
+  @@map("promo_code_usage")
+}
+
+// =============================================
+// RECENTLY VIEWED MODEL
+// =============================================
+model RecentlyViewed {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @db.Uuid
+  productId   String   @db.Uuid
+  viewedAt    DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("recently_viewed")
+}
+
+// =============================================
+// SEARCH LOG MODEL
+// =============================================
+model SearchLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String?  @db.Uuid
+  searchQuery String
+  resultsCount Int     @default(0)
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@map("search_logs")
+}
+
+// =============================================
+// USER ACTIVITY LOG MODEL
+// =============================================
+model UserActivityLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String?  @db.Uuid
+  action      String
+  entityType  String?
+  entityId    String?  @db.Uuid
+  details     Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@map("user_activity_logs")
+}
+
+// =============================================
+// AUDIT LOG MODEL
+// =============================================
+model AuditLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String?  @db.Uuid
+  action      String
+  tableName   String?
+  recordId    String?  @db.Uuid
+  oldData     Json?
+  newData     Json?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+// =============================================
+// ADMIN AUDIT LOG MODEL
+// =============================================
+model AdminAuditLog {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String?  @db.Uuid
+  action          String
+  method          String
+  path            String
+  ipAddress       String?
+  userAgent       String?
+  requestBody     Json?
+  requestQuery    Json?
+  requestParams   Json?
+  responseStatus  Int
+  responseData    String?
+  timestamp       DateTime @default(now())
+
+  // Relations
+  user            User?    @relation("AdminAuditCreatedBy", fields: [userId], references: [id])
+
+  @@map("admin_audit_logs")
+}
+
+// =============================================
+// SESSION MODEL
+// =============================================
+model Session {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId   String   @unique
+  userId      String?  @db.Uuid
+  data        Json?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
+}
+
+// =============================================
+// ADMIN PERMISSION MODEL
+// =============================================
+model AdminPermission {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String   @db.Uuid
+  permission  String
+  isActive    Boolean  @default(true)
+  grantedBy   String?  @db.Uuid
+  grantedAt   DateTime @default(now())
+  expiresAt   DateTime?
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, permission])
+  @@map("admin_permissions")
+}
+
+// =============================================
+// ADMIN SETTINGS MODEL
+// =============================================
+model AdminSettings {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String   @unique @db.Uuid
+  twoFactorEnabled  Boolean  @default(false)
+  twoFactorSecret   String?
+  notifications     Json     @default("{\"email\": true, \"sms\": false, \"push\": true}")
+  theme             String   @default("light")
+  language          String   @default("en")
+  dashboardLayout   Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_settings")
+}

@@ -6,13 +6,13 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const passport = require('passport');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const { RedisStore } = require('connect-redis');
 const path = require('path');
 const fs = require('fs');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
-const { handleUploadError } = require('./middleware/upload');
+const uploadMiddleware = require('./middleware/upload');
 const logger = require('./middleware/logger');
 
 // Import routes
@@ -214,7 +214,10 @@ app.use(passport.session());
 // LOGGING MIDDLEWARE
 // =============================================
 
-app.use(logger);
+// Use morgan-based HTTP request logging middleware
+if (logger.morgan) {
+  app.use(logger.morgan);
+}
 
 // =============================================
 // STATIC FILES
@@ -247,10 +250,14 @@ app.use((req, res, next) => {
 // Add response time header
 app.use((req, res, next) => {
   const start = Date.now();
-  res.on('finish', () => {
+  const originalEnd = res.end;
+  res.end = function(...args) {
     const duration = Date.now() - start;
-    res.setHeader('X-Response-Time', `${duration}ms`);
-  });
+    if (!res.headersSent) {
+      res.setHeader('X-Response-Time', `${duration}ms`);
+    }
+    return originalEnd.apply(this, args);
+  };
   next();
 });
 
@@ -266,7 +273,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV,
-    version: require('../package.json').version,
+    version: require('../../package.json').version,
     services: {
       database: 'connected',
       redis: redis.isConnected ? 'connected' : 'disconnected',
@@ -304,7 +311,16 @@ app.use('/api/uploads', uploadRoutes);
 // FILE UPLOAD ERROR HANDLING
 // =============================================
 
-app.use(handleUploadError);
+// File upload error handling middleware
+app.use(uploadMiddleware.handleMulterError || uploadMiddleware.handleUploadError || ((err, req, res, next) => {
+  if (err) {
+    return res.status(400).json({
+      status: 'error',
+      message: err.message || 'File upload failed'
+    });
+  }
+  next();
+}));
 
 // =============================================
 // 404 HANDLER

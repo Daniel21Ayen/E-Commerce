@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
-const { logger } = require('../middleware/logger');
+const logger = require('../middleware/logger');
 const constants = require('./constants');
 
 const prisma = new PrismaClient();

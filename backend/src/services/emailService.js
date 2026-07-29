@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const handlebars = require('handlebars');
 const path = require('path');
 const fs = require('fs');
-const { logger } = require('../middleware/logger');
+const logger = require('../middleware/logger');
 const redis = require('../config/redis');
 
 class EmailService {
