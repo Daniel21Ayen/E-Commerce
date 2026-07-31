@@ -65,7 +65,7 @@ const connectRedis = async () => {
       console.log('✅ Redis test successful');
     }
     await redis.del('test_connection');
-    
+     
     return redis;
   } catch (error) {
     console.error('❌ Redis connection error:', error.message);

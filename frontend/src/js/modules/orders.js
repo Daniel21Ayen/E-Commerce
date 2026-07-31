@@ -4,7 +4,6 @@
 
 import ApiService from './api';
 import { showNotification, formatCurrency, formatDate } from './utils';
-import i18n from './i18n';
 
 class OrderService {
   constructor() {

@@ -2,7 +2,6 @@
  * Utils Module - Helper functions used across the application
  */
 
-import i18n, { formatCurrency as i18nFormatCurrency, formatDate as i18nFormatDate } from './i18n';
 
 /**
  * Show notification

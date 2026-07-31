@@ -4,7 +4,6 @@
 
 import ApiService from './api';
 import { showNotification } from './utils';
-import i18n from './i18n';
 import cartService from './cart';
 
 class WishlistService {

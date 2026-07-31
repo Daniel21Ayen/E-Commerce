@@ -189,3 +189,92 @@
 {"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-30 23:02:39:239"}
 {"level":"info","message":"Redis already connected","timestamp":"2026-07-30 23:02:39:239"}
 {"code":"EAUTH","command":"AUTH PLAIN","level":"error","message":"Email transporter verification failed: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-c1fd3c90ec0sm66266b.15 - gsmtp","response":"535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-c1fd3c90ec0sm66266b.15 - gsmtp","responseCode":535,"stack":"Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-c1fd3c90ec0sm66266b.15 - gsmtp\n    at SMTPConnection._formatError (C:\\Users\\DANI\\Desktop\\Train\\FULLSTACK\\E-Commerce\\backend\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:809:19)\n    at SMTPConnection._actionAUTHComplete (C:\\Users\\DANI\\Desktop\\Train\\FULLSTACK\\E-Commerce\\backend\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:1588:34)\n    at SMTPConnection.<anonymous> (C:\\Users\\DANI\\Desktop\\Train\\FULLSTACK\\E-Commerce\\backend\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:556:26)\n    at SMTPConnection._processResponse (C:\\Users\\DANI\\Desktop\\Train\\FULLSTACK\\E-Commerce\\backend\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:993:20)\n    at SMTPConnection._onData (C:\\Users\\DANI\\Desktop\\Train\\FULLSTACK\\E-Commerce\\backend\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:774:14)\n    at SMTPConnection._onSocketData (C:\\Users\\DANI\\Desktop\\Train\\FULLSTACK\\E-Commerce\\backend\\node_modules\\nodemailer\\lib\\smtp-connection\\index.js:195:44)\n    at TLSSocket.emit (node:events:519:28)\n    at addChunk (node:internal/streams/readable:561:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n    at Readable.push (node:internal/streams/readable:392:5)","timestamp":"2026-07-30 23:02:41:241"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-07-30 23:17:03:173"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-07-30 23:17:04:174"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-07-30 23:17:04:174"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-07-30 23:17:04:174"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-07-30 23:17:04:174"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-30 23:17:04:174"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-07-30 23:17:04:174"}
+{"level":"info","message":"✅ Email transporter configured successfully","timestamp":"2026-07-30 23:17:06:176"}
+{"level":"http","message":"GET /api 404 1526 - 9.799 ms","timestamp":"2026-07-30 23:20:31:2031"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-07-30 23:33:17:3317"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-07-30 23:33:19:3319"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-07-30 23:33:20:3320"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-07-30 23:33:20:3320"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-07-30 23:33:20:3320"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-30 23:33:20:3320"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-07-30 23:33:20:3320"}
+{"level":"info","message":"✅ Email transporter configured successfully","timestamp":"2026-07-30 23:33:22:3322"}
+{"level":"http","message":"GET /api 404 1526 - 6.880 ms","timestamp":"2026-07-30 23:33:35:3335"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-07-30 23:35:32:3532"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-07-30 23:35:34:3534"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-07-30 23:35:35:3535"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-07-30 23:35:35:3535"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-07-30 23:35:35:3535"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-30 23:35:35:3535"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-07-30 23:35:35:3535"}
+{"level":"http","message":"GET /api/products/categories 200 30 - 327.095 ms","timestamp":"2026-07-30 23:38:30:3830"}
+{"level":"debug","message":"Cache miss: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-30 23:38:30:3830"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 200 85 - 183.617 ms","timestamp":"2026-07-30 23:38:30:3830"}
+{"level":"http","message":"GET /api/products/categories 304 - - 16.531 ms","timestamp":"2026-07-30 23:38:31:3831"}
+{"level":"http","message":"GET /api/products/featured?limit=8 200 30 - 16.238 ms","timestamp":"2026-07-30 23:38:31:3831"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 6.694 ms","timestamp":"2026-07-30 23:38:31:3831"}
+{"level":"http","message":"GET /api/products/categories 304 - - 11.520 ms","timestamp":"2026-07-30 23:38:31:3831"}

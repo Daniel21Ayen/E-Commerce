@@ -4,7 +4,6 @@
 
 import ApiService from './api';
 import { showNotification, setLoading, removeLoading } from './utils';
-import i18n from './i18n';
 
 // Token management
 const TOKEN_KEY = 'auth_token';

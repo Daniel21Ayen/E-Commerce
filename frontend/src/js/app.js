@@ -12,8 +12,7 @@ import reviewService from './modules/reviews';
 import orderService from './modules/orders';
 import searchService from './modules/search';
 import adminService from './modules/admin';
-import i18n, { t, changeLanguage, getCurrentLanguage } from './modules/i18n';
-import { showNotification, generateMetaTags } from './modules/utils';
+import { showNotification, generateMetaTags, formatCurrency } from './modules/utils';
 
 class App {
   constructor() {
@@ -39,15 +38,6 @@ class App {
     if (this.initialized) return;
 
     try {
-      // Initialize i18n
-      await i18n.init();
-
-      // Set language
-      const savedLang = localStorage.getItem('preferred_language');
-      if (savedLang) {
-        await changeLanguage(savedLang);
-      }
-
       // Check authentication
       await this.checkAuth();
 
@@ -69,7 +59,7 @@ class App {
       console.log('✅ App initialized successfully');
     } catch (error) {
       console.error('❌ App initialization error:', error);
-      showNotification(t('general.error'), 'error');
+      showNotification('An error occurred during initialization', 'error');
     }
   }
 
@@ -99,10 +89,10 @@ class App {
       if (user) {
         // Load cart
         await cartService.init();
-        
+
         // Load wishlist
         await wishlistService.init();
-        
+
         // Load orders
         await orderService.loadOrders();
       }
@@ -177,15 +167,6 @@ class App {
    * Setup event listeners
    */
   setupEventListeners() {
-    // Language switcher
-    document.addEventListener('click', (e) => {
-      const langBtn = e.target.closest('[data-lang]');
-      if (langBtn) {
-        const lang = langBtn.dataset.lang;
-        this.changeLanguage(lang);
-      }
-    });
-
     // Login/Register forms
     document.addEventListener('submit', (e) => {
       const form = e.target.closest('form');
@@ -282,7 +263,7 @@ class App {
 
     // Infinite scroll
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const target = entry.target;
           if (target.dataset.action === 'load-more') {
@@ -292,7 +273,7 @@ class App {
       });
     });
 
-    document.querySelectorAll('[data-observe]').forEach(el => {
+    document.querySelectorAll('[data-observe]').forEach((el) => {
       observer.observe(el);
     });
   }
@@ -398,7 +379,7 @@ class App {
   async handleCheckout() {
     const cart = cartService.getCart();
     if (!cart || cart.items.length === 0) {
-      showNotification(t('cart.empty'), 'warning');
+      showNotification('Your cart is empty', 'warning');
       return;
     }
 
@@ -409,7 +390,7 @@ class App {
    * Handle cancel order
    */
   async handleCancelOrder(orderId) {
-    if (confirm(t('orders.cancelConfirm'))) {
+    if (confirm('Are you sure you want to cancel this order?')) {
       await orderService.cancelOrder(orderId);
     }
   }
@@ -423,16 +404,6 @@ class App {
       const nextPage = pagination.currentPage + 1;
       await productService.goToPage(nextPage);
     }
-  }
-
-  /**
-   * Change language
-   */
-  async changeLanguage(lang) {
-    await changeLanguage(lang);
-    localStorage.setItem('preferred_language', lang);
-    this.updateUI();
-    this.initPage();
   }
 
   /**
@@ -520,9 +491,9 @@ class App {
     const user = getUser();
 
     // Update auth links
-    document.querySelectorAll('[data-auth]').forEach(el => {
+    document.querySelectorAll('[data-auth]').forEach((el) => {
       const showAuth = el.dataset.auth === 'true';
-      el.style.display = (showAuth === isAuth) ? '' : 'none';
+      el.style.display = showAuth === isAuth ? '' : 'none';
     });
 
     // Update user info
@@ -532,13 +503,15 @@ class App {
 
       const avatarEl = document.querySelector('[data-user-avatar]');
       if (avatarEl) {
-        avatarEl.src = user.profile?.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
+        avatarEl.src =
+          user.profile?.avatarUrl ||
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
       }
     }
 
     // Update admin links
     const showAdmin = isAdmin();
-    document.querySelectorAll('[data-admin]').forEach(el => {
+    document.querySelectorAll('[data-admin]').forEach((el) => {
       el.style.display = showAdmin ? '' : 'none';
     });
   }
@@ -588,7 +561,9 @@ class App {
    * Render search suggestions
    */
   renderSearchSuggestions(container, suggestions, query) {
-    const html = suggestions.map(product => `
+    const html = suggestions
+      .map(
+        (product) => `
       <div class="search-suggestion" data-product-id="${product.id}">
         <img src="${product.images?.[0]?.imageUrl || '/placeholder.jpg'}" alt="${product.name}" />
         <div class="suggestion-info">
@@ -596,12 +571,14 @@ class App {
           <div class="suggestion-price">${formatCurrency(product.price)}</div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
 
     container.innerHTML = html;
 
     // Add click listeners
-    container.querySelectorAll('.search-suggestion').forEach(el => {
+    container.querySelectorAll('.search-suggestion').forEach((el) => {
       el.addEventListener('click', () => {
         const productId = el.dataset.productId;
         this.navigateTo(`product/${productId}`);
@@ -629,8 +606,9 @@ class App {
     );
 
     for (const [key, value] of Object.entries(meta)) {
-      const tag = document.querySelector(`meta[property="${key}"]`) || 
-                  document.querySelector(`meta[name="${key}"]`);
+      const tag =
+        document.querySelector(`meta[property="${key}"]`) ||
+        document.querySelector(`meta[name="${key}"]`);
       if (tag) {
         tag.content = value;
       }
@@ -685,7 +663,7 @@ class App {
   async initHomePage() {
     // Load featured products
     await productService.getFeatured();
-    
+
     // Load categories
     await productService.loadCategories();
   }
@@ -760,14 +738,14 @@ class App {
    * Remove listener
    */
   removeListener(callback) {
-    this.listeners = this.listeners.filter(cb => cb !== callback);
+    this.listeners = this.listeners.filter((cb) => cb !== callback);
   }
 
   /**
    * Notify listeners
    */
   notifyListeners(event, data) {
-    this.listeners.forEach(callback => {
+    this.listeners.forEach((callback) => {
       try {
         callback(event, data);
       } catch (error) {

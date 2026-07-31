@@ -20,7 +20,6 @@ import reviewService from './modules/reviews';
 import orderService from './modules/orders';
 import searchService from './modules/search';
 import adminService from './modules/admin';
-import i18n from './modules/i18n';
 
 // Export services for global use
 window.__APP = {
@@ -33,7 +32,6 @@ window.__APP = {
   orders: orderService,
   search: searchService,
   admin: adminService,
-  i18n
 };
 
 // Handle service worker registration (for PWA)
@@ -88,7 +86,7 @@ if (process.env.NODE_ENV === 'production') {
 
 console.log(`🚀 E-Commerce App v${process.env.VERSION || '1.0.0'}`);
 console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
-console.log(`🌐 Language: ${i18n.language}`);
+// console.log(`🌐 Language: ${i18n.language}`);
 
 // Export main app
 export default app;
