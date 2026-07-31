@@ -1,6 +1,10 @@
+// backend/src/utils/helpers.js
+
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const moment = require('moment');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 class Helpers {
   /**
@@ -118,25 +122,40 @@ class Helpers {
   }
 
   /**
-   * Generate JWT
+   * Generate JWT - FIXED
    */
-  static generateJWT(userId, expiresIn = '7d') {
-    const jwt = require('jsonwebtoken');
-    return jwt.sign(
-      { id: userId },
-      process.env.JWT_SECRET,
-      { expiresIn }
-    );
+  static generateJWT(userId, expiresIn = null) {
+    try {
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        throw new Error('JWT_SECRET is not defined in environment variables');
+      }
+      
+      const expires = expiresIn || process.env.JWT_EXPIRE || '30d';
+      
+      return jwt.sign(
+        { id: userId },
+        secret,
+        { expiresIn: expires }
+      );
+    } catch (error) {
+      console.error('JWT Generation Error:', error.message);
+      throw new Error(`Failed to generate JWT: ${error.message}`);
+    }
   }
 
   /**
    * Verify JWT
    */
   static verifyJWT(token) {
-    const jwt = require('jsonwebtoken');
     try {
-      return jwt.verify(token, process.env.JWT_SECRET);
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        throw new Error('JWT_SECRET is not defined in environment variables');
+      }
+      return jwt.verify(token, secret);
     } catch (error) {
+      console.error('JWT Verification Error:', error.message);
       return null;
     }
   }
@@ -145,24 +164,33 @@ class Helpers {
    * Hash password
    */
   static async hashPassword(password) {
-    const bcrypt = require('bcryptjs');
-    return await bcrypt.hash(password, 10);
+    try {
+      const salt = await bcrypt.genSalt(10);
+      return await bcrypt.hash(password, salt);
+    } catch (error) {
+      console.error('Password Hashing Error:', error);
+      throw new Error('Failed to hash password');
+    }
   }
 
   /**
    * Compare password
    */
   static async comparePassword(password, hash) {
-    const bcrypt = require('bcryptjs');
-    return await bcrypt.compare(password, hash);
+    try {
+      return await bcrypt.compare(password, hash);
+    } catch (error) {
+      console.error('Password Comparison Error:', error);
+      return false;
+    }
   }
 
   /**
    * Parse pagination params
    */
   static parsePagination(query) {
-    const page = parseInt(query.page) || 1;
-    const limit = parseInt(query.limit) || 20;
+    const page = Math.max(1, parseInt(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(query.limit) || 20));
     const skip = (page - 1) * limit;
     const sortBy = query.sortBy || 'createdAt';
     const sortOrder = query.sortOrder || 'desc';
@@ -178,14 +206,14 @@ class Helpers {
   }
 
   /**
-   * Build search filter
+   * Build search filter for Prisma
    */
   static buildSearchFilter(query, fields) {
     const filter = {};
     
     if (query.search) {
-      filter.$or = fields.map(field => ({
-        [field]: { $regex: query.search, $options: 'i' }
+      filter.OR = fields.map(field => ({
+        [field]: { contains: query.search, mode: 'insensitive' }
       }));
     }
 
@@ -195,16 +223,16 @@ class Helpers {
 
     if (query.minPrice || query.maxPrice) {
       filter.price = {};
-      if (query.minPrice) filter.price.$gte = parseFloat(query.minPrice);
-      if (query.maxPrice) filter.price.$lte = parseFloat(query.maxPrice);
+      if (query.minPrice) filter.price.gte = parseFloat(query.minPrice);
+      if (query.maxPrice) filter.price.lte = parseFloat(query.maxPrice);
     }
 
     if (query.rating) {
-      filter.averageRating = { $gte: parseFloat(query.rating) };
+      filter.averageRating = { gte: parseFloat(query.rating) };
     }
 
     if (query.inStock !== undefined) {
-      filter.stockQuantity = { [query.inStock ? '$gt' : '$eq']: 0 };
+      filter.stockQuantity = query.inStock === 'true' ? { gt: 0 } : { eq: 0 };
     }
 
     return filter;
@@ -256,11 +284,13 @@ class Helpers {
    * Sort array by key
    */
   static sortBy(array, key, order = 'asc') {
-    return array.sort((a, b) => {
+    return [...array].sort((a, b) => {
+      const aVal = a[key];
+      const bVal = b[key];
       if (order === 'asc') {
-        return a[key] > b[key] ? 1 : -1;
+        return aVal > bVal ? 1 : -1;
       } else {
-        return a[key] < b[key] ? 1 : -1;
+        return aVal < bVal ? 1 : -1;
       }
     });
   }
@@ -338,9 +368,10 @@ class Helpers {
    */
   static getClientIP(req) {
     return req.ip || 
-           req.connection.remoteAddress || 
-           req.socket.remoteAddress || 
-           req.connection.socket?.remoteAddress;
+           req.connection?.remoteAddress || 
+           req.socket?.remoteAddress || 
+           req.connection?.socket?.remoteAddress ||
+           'unknown';
   }
 
   /**
@@ -354,14 +385,18 @@ class Helpers {
    * Generate meta tags
    */
   static generateMetaTags(title, description, keywords = '') {
+    const storeName = process.env.STORE_NAME || 'E-Commerce';
+    const storeDescription = process.env.STORE_DESCRIPTION || 'Your one-stop shop';
+    const storeKeywords = process.env.STORE_KEYWORDS || 'ecommerce, shop, online store';
+    
     return {
-      title: title ? `${title} | ${process.env.STORE_NAME}` : process.env.STORE_NAME,
-      description: description || process.env.STORE_DESCRIPTION,
-      keywords: keywords || process.env.STORE_KEYWORDS,
-      ogTitle: title || process.env.STORE_NAME,
-      ogDescription: description || process.env.STORE_DESCRIPTION,
+      title: title ? `${title} | ${storeName}` : storeName,
+      description: description || storeDescription,
+      keywords: keywords || storeKeywords,
+      ogTitle: title || storeName,
+      ogDescription: description || storeDescription,
       ogImage: process.env.STORE_OG_IMAGE || '/default-og-image.jpg',
-      ogUrl: process.env.FRONTEND_URL
+      ogUrl: process.env.FRONTEND_URL || 'http://localhost:3005'
     };
   }
 
@@ -390,7 +425,7 @@ class Helpers {
    * Calculate distance
    */
   static calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Earth's radius in km
+    const R = 6371;
     const dLat = this.toRadians(lat2 - lat1);
     const dLon = this.toRadians(lon2 - lon1);
     const a = 
@@ -407,6 +442,79 @@ class Helpers {
   static toRadians(degrees) {
     return degrees * (Math.PI / 180);
   }
+
+  /**
+   * Generate random OTP
+   */
+  static generateOTP(length = 6) {
+    const digits = '0123456789';
+    let otp = '';
+    for (let i = 0; i < length; i++) {
+      otp += digits[Math.floor(Math.random() * 10)];
+    }
+    return otp;
+  }
+
+  /**
+   * Generate random alphanumeric string
+   */
+  static generateRandomString(length = 10) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  /**
+   * Get environment variable with default
+   */
+  static getEnv(key, defaultValue = null) {
+    const value = process.env[key];
+    return value !== undefined ? value : defaultValue;
+  }
+
+  /**
+   * Check if environment is production
+   */
+  static isProduction() {
+    return process.env.NODE_ENV === 'production';
+  }
+
+  /**
+   * Check if environment is development
+   */
+  static isDevelopment() {
+    return process.env.NODE_ENV === 'development';
+  }
+
+  /**
+   * Safe JSON parse
+   */
+  static safeJsonParse(str, defaultValue = null) {
+    try {
+      return JSON.parse(str);
+    } catch {
+      return defaultValue;
+    }
+  }
+
+  /**
+   * Mask sensitive data
+   */
+  static maskSensitive(data, fields = ['password', 'token', 'secret']) {
+    if (!data) return data;
+    
+    const masked = { ...data };
+    fields.forEach(field => {
+      if (masked[field]) {
+        masked[field] = '***';
+      }
+    });
+    return masked;
+  }
 }
 
-module.exports = Helpers;
+// Export the class
+module.exports = { Helpers };

@@ -5,6 +5,12 @@ const redis = require('./src/config/redis');
 
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5000;
+// backend/server.js - Add at the top after dotenv.config()
+require('dotenv').config();
+
+// Debug: Check if JWT_SECRET is loaded
+console.log('🔑 JWT_SECRET:', process.env.JWT_SECRET ? '✅ Loaded' : '❌ Not loaded');
+console.log('📧 SMTP_USER:', process.env.SMTP_USER || '❌ Not set');
 
 // Handle uncaught exceptions
 process.on('uncaughtException', async (err) => {
