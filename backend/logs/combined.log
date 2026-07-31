@@ -518,3 +518,288 @@
 {"level":"http","message":"GET /api/version 200 93 - 0.569 ms","timestamp":"2026-07-31 04:11:18:1118"}
 {"level":"debug","message":"Cache miss: cache:products:list:{}","timestamp":"2026-07-31 04:11:32:1132"}
 {"level":"http","message":"GET /api/products 200 85 - 12.234 ms","timestamp":"2026-07-31 04:11:32:1132"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-07-31 04:12:59:1259"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-07-31 04:13:00:130"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-07-31 04:13:00:130"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-07-31 04:13:00:130"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-07-31 04:13:00:130"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-07-31 04:13:00:130"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-07-31 04:13:00:130"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-07-31 04:13:01:131"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-07-31 04:13:01:131"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-07-31 04:13:01:131"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-07-31 04:13:01:131"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-31 04:13:01:131"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-07-31 04:13:01:131"}
+{"level":"info","message":"✅ Email transporter configured successfully","timestamp":"2026-07-31 04:13:03:133"}
+{"level":"http","message":"GET /api/products/categories 304 - - 105.986 ms","timestamp":"2026-07-31 04:13:35:1335"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:13:35:1335"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 9.964 ms","timestamp":"2026-07-31 04:13:35:1335"}
+{"level":"http","message":"GET /api/products/categories 304 - - 7.417 ms","timestamp":"2026-07-31 04:13:35:1335"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 11.780 ms","timestamp":"2026-07-31 04:13:35:1335"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 3.486 ms","timestamp":"2026-07-31 04:13:35:1335"}
+{"level":"http","message":"GET /api/products/categories 304 - - 4.353 ms","timestamp":"2026-07-31 04:13:35:1335"}
+{"level":"http","message":"GET /api/products/categories 304 - - 138.574 ms","timestamp":"2026-07-31 04:21:38:2138"}
+{"level":"debug","message":"Cache miss: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:21:39:2139"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 114.472 ms","timestamp":"2026-07-31 04:21:39:2139"}
+{"level":"http","message":"GET /api/products/categories 304 - - 15.502 ms","timestamp":"2026-07-31 04:21:39:2139"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 13.700 ms","timestamp":"2026-07-31 04:21:40:2140"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 8.605 ms","timestamp":"2026-07-31 04:21:40:2140"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 8.188 ms","timestamp":"2026-07-31 04:21:54:2154"}
+{"level":"http","message":"POST /api/auth/register 400 279 - 7.864 ms","timestamp":"2026-07-31 04:24:26:2426"}
+{"level":"http","message":"GET /api/products/categories 304 - - 6.907 ms","timestamp":"2026-07-31 04:25:19:2519"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:25:19:2519"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.172 ms","timestamp":"2026-07-31 04:25:19:2519"}
+{"level":"http","message":"GET /api/products/categories 304 - - 3.885 ms","timestamp":"2026-07-31 04:25:19:2519"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 3.606 ms","timestamp":"2026-07-31 04:25:19:2519"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:25:19:2519"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.053 ms","timestamp":"2026-07-31 04:25:19:2519"}
+{"level":"http","message":"GET /api/products/categories 304 - - 141.849 ms","timestamp":"2026-07-31 04:46:55:4655"}
+{"level":"debug","message":"Cache miss: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:46:55:4655"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 159.705 ms","timestamp":"2026-07-31 04:46:55:4655"}
+{"level":"http","message":"GET /api/products/categories 304 - - 9.494 ms","timestamp":"2026-07-31 04:46:55:4655"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 11.187 ms","timestamp":"2026-07-31 04:46:55:4655"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:46:55:4655"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.038 ms","timestamp":"2026-07-31 04:46:55:4655"}
+{"level":"http","message":"GET /api/products/categories 304 - - 5.706 ms","timestamp":"2026-07-31 04:47:10:4710"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:47:10:4710"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 2.007 ms","timestamp":"2026-07-31 04:47:10:4710"}
+{"level":"http","message":"GET /api/products/categories 304 - - 7.831 ms","timestamp":"2026-07-31 04:47:10:4710"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 4.970 ms","timestamp":"2026-07-31 04:47:10:4710"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:47:10:4710"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.091 ms","timestamp":"2026-07-31 04:47:10:4710"}
+{"level":"http","message":"GET /api/products/categories 304 - - 12.967 ms","timestamp":"2026-07-31 04:48:08:488"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:08:488"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.501 ms","timestamp":"2026-07-31 04:48:08:488"}
+{"level":"http","message":"GET /api/products/categories 304 - - 12.108 ms","timestamp":"2026-07-31 04:48:08:488"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 16.037 ms","timestamp":"2026-07-31 04:48:08:488"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:08:488"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 8.308 ms","timestamp":"2026-07-31 04:48:08:488"}
+{"level":"http","message":"GET /api/products/categories 304 - - 17.494 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 2.659 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products/categories 304 - - 11.041 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 12.756 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 14.153 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products/categories 304 - - 9.854 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 4.059 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products/categories 304 - - 9.876 ms","timestamp":"2026-07-31 04:48:10:4810"}
+{"level":"http","message":"GET /api/products/categories 304 - - 10.156 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 9.972 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/categories 304 - - 8.005 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/categories 304 - - 14.518 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 6.467 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/categories 304 - - 7.229 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/featured?limit=8 200 30 - 8.317 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 5.267 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/categories 304 - - 15.415 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 10.401 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/categories 304 - - 12.254 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/categories 200 30 - 8.339 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.196 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/categories 304 - - 9.146 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 8.211 ms","timestamp":"2026-07-31 04:48:11:4811"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 73.695 ms","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"http","message":"GET /api/products/categories 304 - - 17.516 ms","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 6.595 ms","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"http","message":"GET /api/products/categories 304 - - 8.768 ms","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 7.319 ms","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 6.643 ms","timestamp":"2026-07-31 04:48:12:4812"}
+{"level":"http","message":"GET /api/products/categories 304 - - 17.933 ms","timestamp":"2026-07-31 04:50:27:5027"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:27:5027"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 4.424 ms","timestamp":"2026-07-31 04:50:27:5027"}
+{"level":"http","message":"GET /api/products/categories 304 - - 4.484 ms","timestamp":"2026-07-31 04:50:27:5027"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 5.702 ms","timestamp":"2026-07-31 04:50:28:5028"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:28:5028"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 5.230 ms","timestamp":"2026-07-31 04:50:28:5028"}
+{"level":"http","message":"GET /api/products/categories 304 - - 9.568 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 4.033 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/categories 304 - - 7.405 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 9.714 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/categories 304 - - 7.173 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 5.949 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/categories 304 - - 10.587 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/featured?limit=8 200 30 - 5.845 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 6.482 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/categories 304 - - 8.500 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.714 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/categories 304 - - 6.175 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/categories 304 - - 12.169 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.753 ms","timestamp":"2026-07-31 04:50:29:5029"}
+{"level":"http","message":"GET /api/products/categories 304 - - 12.473 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 200 30 - 6.177 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.291 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 8.117 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 200 30 - 7.158 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 4.698 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 5.721 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 7.238 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 2.920 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 8.383 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 7.340 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.278 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 10.412 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 6.222 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 9.111 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 10.588 ms","timestamp":"2026-07-31 04:50:30:5030"}
+{"level":"http","message":"GET /api/products/categories 304 - - 6.674 ms","timestamp":"2026-07-31 04:50:31:5031"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:31:5031"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.191 ms","timestamp":"2026-07-31 04:50:31:5031"}
+{"level":"http","message":"GET /api/products/categories 304 - - 8.308 ms","timestamp":"2026-07-31 04:50:31:5031"}
+{"level":"http","message":"GET /api/products/featured?limit=8 200 30 - 6.806 ms","timestamp":"2026-07-31 04:50:31:5031"}
+{"level":"debug","message":"Cache hit: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 04:50:31:5031"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.309 ms","timestamp":"2026-07-31 04:50:31:5031"}
+{"level":"http","message":"GET /api 200 377 - 4.405 ms","timestamp":"2026-07-31 05:04:20:420"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-07-31 08:56:41:5641"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-07-31 08:56:44:5644"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-07-31 08:56:44:5644"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-07-31 08:56:44:5644"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-07-31 08:56:44:5644"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-31 08:56:44:5644"}
+{"level":"info","message":"✅ Email transporter configured successfully","timestamp":"2026-07-31 08:56:45:5645"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-07-31 08:56:45:5645"}
+{"level":"http","message":"GET /api/products/categories 304 - - 292.998 ms","timestamp":"2026-07-31 08:57:33:5733"}
+{"level":"debug","message":"Cache miss: cache:products:list:{\"sortBy\":\"createdAt\",\"sortOrder\":\"desc\",\"search\":\"\",\"page\":1,\"limit\":20}","timestamp":"2026-07-31 08:57:33:5733"}
+{"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 176.735 ms","timestamp":"2026-07-31 08:57:33:5733"}
+{"level":"http","message":"GET /api/products/categories 304 - - 16.058 ms","timestamp":"2026-07-31 08:57:33:5733"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 10.162 ms","timestamp":"2026-07-31 08:57:33:5733"}
+{"level":"http","message":"GET /api/products/featured?limit=8 304 - - 11.512 ms","timestamp":"2026-07-31 08:57:33:5733"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-07-31 09:05:23:523"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-07-31 09:05:28:528"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-07-31 09:05:28:528"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-07-31 09:05:28:528"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-07-31 09:05:28:528"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-31 09:05:28:528"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-07-31 09:05:28:528"}
+{"level":"info","message":"✅ Email transporter configured successfully","timestamp":"2026-07-31 09:05:30:530"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-07-31 09:05:53:553"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-07-31 09:05:53:553"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-07-31 09:05:53:553"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-07-31 09:05:53:553"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-07-31 09:05:54:554"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-07-31 09:05:56:556"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-07-31 09:05:56:556"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-07-31 09:05:56:556"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-07-31 09:05:56:556"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-07-31 09:05:56:556"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-07-31 09:05:56:556"}
+{"level":"info","message":"✅ Email transporter configured successfully","timestamp":"2026-07-31 09:05:58:558"}
+{"level":"info","message":"🌱 Starting database seeding...","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"🧹 Clearing existing data...","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared paymentTransaction","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared orderItem","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared order","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared review","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared reviewLike","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared wishlist","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared cartItem","timestamp":"2026-07-31 09:07:09:79"}
+{"level":"info","message":"Cleared cart","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared productVariant","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared productAttribute","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared productImage","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared product","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared category","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared promoCodeUsage","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared promoCode","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared userProfile","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"Cleared user","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Data cleared","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"👤 Seeding users...","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Created 4 users","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"📂 Seeding categories...","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Created 15 categories","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"📦 Seeding products...","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Created 8 products","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"🏷️ Seeding promo codes...","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Created 5 promo codes","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"⭐ Seeding reviews...","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Created 8 reviews","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"📋 Seeding orders...","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Created 3 orders","timestamp":"2026-07-31 09:07:10:710"}
+{"level":"info","message":"✅ Database seeding completed successfully!","timestamp":"2026-07-31 09:07:10:710"}
