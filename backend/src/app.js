@@ -71,7 +71,7 @@ app.use(compression({
 // CORS CONFIGURATION
 // =============================================
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3005'];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -233,9 +233,6 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
   }
 }));
 
-// Serve favicon
-app.use('/favicon.ico', express.static(path.join(__dirname, '../public/favicon.ico')));
-
 // =============================================
 // REQUEST CONTEXT MIDDLEWARE
 // =============================================
@@ -265,6 +262,28 @@ app.use((req, res, next) => {
 // API ROUTES
 // =============================================
 
+// Root API endpoint
+app.get('/api', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'E-Commerce API is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      products: '/api/products',
+      cart: '/api/cart',
+      orders: '/api/orders',
+      wishlist: '/api/wishlist',
+      reviews: '/api/reviews',
+      admin: '/api/admin',
+      promos: '/api/promos',
+      analytics: '/api/analytics'
+    },
+    documentation: 'http://localhost:5000/api/health'
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -273,7 +292,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV,
-    version: require('../../package.json').version,
+    version: require('../package.json').version,
     services: {
       database: 'connected',
       redis: redis.isConnected ? 'connected' : 'disconnected',
@@ -312,7 +331,7 @@ app.use('/api/uploads', uploadRoutes);
 // =============================================
 
 // File upload error handling middleware
-app.use(uploadMiddleware.handleMulterError || uploadMiddleware.handleUploadError || ((err, req, res, next) => {
+app.use((err, req, res, next) => {
   if (err) {
     return res.status(400).json({
       status: 'error',
@@ -320,7 +339,7 @@ app.use(uploadMiddleware.handleMulterError || uploadMiddleware.handleUploadError
     });
   }
   next();
-}));
+});
 
 // =============================================
 // 404 HANDLER
@@ -344,9 +363,8 @@ app.use(errorHandler);
 
 process.on('unhandledRejection', (error) => {
   console.error('Unhandled Rejection:', error);
-  // Don't exit in production, just log
   if (process.env.NODE_ENV === 'development') {
-    process.exit(1);
+    // Don't exit in development, just log
   }
 });
 

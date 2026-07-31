@@ -1,6 +1,6 @@
 /**
  * App Module - Main application controller
- * Initializes and coordinates all modules
+ * Initializes and coordinates all modules and renders views into the DOM
  */
 
 import ApiService from './modules/api';
@@ -38,19 +38,22 @@ class App {
     if (this.initialized) return;
 
     try {
-      // Check authentication
+      // 1. Initial Render of static Layout (Header & Footer)
+      this.renderBaseLayout();
+
+      // 2. Check authentication
       await this.checkAuth();
 
-      // Initialize modules
+      // 3. Initialize modules
       await this.initModules();
 
-      // Setup event listeners
+      // 4. Setup event listeners
       this.setupEventListeners();
 
-      // Update UI
+      // 5. Update UI state (auth links, cart counts, etc.)
       this.updateUI();
 
-      // Handle page-specific initialization
+      // 6. Handle page-specific rendering & initialization
       await this.initPage();
 
       this.initialized = true;
@@ -64,13 +67,52 @@ class App {
   }
 
   /**
+   * Render base layout structures into DOM containers
+   */
+  renderBaseLayout() {
+    const headerEl = document.getElementById('main-header');
+    const footerEl = document.getElementById('main-footer');
+
+    if (headerEl) {
+      headerEl.innerHTML = `
+        <nav class="navbar">
+          <div class="logo">
+            <a href="/" data-page="home"><strong>E-Shop</strong></a>
+          </div>
+          <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search products..." />
+            <div id="search-results" class="search-dropdown" style="display:none;"></div>
+          </div>
+          <div class="nav-links">
+            <a href="/products" data-page="products">Products</a>
+            <a href="/cart" data-page="cart"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a href="/wishlist" data-page="wishlist" data-auth="true"><i class="fa fa-heart"></i> Wishlist</a>
+            <a href="/orders" data-page="orders" data-auth="true">Orders</a>
+            <a href="/admin" data-page="admin" data-admin="true">Admin</a>
+            <a href="/login" data-page="login" data-auth="false">Login</a>
+            <a href="/register" data-page="register" data-auth="false">Register</a>
+            <a href="#" data-action="logout" data-auth="true">Logout</a>
+          </div>
+        </nav>
+      `;
+    }
+
+    if (footerEl) {
+      footerEl.innerHTML = `
+        <div class="footer-container">
+          <p>&copy; <span data-year></span> E-Commerce App. All rights reserved.</p>
+        </div>
+      `;
+    }
+  }
+
+  /**
    * Check authentication status
    */
   async checkAuth() {
     try {
       const result = await AuthService.checkAuth();
       if (result.authenticated) {
-        // Load user data
         await this.loadUserData();
       }
       return result;
@@ -87,13 +129,8 @@ class App {
     try {
       const user = getUser();
       if (user) {
-        // Load cart
         await cartService.init();
-
-        // Load wishlist
         await wishlistService.init();
-
-        // Load orders
         await orderService.loadOrders();
       }
     } catch (error) {
@@ -106,19 +143,11 @@ class App {
    */
   async initModules() {
     try {
-      // Initialize search
       searchService.init();
-
-      // Load products
       await productService.init();
-
-      // Load categories
       await productService.loadCategories();
-
-      // Load featured products
       await productService.getFeatured();
 
-      // Load admin data if admin
       if (isAdmin()) {
         await adminService.loadDashboard();
         await adminService.loadProducts();
@@ -126,7 +155,6 @@ class App {
         await adminService.loadInventory();
       }
 
-      // Setup module listeners
       this.setupModuleListeners();
     } catch (error) {
       console.error('Module initialization error:', error);
@@ -137,37 +165,17 @@ class App {
    * Setup module listeners
    */
   setupModuleListeners() {
-    // Cart listeners
-    cartService.addListener((cart) => {
-      this.updateUI();
-    });
-
-    // Wishlist listeners
-    wishlistService.addListener((items) => {
-      this.updateUI();
-    });
-
-    // Product listeners
-    productService.addListener((data) => {
-      this.updateUI();
-    });
-
-    // Order listeners
-    orderService.addListener((orders) => {
-      this.updateUI();
-    });
-
-    // Search listeners
-    searchService.addListener((data) => {
-      this.updateSearchUI(data);
-    });
+    cartService.addListener(() => this.updateUI());
+    wishlistService.addListener(() => this.updateUI());
+    productService.addListener(() => this.updateUI());
+    orderService.addListener(() => this.updateUI());
+    searchService.addListener((data) => this.updateSearchUI(data));
   }
 
   /**
    * Setup event listeners
    */
   setupEventListeners() {
-    // Login/Register forms
     document.addEventListener('submit', (e) => {
       const form = e.target.closest('form');
       if (!form) return;
@@ -188,7 +196,6 @@ class App {
       }
     });
 
-    // Logout
     document.addEventListener('click', (e) => {
       const logoutBtn = e.target.closest('[data-action="logout"]');
       if (logoutBtn) {
@@ -197,7 +204,6 @@ class App {
       }
     });
 
-    // Navigation
     document.addEventListener('click', (e) => {
       const navLink = e.target.closest('a[data-page]');
       if (navLink) {
@@ -207,7 +213,6 @@ class App {
       }
     });
 
-    // Cart actions
     document.addEventListener('click', (e) => {
       const addToCartBtn = e.target.closest('[data-action="add-to-cart"]');
       if (addToCartBtn) {
@@ -219,7 +224,6 @@ class App {
       }
     });
 
-    // Wishlist actions
     document.addEventListener('click', (e) => {
       const wishlistBtn = e.target.closest('[data-action="wishlist-toggle"]');
       if (wishlistBtn) {
@@ -230,19 +234,6 @@ class App {
       }
     });
 
-    // Review actions
-    document.addEventListener('click', (e) => {
-      const reviewBtn = e.target.closest('[data-action="review-submit"]');
-      if (reviewBtn) {
-        e.preventDefault();
-        const form = reviewBtn.closest('form');
-        if (form) {
-          this.handleReviewSubmit(form);
-        }
-      }
-    });
-
-    // Checkout
     document.addEventListener('click', (e) => {
       const checkoutBtn = e.target.closest('[data-action="checkout"]');
       if (checkoutBtn) {
@@ -251,7 +242,6 @@ class App {
       }
     });
 
-    // Order cancellation
     document.addEventListener('click', (e) => {
       const cancelBtn = e.target.closest('[data-action="cancel-order"]');
       if (cancelBtn) {
@@ -260,53 +250,26 @@ class App {
         this.handleCancelOrder(orderId);
       }
     });
-
-    // Infinite scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const target = entry.target;
-          if (target.dataset.action === 'load-more') {
-            this.loadMoreProducts();
-          }
-        }
-      });
-    });
-
-    document.querySelectorAll('[data-observe]').forEach((el) => {
-      observer.observe(el);
-    });
   }
 
-  /**
-   * Handle login
-   */
+  // Handlers
   async handleLogin(form) {
     const formData = new FormData(form);
-    const email = formData.get('email');
-    const password = formData.get('password');
-
-    const result = await AuthService.login(email, password);
+    const result = await AuthService.login(formData.get('email'), formData.get('password'));
     if (result.success) {
       this.navigateTo('home');
       await this.loadUserData();
     }
   }
 
-  /**
-   * Handle register
-   */
   async handleRegister(form) {
     const formData = new FormData(form);
     const data = {
       name: formData.get('name'),
       email: formData.get('email'),
       password: formData.get('password'),
-      confirmPassword: formData.get('confirmPassword'),
-      phone: formData.get('phone') || null,
-      address: formData.get('address') ? JSON.parse(formData.get('address')) : null
+      confirmPassword: formData.get('confirmPassword')
     };
-
     const result = await AuthService.register(data);
     if (result.success) {
       this.navigateTo('home');
@@ -314,101 +277,34 @@ class App {
     }
   }
 
-  /**
-   * Handle forgot password
-   */
-  async handleForgotPassword(form) {
-    const formData = new FormData(form);
-    const email = formData.get('email');
-
-    await AuthService.forgotPassword(email);
-  }
-
-  /**
-   * Handle reset password
-   */
-  async handleResetPassword(form) {
-    const formData = new FormData(form);
-    const token = form.dataset.token;
-    const password = formData.get('password');
-
-    await AuthService.resetPassword(token, password);
-  }
-
-  /**
-   * Handle logout
-   */
   async handleLogout() {
     await AuthService.logout();
     this.navigateTo('login');
   }
 
-  /**
-   * Handle add to cart
-   */
   async handleAddToCart(productId, quantity, variantId) {
     await cartService.addItem(productId, quantity, variantId);
   }
 
-  /**
-   * Handle wishlist toggle
-   */
   async handleWishlistToggle(productId, variantId) {
     await wishlistService.toggleItem(productId, variantId);
   }
 
-  /**
-   * Handle review submit
-   */
-  async handleReviewSubmit(form) {
-    const formData = new FormData(form);
-    const data = {
-      productId: form.dataset.productId,
-      rating: parseInt(formData.get('rating')),
-      title: formData.get('title'),
-      description: formData.get('description'),
-      images: formData.get('images') ? JSON.parse(formData.get('images')) : null
-    };
-
-    await reviewService.createReview(data);
-  }
-
-  /**
-   * Handle checkout
-   */
   async handleCheckout() {
     const cart = cartService.getCart();
-    if (!cart || cart.items.length === 0) {
+    if (!cart || cart.items?.length === 0) {
       showNotification('Your cart is empty', 'warning');
       return;
     }
-
     this.navigateTo('checkout');
   }
 
-  /**
-   * Handle cancel order
-   */
   async handleCancelOrder(orderId) {
     if (confirm('Are you sure you want to cancel this order?')) {
       await orderService.cancelOrder(orderId);
     }
   }
 
-  /**
-   * Load more products
-   */
-  async loadMoreProducts() {
-    const pagination = productService.getPagination();
-    if (pagination && pagination.currentPage < pagination.pages) {
-      const nextPage = pagination.currentPage + 1;
-      await productService.goToPage(nextPage);
-    }
-  }
-
-  /**
-   * Navigate to page
-   */
   navigateTo(page) {
     this.currentPage = page;
     this.initPage();
@@ -416,140 +312,73 @@ class App {
   }
 
   /**
-   * Initialize page
+   * Initialize page & render content into #page-content
    */
   async initPage() {
     const page = this.getCurrentPage();
     this.currentPage = page;
 
-    // Update meta tags
     this.updateMetaTags(page);
+    const container = document.getElementById('page-content');
+    if (!container) return;
 
-    // Page-specific initialization
     switch (page) {
       case 'home':
-        await this.initHomePage();
+        await this.initHomePage(container);
         break;
       case 'products':
-        await this.initProductsPage();
-        break;
-      case 'product-detail':
-        await this.initProductDetailPage();
+        await this.initProductsPage(container);
         break;
       case 'cart':
-        await this.initCartPage();
-        break;
-      case 'checkout':
-        await this.initCheckoutPage();
-        break;
-      case 'orders':
-        await this.initOrdersPage();
-        break;
-      case 'wishlist':
-        await this.initWishlistPage();
-        break;
-      case 'profile':
-        await this.initProfilePage();
-        break;
-      case 'admin':
-        await this.initAdminPage();
+        await this.initCartPage(container);
         break;
       case 'login':
-        await this.initLoginPage();
+        await this.initLoginPage(container);
         break;
       case 'register':
-        await this.initRegisterPage();
+        await this.initRegisterPage(container);
         break;
       default:
+        container.innerHTML = `<h2>Page Not Found</h2><p>The page dynamic route is under construction.</p>`;
         break;
     }
   }
 
-  /**
-   * Get current page
-   */
   getCurrentPage() {
     const path = window.location.pathname;
     const page = path.replace(/^\//, '').split('/')[0] || 'home';
     return page;
   }
 
-  /**
-   * Update UI
-   */
   updateUI() {
     this.updateHeader();
     this.updateFooter();
-    this.updateUserMenu();
   }
 
-  /**
-   * Update header
-   */
   updateHeader() {
     const isAuth = isAuthenticated();
-    const user = getUser();
+    const showAdmin = isAdmin();
 
-    // Update auth links
     document.querySelectorAll('[data-auth]').forEach((el) => {
       const showAuth = el.dataset.auth === 'true';
       el.style.display = showAuth === isAuth ? '' : 'none';
     });
 
-    // Update user info
-    if (user) {
-      const nameEl = document.querySelector('[data-user-name]');
-      if (nameEl) nameEl.textContent = user.name;
-
-      const avatarEl = document.querySelector('[data-user-avatar]');
-      if (avatarEl) {
-        avatarEl.src =
-          user.profile?.avatarUrl ||
-          `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
-      }
-    }
-
-    // Update admin links
-    const showAdmin = isAdmin();
     document.querySelectorAll('[data-admin]').forEach((el) => {
       el.style.display = showAdmin ? '' : 'none';
     });
   }
 
-  /**
-   * Update footer
-   */
   updateFooter() {
-    const year = new Date().getFullYear();
     const yearEl = document.querySelector('[data-year]');
-    if (yearEl) yearEl.textContent = year;
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 
-  /**
-   * Update user menu
-   */
-  updateUserMenu() {
-    const isAuth = isAuthenticated();
-    const menu = document.querySelector('.user-menu');
-    if (!menu) return;
-
-    if (isAuth) {
-      menu.classList.remove('guest');
-      menu.classList.add('authenticated');
-    } else {
-      menu.classList.remove('authenticated');
-      menu.classList.add('guest');
-    }
-  }
-
-  /**
-   * Update search UI
-   */
   updateSearchUI(data) {
     const container = document.getElementById('search-results');
     if (!container) return;
 
-    if (data.active && data.suggestions.length > 0) {
+    if (data.active && data.suggestions?.length > 0) {
       container.style.display = 'block';
       this.renderSearchSuggestions(container, data.suggestions, data.query);
     } else {
@@ -557,9 +386,6 @@ class App {
     }
   }
 
-  /**
-   * Render search suggestions
-   */
   renderSearchSuggestions(container, suggestions, query) {
     const html = suggestions
       .map(
@@ -576,174 +402,122 @@ class App {
       .join('');
 
     container.innerHTML = html;
-
-    // Add click listeners
-    container.querySelectorAll('.search-suggestion').forEach((el) => {
-      el.addEventListener('click', () => {
-        const productId = el.dataset.productId;
-        this.navigateTo(`product/${productId}`);
-      });
-    });
   }
 
-  /**
-   * Highlight text
-   */
   highlightText(text, query) {
     if (!text || !query) return text;
     const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
   }
 
-  /**
-   * Update meta tags
-   */
   updateMetaTags(page) {
-    const meta = generateMetaTags(
-      this.getPageTitle(page),
-      this.getPageDescription(page),
-      this.getPageImage(page)
-    );
-
+    const meta = generateMetaTags(this.getPageTitle(page), this.getPageDescription(page), '/default-og-image.jpg');
     for (const [key, value] of Object.entries(meta)) {
-      const tag =
-        document.querySelector(`meta[property="${key}"]`) ||
-        document.querySelector(`meta[name="${key}"]`);
-      if (tag) {
-        tag.content = value;
-      }
+      const tag = document.querySelector(`meta[property="${key}"]`) || document.querySelector(`meta[name="${key}"]`);
+      if (tag) tag.content = value;
     }
   }
 
-  /**
-   * Get page title
-   */
   getPageTitle(page) {
-    const titles = {
-      home: 'Home',
-      products: 'Products',
-      'product-detail': 'Product Details',
-      cart: 'Shopping Cart',
-      checkout: 'Checkout',
-      orders: 'My Orders',
-      wishlist: 'Wishlist',
-      profile: 'Profile',
-      admin: 'Admin Dashboard',
-      login: 'Login',
-      register: 'Register'
-    };
+    const titles = { home: 'Home', products: 'Products', cart: 'Cart', login: 'Login', register: 'Register' };
     return titles[page] || page;
   }
 
-  /**
-   * Get page description
-   */
   getPageDescription(page) {
-    const descriptions = {
-      home: 'Welcome to E-Commerce - Your one-stop shop',
-      products: 'Browse our wide range of products',
-      cart: 'Review your shopping cart',
-      checkout: 'Complete your order',
-      orders: 'View your order history',
-      wishlist: 'Your saved items'
-    };
-    return descriptions[page] || '';
+    return 'E-Commerce Online Store';
   }
 
-  /**
-   * Get page image
-   */
-  getPageImage(page) {
-    return '/default-og-image.jpg';
+  // Page HTML Content Renderers
+  async initHomePage(container) {
+    const products = await productService.getFeatured();
+    container.innerHTML = `
+      <section class="hero">
+        <h1>Welcome to E-Commerce Store</h1>
+        <p>Discover products with the best prices.</p>
+      </section>
+      <section class="featured-products">
+        <h2>Featured Products</h2>
+        <div class="product-grid">
+          ${products && products.length > 0 ? products.map(p => `
+            <div class="product-card">
+              <h3>${p.name}</h3>
+              <p>${formatCurrency(p.price)}</p>
+              <button data-action="add-to-cart" data-product-id="${p.id || p._id}">Add to Cart</button>
+            </div>
+          `).join('') : '<p>No featured products found.</p>'}
+        </div>
+      </section>
+    `;
   }
 
-  /**
-   * Page initializers
-   */
-  async initHomePage() {
-    // Load featured products
-    await productService.getFeatured();
-
-    // Load categories
-    await productService.loadCategories();
+  async initProductsPage(container) {
+    const products = await productService.loadProducts();
+    container.innerHTML = `
+      <h2>Product Catalog</h2>
+      <div class="product-grid">
+        ${products && products.length > 0 ? products.map(p => `
+          <div class="product-card">
+            <h3>${p.name}</h3>
+            <p>${formatCurrency(p.price)}</p>
+            <button data-action="add-to-cart" data-product-id="${p.id || p._id}">Add to Cart</button>
+          </div>
+        `).join('') : '<p>No products available.</p>'}
+      </div>
+    `;
   }
 
-  async initProductsPage() {
-    await productService.loadProducts();
-  }
-
-  async initProductDetailPage() {
-    const path = window.location.pathname;
-    const id = path.split('/').pop();
-    await productService.getProduct(id);
-  }
-
-  async initCartPage() {
-    await cartService.init();
-  }
-
-  async initCheckoutPage() {
+  async initCartPage(container) {
     const cart = cartService.getCart();
-    if (!cart || cart.items.length === 0) {
-      this.navigateTo('cart');
-    }
+    container.innerHTML = `
+      <h2>Your Cart</h2>
+      ${cart && cart.items && cart.items.length > 0 ? `
+        <div class="cart-items">
+          ${cart.items.map(item => `<p>${item.name || 'Item'} x ${item.quantity}</p>`).join('')}
+        </div>
+        <button data-action="checkout">Proceed to Checkout</button>
+      ` : '<p>Your cart is empty.</p>'}
+    `;
   }
 
-  async initOrdersPage() {
-    await orderService.loadOrders();
-  }
-
-  async initWishlistPage() {
-    await wishlistService.loadWishlist();
-  }
-
-  async initProfilePage() {
-    await AuthService.getProfile();
-  }
-
-  async initAdminPage() {
-    if (!isAdmin()) {
+  async initLoginPage(container) {
+    if (isAuthenticated()) {
       this.navigateTo('home');
       return;
     }
-    await adminService.loadDashboard();
-    await adminService.loadProducts();
-    await adminService.loadOrders();
-    await adminService.loadInventory();
-    await adminService.loadSalesAnalytics();
-    await adminService.loadProductAnalytics();
-    await adminService.loadCustomerAnalytics();
+    container.innerHTML = `
+      <h2>Login</h2>
+      <form data-action="login">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Sign In</button>
+      </form>
+    `;
   }
 
-  async initLoginPage() {
+  async initRegisterPage(container) {
     if (isAuthenticated()) {
       this.navigateTo('home');
+      return;
     }
+    container.innerHTML = `
+      <h2>Register</h2>
+      <form data-action="register">
+        <input type="text" name="name" placeholder="Full Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Sign Up</button>
+      </form>
+    `;
   }
 
-  async initRegisterPage() {
-    if (isAuthenticated()) {
-      this.navigateTo('home');
-    }
-  }
-
-  /**
-   * Add listener
-   */
   addListener(callback) {
     this.listeners.push(callback);
   }
 
-  /**
-   * Remove listener
-   */
   removeListener(callback) {
     this.listeners = this.listeners.filter((cb) => cb !== callback);
   }
 
-  /**
-   * Notify listeners
-   */
   notifyListeners(event, data) {
     this.listeners.forEach((callback) => {
       try {
@@ -755,15 +529,12 @@ class App {
   }
 }
 
-// Create singleton instance
 const app = new App();
 
-// Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   app.init();
 });
 
-// Handle browser back/forward
 window.addEventListener('popstate', () => {
   app.initPage();
 });
