@@ -5,7 +5,7 @@
 import ApiService from './api';
 import { showNotification, formatCurrency, updateCartBadge } from './utils';
 
-class CartService {
+class CartService { 
   constructor() {
     this.cart = null;
     this.listeners = [];
@@ -71,22 +71,29 @@ class CartService {
   /**
    * Add item to cart
    */
-  async addItem(productId, quantity = 1, variantId = null) {
-    try {
-      this.loading = true;
-      const response = await ApiService.cart.addItem({ productId, quantity, variantId });
-      this.cart = response.data.data;
-      this.updateBadge();
-      this.notifyListeners();
-      showNotification(i18n.t('cart.itemAdded'), 'success');
-      return { success: true, data: response.data.data };
-    } catch (error) {
-      showNotification(error.message || i18n.t('cart.addError'), 'error');
-      return { success: false, error: error.message };
-    } finally {
-      this.loading = false;
-    }
+
+async addItem(productId, quantity = 1, variantId = null) {
+  try {
+    this.loading = true;
+    const response = await ApiService.cart.addItem({ 
+      productId, 
+      quantity: parseInt(quantity), 
+      variantId 
+    });
+    this.cart = response.data.data;
+    this.updateBadge();
+    this.notifyListeners();
+    return { success: true, data: response.data.data };
+  } catch (error) {
+    console.error('Add to cart error:', error);
+    return { 
+      success: false, 
+      error: error.response?.data?.message || 'Failed to add to cart' 
+    };
+  } finally {
+    this.loading = false;
   }
+}
 
   /**
    * Update cart item quantity

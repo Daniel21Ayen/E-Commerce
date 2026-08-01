@@ -1,6 +1,5 @@
 // frontend/src/js/app.js
 
-import ApiService from './modules/api.js';
 import AuthService, { isAuthenticated, isAdmin, getUser } from './modules/auth.js';
 import cartService from './modules/cart.js';
 import productService from './modules/products.js';
@@ -9,7 +8,7 @@ import reviewService from './modules/reviews.js';
 import orderService from './modules/orders.js';
 import searchService from './modules/search.js';
 import adminService from './modules/admin.js';
-import { showNotification, generateMetaTags, formatCurrency, updateCartBadge, updateWishlistBadge } from './modules/utils.js';
+import { showNotification, formatCurrency, updateCartBadge, updateWishlistBadge } from './modules/utils.js';
 
 // Import auth pages
 import LoginPage from './pages/auth/LoginPage.js';
@@ -32,8 +31,8 @@ class App {
         this.initialized = false;
         this.currentPage = 'home';
         this.listeners = [];
-
-        // Define page handlers - Make sure ALL methods exist
+        
+        // Page handlers
         this.pageHandlers = {
             home: this.renderHome.bind(this),
             products: this.renderProducts.bind(this),
@@ -79,7 +78,7 @@ class App {
     }
 
     /**
-     * Render base layout
+     * Render base layout (Header & Footer)
      */
     renderBaseLayout() {
         const headerEl = document.getElementById('main-header');
@@ -99,7 +98,7 @@ class App {
                             <div id="search-results" class="search-results"></div>
                         </div>
                         <div class="header-actions">
-                            <a href="/wishlist" class="btn" data-page="wishlist" data-auth="true">
+                            <a href="/wishlist" class="btn" data-page="wishlist">
                                 <i class="fas fa-heart"></i>
                                 <span class="badge" id="wishlist-badge" style="display:none;">0</span>
                             </a>
@@ -108,28 +107,68 @@ class App {
                                 <span class="badge" id="cart-badge" style="display:none;">0</span>
                             </a>
                             <div class="dropdown">
-                                <button class="btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                                <button class="btn" id="userMenuBtn">
+                                    <i class="fas fa-user"></i>
+                                </button>
                                 <div class="dropdown-menu" id="userDropdown">
-                                    <div data-auth="false">
-                                        <a href="/login" class="dropdown-item" data-page="login">Login</a>
-                                        <a href="/register" class="dropdown-item" data-page="register">Register</a>
+                                    <!-- Guest Menu (Logged Out) -->
+                                    <div id="guestMenu">
+                                        <a href="/login" class="dropdown-item" data-page="login">
+                                            <i class="fas fa-sign-in-alt"></i> Login
+                                        </a>
+                                        <a href="/register" class="dropdown-item" data-page="register">
+                                            <i class="fas fa-user-plus"></i> Register
+                                        </a>
                                     </div>
-                                    <div data-auth="true" style="display:none;">
+                                    <!-- User Menu (Logged In) -->
+                                    <div id="userMenu" style="display:none;">
                                         <div class="dropdown-header">
                                             <span class="user-name" id="userName">User</span>
                                             <span class="user-email" id="userEmail">user@email.com</span>
                                         </div>
-                                        <a href="/profile" class="dropdown-item" data-page="profile">Profile</a>
-                                        <a href="/orders" class="dropdown-item" data-page="orders">Orders</a>
-                                        <a href="/wishlist" class="dropdown-item" data-page="wishlist">Wishlist</a>
-                                        <a href="/admin" class="dropdown-item" data-page="admin" data-admin="true">Admin</a>
-                                        <button class="dropdown-item text-danger" data-action="logout">Logout</button>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/profile" class="dropdown-item" data-page="profile">
+                                            <i class="fas fa-user-circle"></i> Profile
+                                        </a>
+                                        <a href="/orders" class="dropdown-item" data-page="orders">
+                                            <i class="fas fa-box"></i> Orders
+                                        </a>
+                                        <a href="/wishlist" class="dropdown-item" data-page="wishlist">
+                                            <i class="fas fa-heart"></i> Wishlist
+                                        </a>
+                                        <a href="/admin" class="dropdown-item" data-page="admin" id="adminLink" style="display:none;">
+                                            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <button class="dropdown-item text-danger" data-action="logout">
+                                            <i class="fas fa-sign-out-alt"></i> Logout
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+                            <button class="mobile-toggle" id="mobileToggle">
+                                <i class="fas fa-bars"></i>
+                            </button>
                         </div>
                     </div>
+                    <nav class="mobile-nav" id="mobileNav">
+                        <ul>
+                            <li><a href="/" data-page="home"><i class="fas fa-home"></i> Home</a></li>
+                            <li><a href="/products" data-page="products"><i class="fas fa-box"></i> Products</a></li>
+                            <li><a href="/cart" data-page="cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                            <li><a href="/wishlist" data-page="wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
+                            <div id="mobileGuestMenu">
+                                <li><a href="/login" data-page="login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                                <li><a href="/register" data-page="register"><i class="fas fa-user-plus"></i> Register</a></li>
+                            </div>
+                            <div id="mobileUserMenu" style="display:none;">
+                                <li><a href="/profile" data-page="profile"><i class="fas fa-user-circle"></i> Profile</a></li>
+                                <li><a href="/orders" data-page="orders"><i class="fas fa-box"></i> Orders</a></li>
+                                <li><a href="/admin" data-page="admin" id="mobileAdminLink" style="display:none;"><i class="fas fa-tachometer-alt"></i> Admin</a></li>
+                                <li><button data-action="logout"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
+                            </div>
+                        </ul>
+                    </nav>
                 </header>
             `;
         }
@@ -236,6 +275,27 @@ class App {
             }
         });
 
+        // Add to Cart
+        document.addEventListener('click', (e) => {
+            const addToCartBtn = e.target.closest('[data-action="add-to-cart"]');
+            if (addToCartBtn) {
+                e.preventDefault();
+                const productId = addToCartBtn.dataset.productId;
+                const quantity = parseInt(addToCartBtn.dataset.quantity) || 1;
+                this.handleAddToCart(productId, quantity);
+            }
+        });
+
+        // Wishlist Toggle
+        document.addEventListener('click', (e) => {
+            const wishlistBtn = e.target.closest('[data-action="wishlist-toggle"]');
+            if (wishlistBtn) {
+                e.preventDefault();
+                const productId = wishlistBtn.dataset.productId;
+                this.handleWishlistToggle(productId);
+            }
+        });
+
         // Mobile toggle
         document.addEventListener('click', (e) => {
             const toggle = e.target.closest('#mobileToggle');
@@ -269,6 +329,14 @@ class App {
         window.addEventListener('popstate', () => {
             this.initPage();
         });
+
+        // Scroll for header shadow
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (header) {
+                header.classList.toggle('scrolled', window.scrollY > 50);
+            }
+        });
     }
 
     /**
@@ -277,6 +345,42 @@ class App {
     async handleLogout() {
         await AuthService.logout();
         this.navigateTo('login');
+    }
+
+    /**
+     * Handle Add to Cart
+     */
+    async handleAddToCart(productId, quantity = 1) {
+        try {
+            const result = await cartService.addItem(productId, quantity);
+            if (result.success) {
+                showNotification('Product added to cart! 🛒', 'success');
+                this.updateBadges();
+            }
+        } catch (error) {
+            console.error('Add to cart error:', error);
+            showNotification('Failed to add to cart. Please try again.', 'error');
+        }
+    }
+
+    /**
+     * Handle Wishlist Toggle
+     */
+    async handleWishlistToggle(productId) {
+        try {
+            const result = await wishlistService.toggleItem(productId);
+            if (result.success) {
+                // Update all wishlist buttons for this product
+                document.querySelectorAll(`[data-product-id="${productId}"]`).forEach(btn => {
+                    btn.classList.toggle('active');
+                });
+                showNotification(result.inWishlist ? 'Added to wishlist! ❤️' : 'Removed from wishlist! 💔', 'success');
+                this.updateBadges();
+            }
+        } catch (error) {
+            console.error('Wishlist toggle error:', error);
+            showNotification('Failed to update wishlist.', 'error');
+        }
     }
 
     /**
@@ -289,28 +393,56 @@ class App {
     }
 
     /**
-     * Update header
+     * Update header based on auth state
      */
     updateHeader() {
         const isAuth = isAuthenticated();
         const user = getUser();
         const showAdmin = isAdmin();
 
+        // Desktop menu
+        const guestMenu = document.getElementById('guestMenu');
+        const userMenu = document.getElementById('userMenu');
+        const adminLink = document.getElementById('adminLink');
+
+        // Mobile menu
+        const mobileGuestMenu = document.getElementById('mobileGuestMenu');
+        const mobileUserMenu = document.getElementById('mobileUserMenu');
+        const mobileAdminLink = document.getElementById('mobileAdminLink');
+
+        if (isAuth) {
+            // Desktop
+            if (guestMenu) guestMenu.style.display = 'none';
+            if (userMenu) userMenu.style.display = 'block';
+            if (adminLink) adminLink.style.display = showAdmin ? 'block' : 'none';
+            
+            // Mobile
+            if (mobileGuestMenu) mobileGuestMenu.style.display = 'none';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'block';
+            if (mobileAdminLink) mobileAdminLink.style.display = showAdmin ? 'block' : 'none';
+            
+            // Update user info
+            if (user) {
+                const nameEl = document.getElementById('userName');
+                const emailEl = document.getElementById('userEmail');
+                if (nameEl) nameEl.textContent = user.name || 'User';
+                if (emailEl) emailEl.textContent = user.email || '';
+            }
+        } else {
+            // Desktop
+            if (guestMenu) guestMenu.style.display = 'block';
+            if (userMenu) userMenu.style.display = 'none';
+            
+            // Mobile
+            if (mobileGuestMenu) mobileGuestMenu.style.display = 'block';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'none';
+        }
+
+        // Update other auth-dependent elements
         document.querySelectorAll('[data-auth]').forEach((el) => {
             const showAuth = el.dataset.auth === 'true';
             el.style.display = showAuth === isAuth ? '' : 'none';
         });
-
-        document.querySelectorAll('[data-admin]').forEach((el) => {
-            el.style.display = showAdmin ? '' : 'none';
-        });
-
-        if (user) {
-            const nameEl = document.getElementById('userName');
-            const emailEl = document.getElementById('userEmail');
-            if (nameEl) nameEl.textContent = user.name || 'User';
-            if (emailEl) emailEl.textContent = user.email || '';
-        }
     }
 
     /**
@@ -418,7 +550,11 @@ class App {
             products: 'Products',
             cart: 'Cart',
             login: 'Login',
-            register: 'Register'
+            register: 'Register',
+            wishlist: 'Wishlist',
+            orders: 'Orders',
+            profile: 'Profile',
+            admin: 'Admin'
         };
         document.title = `${titles[page] || page} | E-Shop`;
     }
@@ -458,6 +594,7 @@ class App {
             onLogin: async (user) => {
                 await this.loadUserData();
                 this.updateUI();
+                showNotification(`Welcome back, ${user.name}!`, 'success');
             }
         });
         page.mount(container);
@@ -469,6 +606,7 @@ class App {
             onRegister: async (user) => {
                 await this.loadUserData();
                 this.updateUI();
+                showNotification(`Welcome to E-Shop, ${user.name}!`, 'success');
             }
         });
         page.mount(container);
@@ -487,205 +625,234 @@ class App {
     }
 
     // ============================================
-    // PAGE RENDERERS - STUB METHODS
+    // PAGE RENDERERS
     // ============================================
 
-  // frontend/src/js/app.js - Update renderHome method
+    /**
+     * Render Home Page
+     */
+    async renderHome(container) {
+        try {
+            const products = await productService.getFeatured(8);
+            const categories = await productService.getCategories();
+            
+            container.innerHTML = `
+                <div class="home-page fade-in">
+                    <section class="hero-section">
+                        <div class="hero-content">
+                            <h1>Welcome to E-Shop</h1>
+                            <p>Discover amazing products at unbeatable prices. Shop the latest trends today!</p>
+                            <a href="/products" class="btn btn-primary btn-lg" data-page="products">
+                                <i class="fas fa-shopping-bag"></i> Start Shopping
+                            </a>
+                        </div>
+                    </section>
 
-async renderHome(container) {
-  try {
-    // Load featured products
-    const products = await productService.getFeatured(8);
-    const categories = await productService.getCategories();
-    
-    container.innerHTML = `
-      <div class="home-page fade-in">
-        <section class="hero-section">
-          <div class="hero-content">
-            <h1>Welcome to E-Shop</h1>
-            <p>Discover amazing products at unbeatable prices.</p>
-            <a href="/products" class="btn btn-primary" data-page="products">Start Shopping</a>
-          </div>
-        </section>
+                    <section class="categories-section">
+                        <h2>Shop by Category</h2>
+                        <div class="categories-grid">
+                            ${categories && categories.length > 0 
+                                ? categories.slice(0, 8).map(cat => `
+                                    <div class="category-item" data-category="${cat.id}">
+                                        <div class="category-icon">${cat.iconUrl || '📦'}</div>
+                                        <div class="category-name">${cat.name}</div>
+                                    </div>
+                                `).join('')
+                                : '<p class="text-muted">No categories available</p>'
+                            }
+                        </div>
+                    </section>
 
-        <section class="categories-section">
-          <h2>Shop by Category</h2>
-          <div class="categories-grid">
-            ${categories && categories.length > 0 
-              ? categories.slice(0, 8).map(cat => `
-                <div class="category-item" data-category="${cat.id}">
-                  <div class="category-icon">${cat.iconUrl || '📦'}</div>
-                  <div class="category-name">${cat.name}</div>
+                    <section class="products-section">
+                        <div class="section-header">
+                            <h2>Featured Products</h2>
+                            <a href="/products" class="btn btn-outline" data-page="products">
+                                View All <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="products-grid" id="featuredProducts">
+                            ${products && products.length > 0
+                                ? products.map(p => this.renderProductCard(p)).join('')
+                                : '<p class="text-muted">No featured products available</p>'
+                            }
+                        </div>
+                    </section>
                 </div>
-              `).join('')
-              : '<p class="text-muted">No categories available</p>'
-            }
-          </div>
-        </section>
+            `;
 
-        <section class="products-section">
-          <div class="section-header">
-            <h2>Featured Products</h2>
-            <a href="/products" class="btn btn-outline" data-page="products">
-              View All <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-          <div class="products-grid" id="featuredProducts">
-            ${products && products.length > 0
-              ? products.map(p => this.renderProductCard(p)).join('')
-              : '<p class="text-muted">No featured products available</p>'
-            }
-          </div>
-        </section>
-      </div>
-    `;
+            // Category click handlers
+            container.querySelectorAll('.category-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const categoryId = el.dataset.category;
+                    this.navigateTo('products', { category: categoryId });
+                });
+            });
 
-    // Add category click handlers
-    container.querySelectorAll('.category-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const categoryId = el.dataset.category;
-        this.navigateTo('products', { category: categoryId });
-      });
-    });
-
-  } catch (error) {
-    console.error('Error loading home page:', error);
-    container.innerHTML = `
-      <div class="error-page">
-        <h2>Error Loading Products</h2>
-        <p>${error.message || 'Something went wrong'}</p>
-        <button class="btn btn-primary" onclick="location.reload()">Retry</button>
-      </div>
-    `;
-  }
-}
-// frontend/src/js/app.js - Add this method
-
-renderProductCard(product) {
-  const price = formatCurrency(product.price);
-  const comparePrice = product.comparePrice ? formatCurrency(product.comparePrice) : null;
-  const discount = product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0;
-  const image = product.images?.[0]?.imageUrl || '/placeholder.jpg';
-  const inStock = product.stockQuantity > 0;
-  const rating = product.averageRating || 0;
-  const reviewCount = product.totalReviews || 0;
-  const inWishlist = wishlistService.isInWishlist(product.id);
-
-  let badges = '';
-  if (discount > 0) badges += `<span class="badge badge-sale">-${discount}%</span>`;
-  if (product.isFeatured) badges += `<span class="badge badge-featured">Featured</span>`;
-  if (!inStock) badges += `<span class="badge badge-sold-out">Sold Out</span>`;
-
-  return `
-    <div class="product-card" data-product-id="${product.id}">
-      <div class="product-image">
-        <img src="${image}" alt="${product.name}" loading="lazy" onerror="this.src='/placeholder.jpg'" />
-        ${badges ? `<div class="product-badges">${badges}</div>` : ''}
-        <button class="wishlist-btn ${inWishlist ? 'active' : ''}" 
-                data-action="wishlist-toggle" 
-                data-product-id="${product.id}">
-          <i class="fas fa-heart"></i>
-        </button>
-      </div>
-      <div class="product-body">
-        <div class="product-rating">
-          <div class="stars">${this.renderStars(rating)}</div>
-          <span class="rating-count">(${reviewCount})</span>
-        </div>
-        <div class="product-name">
-          <a href="/product/${product.id}" data-page="product">${product.name}</a>
-        </div>
-        <div class="product-price">
-          <span class="current">${price}</span>
-          ${comparePrice ? `<span class="original">${comparePrice}</span>` : ''}
-        </div>
-        <div class="product-stock ${inStock ? 'in-stock' : 'out-of-stock'}">
-          ${inStock ? '✓ In Stock' : '✕ Out of Stock'}
-        </div>
-        <div class="product-actions">
-          <button class="btn btn-primary btn-add-cart" 
-                  data-action="add-to-cart" 
-                  data-product-id="${product.id}"
-                  ${!inStock ? 'disabled' : ''}>
-            <i class="fas fa-shopping-cart"></i> Add to Cart
-          </button>
-          <button class="btn btn-outline btn-wishlist ${inWishlist ? 'active' : ''}" 
-                  data-action="wishlist-toggle" 
-                  data-product-id="${product.id}">
-            <i class="fas fa-heart"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-renderStars(rating) {
-  const full = Math.floor(rating);
-  const half = rating % 1 >= 0.5;
-  const empty = 5 - full - (half ? 1 : 0);
-  return '★'.repeat(full) + (half ? '★' : '') + '☆'.repeat(empty);
-}
-// frontend/src/js/app.js - Update renderProducts method
-
-async renderProducts(container) {
-  try {
-    const result = await productService.loadProducts();
-    const products = result?.products || [];
-
-    container.innerHTML = `
-      <div class="products-page fade-in">
-        <div class="section-header">
-          <h1>All Products</h1>
-          <div class="filters">
-            <select id="sortProducts" class="form-control">
-              <option value="createdAt:desc">Newest</option>
-              <option value="price:asc">Price: Low to High</option>
-              <option value="price:desc">Price: High to Low</option>
-              <option value="salesCount:desc">Best Selling</option>
-              <option value="averageRating:desc">Highest Rated</option>
-            </select>
-          </div>
-        </div>
-        <div class="products-grid" id="productsGrid">
-          ${products && products.length > 0
-            ? products.map(p => this.renderProductCard(p)).join('')
-            : `
-              <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <h3>No products found</h3>
-                <p class="text-muted">Try adjusting your filters or search terms</p>
-                <a href="/products" class="btn btn-primary" data-page="products">Clear Filters</a>
-              </div>
-            `
-          }
-        </div>
-      </div>
-    `;
-
-    // Add sort handler
-    const sortSelect = container.querySelector('#sortProducts');
-    if (sortSelect) {
-      sortSelect.addEventListener('change', () => {
-        const [sortBy, sortOrder] = sortSelect.value.split(':');
-        productService.setFilter('sortBy', sortBy);
-        productService.setFilter('sortOrder', sortOrder);
-        this.renderProducts(container);
-      });
+        } catch (error) {
+            console.error('Error loading home page:', error);
+            container.innerHTML = `
+                <div class="error-page">
+                    <h2>Error Loading Products</h2>
+                    <p>${error.message || 'Something went wrong'}</p>
+                    <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+                </div>
+            `;
+        }
     }
 
-  } catch (error) {
-    console.error('Error loading products:', error);
-    container.innerHTML = `
-      <div class="error-page">
-        <h2>Error Loading Products</h2>
-        <p>${error.message || 'Something went wrong'}</p>
-        <button class="btn btn-primary" onclick="location.reload()">Retry</button>
-      </div>
-    `;
-  }
-}
+    /**
+     * Render Products Page
+     */
+    async renderProducts(container) {
+        try {
+            const result = await productService.loadProducts();
+            const products = result?.products || [];
 
+            container.innerHTML = `
+                <div class="products-page fade-in">
+                    <div class="section-header">
+                        <h1>All Products</h1>
+                        <div class="filters">
+                            <select id="sortProducts" class="form-control">
+                                <option value="createdAt:desc">Newest</option>
+                                <option value="price:asc">Price: Low to High</option>
+                                <option value="price:desc">Price: High to Low</option>
+                                <option value="salesCount:desc">Best Selling</option>
+                                <option value="averageRating:desc">Highest Rated</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="products-grid" id="productsGrid">
+                        ${products && products.length > 0
+                            ? products.map(p => this.renderProductCard(p)).join('')
+                            : `
+                                <div class="empty-state" style="grid-column:1/-1;text-align:center;padding:60px 0;">
+                                    <i class="fas fa-box-open" style="font-size:48px;color:var(--gray-400);"></i>
+                                    <h3>No products found</h3>
+                                    <p class="text-muted">Try adjusting your filters or search terms</p>
+                                    <a href="/products" class="btn btn-primary" data-page="products">Clear Filters</a>
+                                </div>
+                            `
+                        }
+                    </div>
+                </div>
+            `;
+
+            // Sort handler
+            const sortSelect = container.querySelector('#sortProducts');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', () => {
+                    const [sortBy, sortOrder] = sortSelect.value.split(':');
+                    productService.setFilter('sortBy', sortBy);
+                    productService.setFilter('sortOrder', sortOrder);
+                    this.renderProducts(container);
+                });
+            }
+
+        } catch (error) {
+            console.error('Error loading products:', error);
+            container.innerHTML = `
+                <div class="error-page">
+                    <h2>Error Loading Products</h2>
+                    <p>${error.message || 'Something went wrong'}</p>
+                    <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * Render Product Card
+     */
+    renderProductCard(product) {
+        const price = formatCurrency(product.price);
+        const comparePrice = product.comparePrice ? formatCurrency(product.comparePrice) : null;
+        const discount = product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0;
+        const image = product.images?.[0]?.imageUrl || '/placeholder.jpg';
+        const inStock = product.stockQuantity > 0;
+        const rating = product.averageRating || 0;
+        const reviewCount = product.totalReviews || 0;
+        const inWishlist = wishlistService.isInWishlist(product.id);
+
+        let badges = '';
+        if (discount > 0) badges += `<span class="badge badge-sale">-${discount}%</span>`;
+        if (product.isFeatured) badges += `<span class="badge badge-featured">Featured</span>`;
+        if (!inStock) badges += `<span class="badge badge-sold-out">Sold Out</span>`;
+
+        return `
+            <div class="product-card" data-product-id="${product.id}">
+                <div class="product-image">
+                    <img src="${image}" alt="${product.name}" loading="lazy" onerror="this.src='/placeholder.jpg'" />
+                    ${badges ? `<div class="product-badges">${badges}</div>` : ''}
+                    <button class="wishlist-btn ${inWishlist ? 'active' : ''}" 
+                            data-action="wishlist-toggle" 
+                            data-product-id="${product.id}"
+                            aria-label="Add to wishlist">
+                        <i class="fa${inWishlist ? 's' : 'r'} fa-heart"></i>
+                    </button>
+                </div>
+                <div class="product-body">
+                    <div class="product-rating">
+                        <div class="stars">${this.renderStars(rating)}</div>
+                        <span class="rating-count">(${reviewCount})</span>
+                    </div>
+                    <div class="product-name">
+                        <a href="/product/${product.id}" data-page="product" data-product-id="${product.id}">
+                            ${product.name}
+                        </a>
+                    </div>
+                    <div class="product-price">
+                        <span class="current">${price}</span>
+                        ${comparePrice ? `<span class="original">${comparePrice}</span>` : ''}
+                        ${discount > 0 ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                    </div>
+                    <div class="product-stock ${inStock ? 'in-stock' : 'out-of-stock'}">
+                        ${inStock ? '✓ In Stock' : '✕ Out of Stock'}
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-add-cart" 
+                                data-action="add-to-cart" 
+                                data-product-id="${product.id}"
+                                ${!inStock ? 'disabled' : ''}>
+                            <i class="fas fa-shopping-cart"></i>
+                            ${inStock ? 'Add to Cart' : 'Sold Out'}
+                        </button>
+                        <button class="btn btn-outline btn-wishlist ${inWishlist ? 'active' : ''}" 
+                                data-action="wishlist-toggle" 
+                                data-product-id="${product.id}"
+                                aria-label="Add to wishlist">
+                            <i class="fa${inWishlist ? 's' : 'r'} fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Render Stars
+     */
+    renderStars(rating) {
+        const full = Math.floor(rating);
+        const half = rating % 1 >= 0.5;
+        const empty = 5 - full - (half ? 1 : 0);
+        
+        let stars = '';
+        for (let i = 0; i < full; i++) {
+            stars += '<i class="fas fa-star"></i>';
+        }
+        if (half) {
+            stars += '<i class="fas fa-star-half-alt"></i>';
+        }
+        for (let i = 0; i < empty; i++) {
+            stars += '<i class="far fa-star"></i>';
+        }
+        return stars;
+    }
+
+    /**
+     * Render Product Detail (Placeholder)
+     */
     async renderProductDetail(container) {
         container.innerHTML = `
             <div class="product-detail-page fade-in">
@@ -695,6 +862,9 @@ async renderProducts(container) {
         `;
     }
 
+    /**
+     * Render Cart Page (Placeholder)
+     */
     async renderCart(container) {
         container.innerHTML = `
             <div class="cart-page fade-in">
@@ -706,6 +876,9 @@ async renderProducts(container) {
         `;
     }
 
+    /**
+     * Render Checkout Page (Placeholder)
+     */
     async renderCheckout(container) {
         container.innerHTML = `
             <div class="checkout-page fade-in">
@@ -715,6 +888,9 @@ async renderProducts(container) {
         `;
     }
 
+    /**
+     * Render Orders Page (Placeholder)
+     */
     async renderOrders(container) {
         container.innerHTML = `
             <div class="orders-page fade-in">
@@ -724,6 +900,9 @@ async renderProducts(container) {
         `;
     }
 
+    /**
+     * Render Wishlist Page (Placeholder)
+     */
     async renderWishlist(container) {
         container.innerHTML = `
             <div class="wishlist-page fade-in">
@@ -733,6 +912,9 @@ async renderProducts(container) {
         `;
     }
 
+    /**
+     * Render Profile Page (Placeholder)
+     */
     async renderProfile(container) {
         container.innerHTML = `
             <div class="profile-page fade-in">
@@ -742,6 +924,9 @@ async renderProducts(container) {
         `;
     }
 
+    /**
+     * Render Admin Page (Placeholder)
+     */
     async renderAdmin(container) {
         container.innerHTML = `
             <div class="admin-page fade-in">
@@ -751,23 +936,18 @@ async renderProducts(container) {
         `;
     }
 
-    /**
-     * Add listener
-     */
+    // ============================================
+    // LISTENER METHODS
+    // ============================================
+
     addListener(callback) {
         this.listeners.push(callback);
     }
 
-    /**
-     * Remove listener
-     */
     removeListener(callback) {
         this.listeners = this.listeners.filter(cb => cb !== callback);
     }
 
-    /**
-     * Notify listeners
-     */
     notifyListeners(event, data) {
         this.listeners.forEach(callback => {
             try {

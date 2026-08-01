@@ -1,24 +1,23 @@
+<!-- frontend/index.html - Make sure you have this structure -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>E-Shop - Modern E-Commerce</title>
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Font Awesome - Backup CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
 <body>
     <div id="app">
-        <!-- Header -->
         <header id="main-header"></header>
-        
-        <!-- Main Content -->
         <main id="main-content">
             <div class="container" id="page-container">
                 <div id="page-content">
-                    <!-- Content will be rendered here -->
                     <div class="loading-container">
                         <div class="spinner"></div>
                         <p>Loading...</p>
@@ -26,25 +25,15 @@
                 </div>
             </div>
         </main>
-        
-        <!-- Footer -->
         <footer id="main-footer"></footer>
-        
-        <!-- Global Loading -->
         <div id="global-loading" class="loading-overlay" style="display:none;">
             <div class="spinner"></div>
         </div>
-        
-        <!-- Notification Container -->
         <div id="notification-container"></div>
-        
-        <!-- Back to Top -->
         <button id="back-to-top" class="back-to-top" style="display:none;">
             <i class="fas fa-arrow-up"></i>
         </button>
     </div>
-    
-    <!-- Main JavaScript -->
     <script type="module" src="/src/js/main.js"></script>
 </body>
 </html>
