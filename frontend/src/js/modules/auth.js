@@ -79,18 +79,72 @@ class AuthService {
    */
   static async register(data) {
     try {
+      // Validate
+      if (!data.name?.trim()) {
+        throw new Error('Name is required');
+      }
+      if (!data.email?.trim()) {
+        throw new Error('Email is required');
+      }
+      if (!data.password || data.password.length < 8) {
+        throw new Error('Password must be at least 8 characters');
+      }
+      if (data.password !== data.confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+
       setLoading('register');
-      const response = await ApiService.auth.register(data);
+      
+      const payload = {
+        name: data.name.trim(),
+        email: data.email.trim().toLowerCase(),
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+        phone: data.phone || null
+      };
+      
+      console.log('📝 Registering user:', { 
+        name: payload.name, 
+        email: payload.email,
+        phone: payload.phone
+      });
+      
+      const response = await ApiService.auth.register(payload);
+      console.log('✅ Registration successful');
+      
       const { user, token } = response.data.data;
       
       setToken(token);
       setUser(user);
       
-      showNotification(i18n.t('auth.registerSuccess'), 'success');
+      showNotification('Registration successful! Welcome to E-Shop!', 'success');
       return { success: true, user };
     } catch (error) {
-      showNotification(error.message || i18n.t('auth.registerError'), 'error');
-      return { success: false, error: error.message };
+      console.error('❌ Registration error:', error);
+      
+      let message = error.message || 'Registration failed';
+      
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      }
+      
+      // Show specific error messages
+      if (error.response?.status === 409) {
+        showNotification('Email already registered. Please login.', 'warning');
+      } else if (error.response?.status === 400) {
+        // Show validation errors
+        const errors = error.response?.data?.errors;
+        if (errors && Array.isArray(errors)) {
+          const errorMessages = errors.map(e => e.message).join(', ');
+          showNotification(errorMessages, 'error');
+        } else {
+          showNotification(message, 'error');
+        }
+      } else {
+        showNotification(message, 'error');
+      }
+      
+      return { success: false, error: message };
     } finally {
       removeLoading('register');
     }
@@ -99,25 +153,62 @@ class AuthService {
   /**
    * Login user
    */
-  static async login(email, password) {
-    try {
-      setLoading('login');
-      const response = await ApiService.auth.login({ email, password });
-      const { user, accessToken, refreshToken } = response.data.data;
-      
-      setToken(accessToken);
-      setRefreshToken(refreshToken);
-      setUser(user);
-      
-      showNotification(i18n.t('auth.loginSuccess'), 'success');
-      return { success: true, user };
-    } catch (error) {
-      showNotification(error.message || i18n.t('auth.loginError'), 'error');
-      return { success: false, error: error.message };
-    } finally {
-      removeLoading('login');
+ // src/js/modules/auth.js
+
+static async login(email, password) {
+  try {
+    if (!email?.trim() || !password) {
+      throw new Error('Email and password are required');
     }
+
+    setLoading('login');
+    
+    const payload = {
+      email: email.trim().toLowerCase(),
+      password: password
+    };
+    
+    console.log('🔑 Logging in user:', { email: payload.email });
+    
+    const response = await ApiService.auth.login(payload);
+    console.log('✅ Login successful');
+    
+    const { user, accessToken, refreshToken } = response.data.data;
+    
+    setToken(accessToken);
+    setRefreshToken(refreshToken);
+    setUser(user);
+    
+    showNotification('Login successful! Welcome back!', 'success');
+    return { success: true, user };
+  } catch (error) {
+    console.error('❌ Login error:', error);
+    
+    // Handle different error types
+    let message = 'Invalid email or password. Please try again.';
+    
+    if (error.response?.data?.message) {
+      message = error.response.data.message;
+    } else if (error.message && !error.response) {
+      message = error.message;
+    }
+    
+    // Check if it's a network error
+    if (error.message === 'Network Error' || error.code === 'ECONNABORTED') {
+      message = 'Network error. Please check your connection.';
+    }
+    
+    // Check if it's a server error
+    if (error.response?.status === 500) {
+      message = 'Server error. Please try again later.';
+    }
+    
+    showNotification(message, 'error');
+    return { success: false, error: message };
+  } finally {
+    removeLoading('login');
   }
+}
 
   /**
    * Logout user
@@ -126,7 +217,7 @@ class AuthService {
     try {
       await ApiService.auth.logout();
     } catch (error) {
-      // Ignore errors on logout
+      console.error('Logout error:', error);
     } finally {
       removeToken();
       window.location.href = '/login';
@@ -143,6 +234,7 @@ class AuthService {
       setUser(user);
       return { success: true, user };
     } catch (error) {
+      console.error('Get profile error:', error);
       return { success: false, error: error.message };
     }
   }
@@ -153,14 +245,24 @@ class AuthService {
   static async updateProfile(data) {
     try {
       setLoading('profile');
-      const response = await ApiService.auth.updateProfile(data);
+      
+      const payload = {
+        name: data.name?.trim(),
+        phone: data.phone || null,
+        bio: data.bio || null
+      };
+      
+      const response = await ApiService.auth.updateProfile(payload);
       const user = response.data.data;
       setUser(user);
-      showNotification(i18n.t('auth.profileUpdated'), 'success');
+      
+      showNotification('Profile updated successfully!', 'success');
       return { success: true, user };
     } catch (error) {
-      showNotification(error.message || i18n.t('auth.profileUpdateError'), 'error');
-      return { success: false, error: error.message };
+      console.error('Update profile error:', error);
+      const message = error.response?.data?.message || error.message || 'Failed to update profile';
+      showNotification(message, 'error');
+      return { success: false, error: message };
     } finally {
       removeLoading('profile');
     }
@@ -171,13 +273,33 @@ class AuthService {
    */
   static async changePassword(currentPassword, newPassword) {
     try {
+      if (!currentPassword || !newPassword) {
+        throw new Error('Current password and new password are required');
+      }
+      if (newPassword.length < 8) {
+        throw new Error('New password must be at least 8 characters');
+      }
+
       setLoading('password');
-      await ApiService.auth.changePassword({ currentPassword, newPassword });
-      showNotification(i18n.t('auth.passwordChanged'), 'success');
+      
+      await ApiService.auth.changePassword({ 
+        currentPassword, 
+        newPassword 
+      });
+      
+      showNotification('Password changed successfully!', 'success');
       return { success: true };
     } catch (error) {
-      showNotification(error.message || i18n.t('auth.passwordChangeError'), 'error');
-      return { success: false, error: error.message };
+      console.error('Change password error:', error);
+      const message = error.response?.data?.message || error.message || 'Failed to change password';
+      
+      if (error.response?.status === 401) {
+        showNotification('Current password is incorrect', 'error');
+      } else {
+        showNotification(message, 'error');
+      }
+      
+      return { success: false, error: message };
     } finally {
       removeLoading('password');
     }
@@ -188,13 +310,21 @@ class AuthService {
    */
   static async forgotPassword(email) {
     try {
+      if (!email?.trim()) {
+        throw new Error('Email is required');
+      }
+
       setLoading('forgot');
-      await ApiService.auth.forgotPassword(email);
-      showNotification(i18n.t('auth.resetEmailSent'), 'success');
+      
+      await ApiService.auth.forgotPassword(email.trim().toLowerCase());
+      
+      showNotification('Password reset email sent! Please check your inbox.', 'success');
       return { success: true };
     } catch (error) {
-      showNotification(error.message || i18n.t('auth.resetEmailError'), 'error');
-      return { success: false, error: error.message };
+      console.error('Forgot password error:', error);
+      const message = error.response?.data?.message || error.message || 'Failed to send reset email';
+      showNotification(message, 'error');
+      return { success: false, error: message };
     } finally {
       removeLoading('forgot');
     }
@@ -205,13 +335,30 @@ class AuthService {
    */
   static async resetPassword(token, password) {
     try {
+      if (!token) {
+        throw new Error('Reset token is required');
+      }
+      if (!password || password.length < 8) {
+        throw new Error('Password must be at least 8 characters');
+      }
+
       setLoading('reset');
+      
       await ApiService.auth.resetPassword(token, { password });
-      showNotification(i18n.t('auth.passwordReset'), 'success');
+      
+      showNotification('Password reset successfully! Please login.', 'success');
       return { success: true };
     } catch (error) {
-      showNotification(error.message || i18n.t('auth.passwordResetError'), 'error');
-      return { success: false, error: error.message };
+      console.error('Reset password error:', error);
+      const message = error.response?.data?.message || error.message || 'Failed to reset password';
+      
+      if (error.response?.status === 400) {
+        showNotification('Invalid or expired reset token', 'error');
+      } else {
+        showNotification(message, 'error');
+      }
+      
+      return { success: false, error: message };
     } finally {
       removeLoading('reset');
     }
@@ -222,12 +369,25 @@ class AuthService {
    */
   static async verifyEmail(token) {
     try {
+      if (!token) {
+        throw new Error('Verification token is required');
+      }
+
       await ApiService.auth.verifyEmail(token);
-      showNotification(i18n.t('auth.emailVerified'), 'success');
+      
+      showNotification('Email verified successfully!', 'success');
       return { success: true };
     } catch (error) {
-      showNotification(error.message || i18n.t('auth.emailVerifyError'), 'error');
-      return { success: false, error: error.message };
+      console.error('Verify email error:', error);
+      const message = error.response?.data?.message || error.message || 'Failed to verify email';
+      
+      if (error.response?.status === 400) {
+        showNotification('Invalid or expired verification token', 'error');
+      } else {
+        showNotification(message, 'error');
+      }
+      
+      return { success: false, error: message };
     }
   }
 
@@ -236,16 +396,25 @@ class AuthService {
    */
   static async socialLogin(provider, code) {
     try {
+      if (!provider || !code) {
+        throw new Error('Provider and code are required');
+      }
+
       setLoading('social');
+      
       const response = await ApiService.auth.socialLogin({ provider, code });
       const { user, token } = response.data.data;
+      
       setToken(token);
       setUser(user);
-      showNotification(i18n.t('auth.loginSuccess'), 'success');
+      
+      showNotification(`Login with ${provider} successful!`, 'success');
       return { success: true, user };
     } catch (error) {
-      showNotification(error.message || i18n.t('auth.socialLoginError'), 'error');
-      return { success: false, error: error.message };
+      console.error('Social login error:', error);
+      const message = error.response?.data?.message || error.message || 'Social login failed';
+      showNotification(message, 'error');
+      return { success: false, error: message };
     } finally {
       removeLoading('social');
     }
@@ -267,11 +436,36 @@ class AuthService {
         removeToken();
         return { authenticated: false };
       }
-    } catch {
+    } catch (error) {
+      console.error('Check auth error:', error);
       removeToken();
       return { authenticated: false };
     }
   }
-}
 
+  /**
+   * Get auth headers for requests
+   */
+  static getAuthHeaders() {
+    const token = getToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  /**
+   * Check if user has specific role
+   */
+  static hasRole(role) {
+    const user = getUser();
+    return user && user.role === role;
+  }
+
+  /**
+   * Check if user has any of the given roles
+   */
+  static hasAnyRole(roles) {
+    const user = getUser();
+    return user && roles.includes(user.role);
+  }
+}
+ 
 export default AuthService;

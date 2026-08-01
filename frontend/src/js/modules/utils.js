@@ -2,7 +2,6 @@
  * Utils Module - Helper functions used across the application
  */
 
-
 /**
  * Show notification
  */
@@ -129,17 +128,25 @@ export const removeLoading = (key) => {
 };
 
 /**
- * Format currency
+ * Format currency - Fixed without i18n
  */
 export const formatCurrency = (amount, currency = 'USD') => {
-  return i18nFormatCurrency(amount, currency);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency
+  }).format(amount);
 };
 
 /**
- * Format date
+ * Format date - Fixed without i18n
  */
 export const formatDate = (date, options = {}) => {
-  return i18nFormatDate(date, options);
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    ...options
+  }).format(new Date(date));
 };
 
 /**
@@ -300,12 +307,12 @@ export const buildQueryString = (params) => {
 };
 
 /**
- * Copy to clipboard
+ * Copy to clipboard - Fixed without i18n
  */
 export const copyToClipboard = async (text) => {
   try {
     await navigator.clipboard.writeText(text);
-    showNotification(i18n.t('general.copied'), 'success');
+    showNotification('Copied to clipboard!', 'success');
     return true;
   } catch {
     // Fallback
@@ -315,7 +322,7 @@ export const copyToClipboard = async (text) => {
     textarea.select();
     document.execCommand('copy');
     document.body.removeChild(textarea);
-    showNotification(i18n.t('general.copied'), 'success');
+    showNotification('Copied to clipboard!', 'success');
     return true;
   }
 };
@@ -401,7 +408,7 @@ export const getImageAlt = (product, index = 0) => {
  * Generate meta tags
  */
 export const generateMetaTags = (title, description, image, url) => {
-  const baseTitle = title ? `${title} | E-Commerce` : 'E-Commerce';
+  const baseTitle = title ? `${title} | E-Shop` : 'E-Shop';
   const baseDescription = description || 'Your one-stop shop for all your needs';
   const baseImage = image || '/default-og-image.jpg';
   const baseUrl = url || window.location.href;
@@ -467,6 +474,140 @@ export const createElement = (tag, className = '', innerHTML = '', attributes = 
   return element;
 };
 
+/**
+ * Get cart item count from localStorage
+ */
+export const getCartCount = () => {
+  try {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  } catch {
+    return 0;
+  }
+};
+
+/**
+ * Get wishlist count from localStorage
+ */
+export const getWishlistCount = () => {
+  try {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    return wishlist.length;
+  } catch {
+    return 0;
+  }
+};
+
+/**
+ * Format number with commas
+ */
+export const formatNumber = (num) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+/**
+ * Get initials from name
+ */
+export const getInitials = (name) => {
+  if (!name) return '';
+  return name
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+/**
+ * Generate random ID
+ */
+export const generateId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
+};
+
+/**
+ * Sleep/Delay function
+ */
+export const sleep = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
+
+/**
+ * Retry function with exponential backoff
+ */
+export const retry = async (fn, retries = 3, delay = 1000) => {
+  try {
+    return await fn();
+  } catch (error) {
+    if (retries <= 0) throw error;
+    await sleep(delay);
+    return retry(fn, retries - 1, delay * 2);
+  }
+};
+
+/**
+ * Deep clone object
+ */
+export const deepClone = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+};
+
+/**
+ * Check if object is empty
+ */
+export const isEmpty = (obj) => {
+  if (!obj) return true;
+  if (Array.isArray(obj)) return obj.length === 0;
+  return Object.keys(obj).length === 0;
+};
+
+/**
+ * Group array by key
+ */
+export const groupBy = (array, key) => {
+  return array.reduce((result, item) => {
+    const groupKey = item[key];
+    if (!result[groupKey]) {
+      result[groupKey] = [];
+    }
+    result[groupKey].push(item);
+    return result;
+  }, {});
+};
+
+/**
+ * Sort array by key
+ */
+export const sortBy = (array, key, order = 'asc') => {
+  return [...array].sort((a, b) => {
+    const aVal = a[key];
+    const bVal = b[key];
+    if (order === 'asc') {
+      return aVal > bVal ? 1 : -1;
+    } else {
+      return aVal < bVal ? 1 : -1;
+    }
+  });
+};
+
+/**
+ * Get unique values from array
+ */
+export const unique = (array) => {
+  return [...new Set(array)];
+};
+
+/**
+ * Chunk array into smaller arrays
+ */
+export const chunk = (array, size) => {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+};
+
 export default {
   showNotification,
   setLoading,
@@ -496,5 +637,18 @@ export default {
   scrollToTop,
   getScrollPosition,
   isInViewport,
-  createElement
+  createElement,
+  getCartCount,
+  getWishlistCount,
+  formatNumber,
+  getInitials,
+  generateId,
+  sleep,
+  retry,
+  deepClone,
+  isEmpty,
+  groupBy,
+  sortBy,
+  unique,
+  chunk
 };

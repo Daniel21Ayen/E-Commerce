@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Damot-Union Backend Analysis & Recommendations</title>
+    <style>
+        /* ── Reset & Base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0b0e14;
+            color: #e8edf5;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            padding: 2rem 1.5rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #141a24;
+            border-radius: 28px;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+        }
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+        h1 {
+            font-size: 2.6rem;
+            background: linear-gradient(135deg, #f0b34b, #f7d875);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.25rem;
+        }
+        .subhead {
+            font-size: 1.1rem;
+            color: #9aa9c0;
+            border-bottom: 1px solid #2a3442;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .badge {
+            background: #1f2a3a;
+            color: #bcd0e8;
+            padding: 0.25rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin: 2.2rem 0 1rem;
+            color: #f0e9d8;
+        }
+        h3 {
+            font-size: 1.3rem;
+            margin: 1.8rem 0 0.8rem;
+            color: #f0e2c5;
+        }
+        h4 {
+            font-size: 1.05rem;
+            margin: 1.2rem 0 0.4rem;
+            color: #d4dce8;
+        }
+        p,
+        li {
+            color: #d0daea;
+        }
+        a {
+            color: #f3c96b;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Cards / Sections ── */
+        .card {
+            background: #1a2330;
+            border-radius: 18px;
+            padding: 1.6rem 2rem;
+            margin: 1.2rem 0;
+            border-left: 4px solid #f3c96b;
+        }
+        .card-red {
+            border-left-color: #e45c5c;
+        }
+        .card-green {
+            border-left-color: #5fc77e;
+        }
+        .card-blue {
+            border-left-color: #5a9cf5;
+        }
+        .card-purple {
+            border-left-color: #b47af0;
+        }
+        .card-gray {
+            border-left-color: #6f7d95;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        @media (max-width: 700px) {
+            .container {
+                padding: 1.5rem;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Tables ── */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.5rem;
+            border-radius: 14px;
+            border: 1px solid #27323f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            min-width: 600px;
+        }
+        th {
+            background: #1f2a3a;
+            color: #f0e9d8;
+            font-weight: 600;
+            padding: 0.7rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid #2f3d50;
+        }
+        td {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #1f2a3a;
+            vertical-align: top;
+        }
+        tr:hover td {
+            background: #1d2838;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.1rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .tag-critical {
+            background: #6b1f1f;
+            color: #f9b3b3;
+        }
+        .tag-high {
+            background: #7a4a1a;
+            color: #f5d6a0;
+        }
+        .tag-medium {
+            background: #1f4a5e;
+            color: #a6d4f0;
+        }
+        .tag-low {
+            background: #1f3a2a;
+            color: #9ad4b0;
+        }
+        .tag-done {
+            background: #1f4a2a;
+            color: #9ad4b0;
+        }
+        .tag-broken {
+            background: #5a1f1f;
+            color: #f9b3b3;
+        }
+
+        /* ── Lists ── */
+        ul,
+        ol {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0 1rem;
+        }
+        li {
+            margin: 0.3rem 0;
+        }
+
+        /* ── Status indicators ── */
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-red {
+            background: #e45c5c;
+        }
+        .dot-yellow {
+            background: #e8b84a;
+        }
+        .dot-green {
+            background: #5fc77e;
+        }
+        .dot-gray {
+            background: #6f7d95;
+        }
+
+        /* ── misc ── */
+        .hr-light {
+            border: none;
+            border-top: 1px solid #27323f;
+            margin: 2rem 0;
+        }
+        .icon {
+            font-size: 1.2rem;
+            margin-right: 6px;
+        }
+        .highlight {
+            background: #2a3442;
+            padding: 0.1rem 0.5rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #f3d78c;
+        }
+        .pill {
+            display: inline-block;
+            background: #1f2a3a;
+            padding: 0.1rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #bcd0e8;
+            margin: 0.15rem 0.2rem;
+        }
+
+        /* ── Print friendly ── */
+        @media print {
+            body {
+                background: #fff;
+                color: #111;
+                padding: 0.5in;
+            }
+            .container {
+                background: #fff;
+                box-shadow: none;
+                padding: 0;
+            }
+            .card {
+                background: #f5f7fa;
+                border-color: #ccc;
+            }
+            th {
+                background: #eaeef4;
+                color: #111;
+            }
+            td {
+                border-bottom-color: #d0d7e0;
+            }
+            .badge,
+            .pill {
+                background: #eaeef4;
+                color: #111;
+            }
+            .tag {
+                color: #fff;
+            }
+            .tag-critical {
+                background: #b33;
+            }
+            .tag-high {
+                background: #a64;
+            }
+            .tag-medium {
+                background: #368;
+            }
+            .tag-low {
+                background: #376;
+            }
+            .tag-done {
+                background: #376;
+            }
+            .tag-broken {
+                background: #a33;
+            }
+            .subhead {
+                border-bottom-color: #ccc;
+            }
+            .table-wrap {
+                border-color: #ccc;
+            }
+            .hr-light {
+                border-top-color: #ccc;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  HEADER                                          -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h1>Damot‑Union · Backend Analysis</h1>
+        <div class="subhead">
+            <span>📋 Detailed audit, commentary &amp; implementation roadmap</span>
+            <span class="badge">📅 2026‑07‑31 &nbsp;|&nbsp; v2.0</span>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  EXECUTIVE SUMMARY                                -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <div class="card card-red">
+            <h3 style="margin-top:0;">🚨 Executive Summary</h3>
+            <p>
+                <strong>The Damot‑Union project is 70% complete on the frontend, but 0% complete on the backend.</strong>
+                All 70+ UI components, 15+ pages, full Amharic/English i18n, and the admin dashboard are polished
+                and ready — but they serve <strong>static mock data</strong>. There are <strong>zero working API endpoints</strong>,
+                no authentication, no input validation, and the database schema is out of sync with the migrations.
+            </p>
+            <p style="margin-top:0.5rem;">
+                <span class="pill">🔴 46 missing endpoints</span>
+                <span class="pill">🔴 12+ model/type mismatches</span>
+                <span class="pill">🔴 Admin pages publicly accessible</span>
+                <span class="pill">🔴 No JWT / bcrypt implementation</span>
+                <span class="pill">🟡 5–6 weeks estimated effort</span>
+            </p>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  1.  WHAT’S WORKING (FRONTEND)                    -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>1. ✅ What’s Working — Frontend</h2>
+
+        <div class="grid-2">
+            <div class="card card-green">
+                <h4>📄 Public Pages</h4>
+                <ul>
+                    <li>Home (hero carousel, services, impact, projects, news)</li>
+                    <li>About (15+ sections: history, board, management, partners)</li>
+                    <li>Services (core services, how it works, FAQ, testimonials)</li>
+                    <li>Gallery (categories, lightbox, upload modal)</li>
+                    <li>News (categories, search, sort, pagination)</li>
+                    <li>Projects (categories, status filters, progress bars)</li>
+                    <li>Contact (form with validation, map, details)</li>
+                </ul>
+            </div>
+            <div class="card card-green">
+                <h4>⚙️ Admin Dashboard</h4>
+                <ul>
+                    <li>7 stat cards with counts</li>
+                    <li>Activity feed &amp; chart</li>
+                    <li>Quick actions</li>
+                    <li>Filterable / sortable tables</li>
+                </ul>
+                <h4 style="margin-top:0.8rem;">📁 Admin Management</h4>
+                <ul>
+                    <li>News · Projects · Gallery · Messages</li>
+                    <li>Partners · Reports · Settings</li>
+                </ul>
+            </div>
+            <div class="card card-green">
+                <h4>🌐 i18n</h4>
+                <ul>
+                    <li><strong>en.json</strong> — ~1,200 lines</li>
+                    <li><strong>am.json</strong> — ~1,200 lines</li>
+                    <li>All UI text, menus, SEO, forms translated</li>
+                    <li>next-intl fully configured</li>
+                </ul>
+            </div>
+            <div class="card card-green">
+                <h4>🧩 Component Library</h4>
+                <ul>
+                    <li>70+ reusable &amp; domain components</li>
+                    <li>UI primitives: <span class="pill">Button</span><span class="pill">Card</span><span class="pill">Input</span><span class="pill">Modal</span><span class="pill">CountUp</span></li>
+                    <li>Layout: Header (mega menu) + Footer (newsletter)</li>
+                    <li>Feature‑specific: about, admin, gallery, news, projects, services</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  2.  WHAT’S MISSING (BACKEND)                     -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>2. ❌ What’s Missing — Backend</h2>
+
+        <div class="card card-red">
+            <h4>🔴 CRITICAL — No API Routes</h4>
+            <p>
+                The directory <span class="highlight">src/app/api/</span> does not exist.
+                <strong>46 endpoints</strong> are required. The frontend is making <code>fetch()</code>
+                calls to routes that return 404.
+            </p>
+        </div>
+
+        <div class="grid-2">
+            <div class="card card-red">
+                <h4>🔑 Authentication — Completely Missing</h4>
+                <ul>
+                    <li>Admin pages are <strong>public</strong> — anyone can access /admin</li>
+                    <li>No JWT implementation (despite <code>jsonwebtoken</code> in package.json)</li>
+                    <li><span class="highlight">authMiddleware.ts</span> always returns <code>true</code></li>
+                    <li><span class="highlight">adminMiddleware.ts</span> always returns <code>false</code></li>
+                    <li>No password hashing (despite <code>bcrypt</code> installed)</li>
+                </ul>
+            </div>
+            <div class="card card-red">
+                <h4>🛡️ Security — Zero Protection</h4>
+                <ul>
+                    <li>No input validation (<span class="highlight">validations.ts</span> is empty)</li>
+                    <li>No rate limiting</li>
+                    <li>No CSRF protection</li>
+                    <li>No CORS configuration</li>
+                    <li>No request logging / audit trail</li>
+                    <li>No error handling middleware</li>
+                </ul>
+            </div>
+            <div class="card card-red">
+                <h4>🗄️ Database — Schema Mismatch</h4>
+                <ul>
+                    <li>Prisma schema has <strong>single‑language</strong> fields (<code>name</code>, <code>description</code>)</li>
+                    <li>Migration SQL has <strong>dual‑language</strong> fields (<code>name_en</code>, <code>name_am</code>)</li>
+                    <li><strong>3 missing models:</strong> <code>HistoryMilestone</code>, <code>Testimonial</code>, <code>ImpactMetric</code></li>
+                    <li>10+ model/type mismatches (e.g. <code>id: number</code> vs <code>id: String</code>)</li>
+                </ul>
+            </div>
+            <div class="card card-red">
+                <h4>📁 Repository Bugs</h4>
+                <ul>
+                    <li><span class="highlight">galleryRepository.ts</span> queries <code>prisma.gallery</code> — wrong model name</li>
+                    <li>Correct model is <code>prisma.galleryImage</code></li>
+                    <li>All repositories return <code>[]</code> or <code>{ ok: true }</code> — no real queries</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  3.  SECURITY VULNERABILITIES                     -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>3. 🔓 Security Vulnerabilities</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Issue</th>
+                        <th style="width:40%">Impact</th>
+                        <th style="width:30%">Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Admin pages publicly accessible</td>
+                        <td>Anyone can view/edit/delete content</td>
+                        <td><span class="tag tag-critical">CRITICAL</span></td>
+                    </tr>
+                    <tr>
+                        <td>No password hashing</td>
+                        <td>Passwords stored in plaintext if implemented</td>
+                        <td><span class="tag tag-critical">CRITICAL</span></td>
+                    </tr>
+                    <tr>
+                        <td>No JWT verification</td>
+                        <td>Auth middleware returns true for all requests</td>
+                        <td><span class="tag tag-critical">CRITICAL</span></td>
+                    </tr>
+                    <tr>
+                        <td>No input validation</td>
+                        <td>SQL injection, XSS, data corruption</td>
+                        <td><span class="tag tag-critical">CRITICAL</span></td>
+                    </tr>
+                    <tr>
+                        <td>No rate limiting</td>
+                        <td>API endpoints can be spammed indefinitely</td>
+                        <td><span class="tag tag-high">HIGH</span></td>
+                    </tr>
+                    <tr>
+                        <td>No CORS configuration</td>
+                        <td>Potential cross‑origin attacks</td>
+                        <td><span class="tag tag-medium">MEDIUM</span></td>
+                    </tr>
+                    <tr>
+                        <td>No request logging</td>
+                        <td>No audit trail for security incidents</td>
+                        <td><span class="tag tag-medium">MEDIUM</span></td>
+                    </tr>
+                    <tr>
+                        <td>No CSRF protection</td>
+                        <td>Cross‑site request forgery possible</td>
+                        <td><span class="tag tag-medium">MEDIUM</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  4.  FRONTEND‑BACKEND INTEGRATION                  -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>4. 🔗 Frontend → Backend Integration</h2>
+
+        <div class="card card-blue">
+            <h4>API calls already in the frontend (currently failing)</h4>
+            <ul>
+                <li><span class="highlight">ContactForm.tsx</span> → <code>POST /api/contact</code></li>
+                <li><span class="highlight">GalleryList.tsx</span> → <code>GET /api/gallery</code></li>
+                <li><span class="highlight">GalleryUpload.tsx</span> → <code>POST /api/gallery</code></li>
+                <li><span class="highlight">NewsletterCard.tsx</span> → <code>POST /api/newsletter</code></li>
+            </ul>
+            <p style="margin-top:0.5rem;">
+                <span class="pill">⚠️ All 4 endpoints return 404</span>
+                <span class="pill">📦 20+ mock data files need to be replaced with API responses</span>
+            </p>
+        </div>
+
+        <div class="card card-gray">
+            <h4>Data shape mismatches</h4>
+            <table style="min-width:auto; font-size:0.9rem;">
+                <thead>
+                    <tr><th>Frontend expects</th><th>Prisma provides</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>id: number</code></td><td><code>id: string</code></td></tr>
+                    <tr><td><code>url: string</code></td><td><code>filePath: string</code></td></tr>
+                    <tr><td><code>createdAt: string</code></td><td><code>createdAt: Date</code></td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top:0.5rem;">→ <strong>Transformation layer</strong> required on backend or frontend.</p>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  5.  RECOMMENDATIONS & ROADMAP                   -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>5. 🧭 Recommendations &amp; Roadmap</h2>
+
+        <div class="card card-purple">
+            <h4>📌 Phase 1 — Critical (Week 1)</h4>
+            <ul>
+                <li><strong>1.1</strong> Create <code>.env.example</code> with all required variables</li>
+                <li><strong>1.2</strong> Fix Prisma schema: add dual‑language fields + <code>HistoryMilestone</code>, <code>Testimonial</code>, <code>ImpactMetric</code></li>
+                <li><strong>1.3</strong> Run <code>prisma generate</code> &amp; <code>prisma migrate dev</code></li>
+                <li><strong>1.4</strong> Fix <code>galleryRepository.ts</code>: <code>prisma.gallery</code> → <code>prisma.galleryImage</code></li>
+                <li><strong>1.5</strong> Update all model interfaces to use <code>string</code> IDs and match Prisma fields</li>
+                <li><strong>1.6</strong> Create the <code>src/app/api/</code> directory structure</li>
+            </ul>
+        </div>
+
+        <div class="card card-purple">
+            <h4>📌 Phase 2 — Core API Routes (Weeks 2–3)</h4>
+            <ul>
+                <li><strong>2.1</strong> Authentication: <code>/api/auth/login</code>, <code>/api/auth/register</code>, <code>/api/auth/refresh</code>, <code>/api/auth/logout</code></li>
+                <li><strong>2.2</strong> Contact: <code>/api/contact</code> (POST, GET, PUT, DELETE + status management)</li>
+                <li><strong>2.3</strong> News: <code>/api/news</code> (CRUD + categories + pagination)</li>
+                <li><strong>2.4</strong> Projects: <code>/api/projects</code> (CRUD + categories + statuses)</li>
+                <li><strong>2.5</strong> Gallery: <code>/api/gallery</code> (list, upload, delete + albums)</li>
+                <li><strong>2.6</strong> Partners, Reports, Settings, Admin stats</li>
+            </ul>
+        </div>
+
+        <div class="card card-purple">
+            <h4>📌 Phase 3 — Security &amp; Middleware (Week 4)</h4>
+            <ul>
+                <li><strong>3.1</strong> JWT verification in <code>authMiddleware.ts</code></li>
+                <li><strong>3.2</strong> Role‑based access in <code>adminMiddleware.ts</code></li>
+                <li><strong>3.3</strong> Zod validation schemas for all POST/PUT endpoints</li>
+                <li><strong>3.4</strong> Global error handler with standardized responses</li>
+                <li><strong>3.5</strong> Rate limiting (different limits for public vs admin)</li>
+                <li><strong>3.6</strong> Audit logging for all admin actions</li>
+            </ul>
+        </div>
+
+        <div class="card card-purple">
+            <h4>📌 Phase 4 — Frontend Wiring (Weeks 5–6)</h4>
+            <ul>
+                <li><strong>4.1</strong> Replace mock data with real API calls in all components</li>
+                <li><strong>4.2</strong> Build missing pages: Reports, Admin Login, News Detail, Project Detail</li>
+                <li><strong>4.3</strong> Add admin CRUD forms (<code>/admin/*/new</code>, <code>/admin/*/[id]/edit</code>)</li>
+                <li><strong>4.4</strong> File upload integration (Cloudinary)</li>
+                <li><strong>4.5</strong> Newsletter subscription flow</li>
+                <li><strong>4.6</strong> Testing &amp; documentation</li>
+            </ul>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  6.  API ENDPOINT CHECKLIST                       -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>6. 📋 API Endpoint Checklist (46 total)</h2>
+
+        <div class="grid-2">
+            <div>
+                <h4>🔐 Authentication (8)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> POST /api/auth/register</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/auth/login</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/auth/refresh</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/auth/logout</li>
+                    <li><span class="status-dot dot-yellow"></span> GET /api/auth/me</li>
+                    <li><span class="status-dot dot-yellow"></span> POST /api/auth/forgot-password</li>
+                    <li><span class="status-dot dot-yellow"></span> POST /api/auth/reset-password</li>
+                </ul>
+                <h4>📬 Contact (4)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> POST /api/contact</li>
+                    <li><span class="status-dot dot-red"></span> GET /api/contact/messages</li>
+                    <li><span class="status-dot dot-red"></span> GET /api/contact/:id</li>
+                    <li><span class="status-dot dot-red"></span> PUT /api/contact/:id/status</li>
+                </ul>
+                <h4>📰 News (5)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> GET /api/news</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/news</li>
+                    <li><span class="status-dot dot-red"></span> GET /api/news/:id</li>
+                    <li><span class="status-dot dot-red"></span> PUT /api/news/:id</li>
+                    <li><span class="status-dot dot-red"></span> DELETE /api/news/:id</li>
+                </ul>
+            </div>
+            <div>
+                <h4>🏗️ Projects (5)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> GET /api/projects</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/projects</li>
+                    <li><span class="status-dot dot-red"></span> GET /api/projects/:id</li>
+                    <li><span class="status-dot dot-red"></span> PUT /api/projects/:id</li>
+                    <li><span class="status-dot dot-red"></span> DELETE /api/projects/:id</li>
+                </ul>
+                <h4>🖼️ Gallery (4)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> GET /api/gallery</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/gallery</li>
+                    <li><span class="status-dot dot-red"></span> DELETE /api/gallery/:id</li>
+                    <li><span class="status-dot dot-yellow"></span> GET /api/gallery/albums</li>
+                </ul>
+                <h4>🤝 Partners (4)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> GET /api/partners</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/partners</li>
+                    <li><span class="status-dot dot-red"></span> PUT /api/partners/:id</li>
+                    <li><span class="status-dot dot-red"></span> DELETE /api/partners/:id</li>
+                </ul>
+                <h4>📊 Reports (3)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> GET /api/reports</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/reports</li>
+                    <li><span class="status-dot dot-red"></span> DELETE /api/reports/:id</li>
+                </ul>
+                <h4>⚙️ Admin (4) &amp; Settings (2)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> GET /api/admin/stats</li>
+                    <li><span class="status-dot dot-red"></span> GET /api/admin/users</li>
+                    <li><span class="status-dot dot-yellow"></span> PUT /api/admin/users/:id/role</li>
+                    <li><span class="status-dot dot-yellow"></span> GET /api/admin/activities</li>
+                    <li><span class="status-dot dot-red"></span> GET /api/settings</li>
+                    <li><span class="status-dot dot-red"></span> PUT /api/settings</li>
+                </ul>
+                <h4>📬 Other (7)</h4>
+                <ul>
+                    <li><span class="status-dot dot-red"></span> POST /api/newsletter</li>
+                    <li><span class="status-dot dot-red"></span> POST /api/upload</li>
+                    <li><span class="status-dot dot-yellow"></span> GET /api/news/categories</li>
+                    <li><span class="status-dot dot-yellow"></span> GET /api/projects/categories</li>
+                    <li><span class="status-dot dot-yellow"></span> GET /api/reports/categories</li>
+                    <li><span class="status-dot dot-yellow"></span> GET /api/testimonials</li>
+                    <li><span class="status-dot dot-green"></span> GET /api/health</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  7.  FILES TO CREATE                              -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>7. 📁 Files to Create (37+)</h2>
+
+        <div class="grid-2">
+            <div>
+                <h4>API Routes (37 files)</h4>
+                <ul style="font-size:0.88rem;">
+                    <li><code>src/app/api/auth/register/route.ts</code></li>
+                    <li><code>src/app/api/auth/login/route.ts</code></li>
+                    <li><code>src/app/api/auth/refresh/route.ts</code></li>
+                    <li><code>src/app/api/auth/logout/route.ts</code></li>
+                    <li><code>src/app/api/auth/me/route.ts</code></li>
+                    <li><code>src/app/api/auth/forgot-password/route.ts</code></li>
+                    <li><code>src/app/api/auth/reset-password/route.ts</code></li>
+                    <li><code>src/app/api/contact/route.ts</code></li>
+                    <li><code>src/app/api/contact/messages/route.ts</code></li>
+                    <li><code>src/app/api/contact/[id]/route.ts</code></li>
+                    <li><code>src/app/api/contact/[id]/status/route.ts</code></li>
+                    <li><code>src/app/api/news/route.ts</code></li>
+                    <li><code>src/app/api/news/[id]/route.ts</code></li>
+                    <li><code>src/app/api/news/[slug]/route.ts</code></li>
+                    <li><code>src/app/api/news/categories/route.ts</code></li>
+                    <li><code>src/app/api/projects/route.ts</code></li>
+                    <li><code>src/app/api/projects/[id]/route.ts</code></li>
+                    <li><code>src/app/api/projects/categories/route.ts</code></li>
+                    <li><code>src/app/api/gallery/route.ts</code></li>
+                    <li><code>src/app/api/gallery/[id]/route.ts</code></li>
+                    <li><code>src/app/api/gallery/albums/route.ts</code></li>
+                    <li><code>src/app/api/gallery/upload/route.ts</code></li>
+                    <li><code>src/app/api/partners/route.ts</code></li>
+                    <li><code>src/app/api/partners/[id]/route.ts</code></li>
+                    <li><code>src/app/api/reports/route.ts</code></li>
+                    <li><code>src/app/api/reports/[id]/route.ts</code></li>
+                    <li><code>src/app/api/reports/categories/route.ts</code></li>
+                    <li><code>src/app/api/settings/route.ts</code></li>
+                    <li><code>src/app/api/admin/stats/route.ts</code></li>
+                    <li><code>src/app/api/admin/users/route.ts</code></li>
+                    <li><code>src/app/api/admin/users/[id]/role/route.ts</code></li>
+                    <li><code>src/app/api/admin/activities/route.ts</code></li>
+                    <li><code>src/app/api/newsletter/route.ts</code></li>
+                    <li><code>src/app/api/upload/route.ts</code></li>
+                    <li><code>src/app/api/testimonials/route.ts</code></li>
+                    <li><code>src/app/api/health/route.ts</code></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Validation (6)</h4>
+                <ul>
+                    <li><code>src/validations/authValidation.ts</code></li>
+                    <li><code>src/validations/contactValidation.ts</code></li>
+                    <li><code>src/validations/newsValidation.ts</code></li>
+                    <li><code>src/validations/projectValidation.ts</code></li>
+                    <li><code>src/validations/galleryValidation.ts</code></li>
+                    <li><code>src/validations/settingsValidation.ts</code></li>
+                </ul>
+                <h4 style="margin-top:1rem;">Utilities (4)</h4>
+                <ul>
+                    <li><code>src/utils/constants.ts</code></li>
+                    <li><code>src/utils/helpers.ts</code></li>
+                    <li><code>src/utils/errorHandler.ts</code></li>
+                    <li><code>src/utils/logger.ts</code></li>
+                </ul>
+                <h4 style="margin-top:1rem;">Frontend Fixes (20+)</h4>
+                <ul>
+                    <li><code>ContactForm.tsx</code> · <code>GalleryList.tsx</code></li>
+                    <li><code>GalleryGrid.tsx</code> · <code>GalleryUpload.tsx</code></li>
+                    <li><code>NewsSection.tsx</code> · <code>ProjectsSection.tsx</code></li>
+                    <li><code>AdminStatCards.tsx</code> · <code>AdminNewsTable.tsx</code></li>
+                    <li><code>AdminProjectsTable.tsx</code> · <code>AdminGalleryGrid.tsx</code></li>
+                    <li><code>AdminMessagesTable.tsx</code> · <code>AdminPartnersTable.tsx</code></li>
+                    <li><code>AdminReportsTable.tsx</code> · <code>AdminSettingsForm.tsx</code></li>
+                    <li><code>RecentActivities.tsx</code> · <code>StatisticsChart.tsx</code></li>
+                    <li><code>LatestDataOverview.tsx</code> · <code>QuickActions.tsx</code></li>
+                    <li><code>Footer.tsx</code> · <code>NewsletterCard.tsx</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  8.  MISSING MODELS IN SCHEMA                    -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>8. 🗄️ Database Models — Status</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Model</th><th>In Schema</th><th>In Migration</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Role</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>User</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>RefreshToken</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>PasswordResetToken</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>GalleryAlbum</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>GalleryImage</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>ContactMessage</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>ContactMessageStatus</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>NewsCategory</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>NewsArticle</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>Project</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>ProjectCategory</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>ProjectStatus</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>Partner</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>PartnerCategory</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>Report</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>ReportCategory</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>Notification</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>NotificationType</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>SiteSettings</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>OrganizationStat</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>WorkArea</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr><td>AuditLog</td><td>✅</td><td>✅</td><td><span class="tag tag-done">Complete</span></td></tr>
+                    <tr style="background:#2a1f1f;">
+                        <td><strong>HistoryMilestone</strong></td><td>❌</td><td>✅</td>
+                        <td><span class="tag tag-critical">MISSING</span></td>
+                    </tr>
+                    <tr style="background:#2a1f1f;">
+                        <td><strong>Testimonial</strong></td><td>❌</td><td>✅</td>
+                        <td><span class="tag tag-critical">MISSING</span></td>
+                    </tr>
+                    <tr style="background:#2a1f1f;">
+                        <td><strong>ImpactMetric</strong></td><td>❌</td><td>✅</td>
+                        <td><span class="tag tag-critical">MISSING</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  9.  PRIORITIZED TASK LIST                       -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <h2>9. 🎯 Prioritized Task List</h2>
+
+        <div class="card card-blue">
+            <h4>Week 1 — Critical Setup</h4>
+            <ol>
+                <li>Create <code>.env.example</code></li>
+                <li>Fix <code>prisma/schema.prisma</code> (dual‑language fields + 3 missing models)</li>
+                <li>Run <code>prisma generate</code> &amp; <code>prisma migrate dev</code></li>
+                <li>Create seed script for admin user</li>
+                <li>Fix <code>galleryRepository.ts</code> model name</li>
+                <li>Update all model interfaces to <code>string</code> IDs</li>
+                <li>Create <code>src/app/api/</code> folder structure</li>
+            </ol>
+        </div>
+
+        <div class="card card-blue">
+            <h4>Week 2 — Auth &amp; Core Routes</h4>
+            <ol>
+                <li><code>/api/auth/register</code> · <code>/api/auth/login</code></li>
+                <li><code>/api/auth/refresh</code> · <code>/api/auth/logout</code></li>
+                <li><code>/api/auth/me</code> · <code>/api/auth/forgot-password</code></li>
+                <li><code>/api/auth/reset-password</code></li>
+                <li><code>/api/contact</code> (POST, GET, PUT, DELETE)</li>
+                <li><code>/api/news</code> (CRUD + categories)</li>
+                <li><code>/api/projects</code> (CRUD + categories + statuses)</li>
+            </ol>
+        </div>
+
+        <div class="card card-blue">
+            <h4>Week 3 — Gallery, Partners, Reports, Admin</h4>
+            <ol>
+                <li><code>/api/gallery</code> (list, upload, delete, albums)</li>
+                <li><code>/api/partners</code> (CRUD)</li>
+                <li><code>/api/reports</code> (CRUD + categories)</li>
+                <li><code>/api/settings</code> (GET, PUT)</li>
+                <li><code>/api/admin/stats</code> · <code>/api/admin/users</code></li>
+                <li><code>/api/admin/users/:id/role</code></li>
+                <li><code>/api/upload</code> · <code>/api/newsletter</code></li>
+            </ol>
+        </div>
+
+        <div class="card card-blue">
+            <h4>Week 4 — Middleware &amp; Security</h4>
+            <ol>
+                <li>Fix <code>authMiddleware.ts</code> with JWT verification</li>
+                <li>Fix <code>adminMiddleware.ts</code> with role checking</li>
+                <li>Create Zod validation schemas for all endpoints</li>
+                <li>Create global error handler</li>
+                <li>Add rate limiting</li>
+                <li>Add audit logging</li>
+            </ol>
+        </div>
+
+        <div class="card card-blue">
+            <h4>Weeks 5–6 — Frontend Wiring &amp; Polish</h4>
+            <ol>
+                <li>Wire all components to real APIs</li>
+                <li>Build missing pages: Reports, Admin Login, News Detail, Project Detail</li>
+                <li>Add admin CRUD forms</li>
+                <li>File upload integration</li>
+                <li>Testing &amp; documentation</li>
+                <li>Deployment preparation</li>
+            </ol>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--  10. CONCLUSION                                  -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <hr class="hr-light" />
+
+        <h2>10. 📌 Conclusion</h2>
+
+        <div class="card card-green">
+            <h4>✅ What’s Working</h4>
+            <ul>
+                <li>Frontend is <strong>production‑ready</strong> — 70+ polished components, full i18n, responsive</li>
+                <li>Project structure is solid — Next.js App Router, Prisma, next-intl</li>
+                <li>Stub files exist for controllers, services, repositories — foundation is there</li>
+            </ul>
+        </div>
+
+        <div class="card card-red">
+            <h4>🔴 What Needs Immediate Action</h4>
+            <ul>
+                <li><strong>Authentication</strong> — admin pages are public, no JWT, no bcrypt</li>
+                <li><strong>API Routes</strong> — 0 endpoints exist, frontend calls return 404</li>
+                <li><strong>Database Schema</strong> — mismatched with migration, missing 3 models</li>
+                <li><strong>Security</strong> — no validation, no rate limiting, no error handling</li>
+            </ul>
+        </div>
+
+        <div style="background:#1f2a3a; border-radius:16px; padding:1.5rem 2rem; margin:1.5rem 0; border:1px solid #2f3d50;">
+            <p style="font-size:1.2rem; font-weight:500; color:#f0e9d8; margin:0;">
+                ⏱️ <strong>Estimated total effort:</strong> 5–6 weeks for a single developer
+            </p>
+            <p style="margin:0.5rem 0 0; color:#bcd0e8;">
+                Priority: <span class="pill" style="background:#6b1f1f; color:#f9b3b3;">Authentication first</span>
+                <span class="pill" style="background:#7a4a1a; color:#f5d6a0;">Then CRUD APIs</span>
+                <span class="pill" style="background:#1f4a5e; color:#a6d4f0;">Then security &amp; frontend wiring</span>
+            </p>
+        </div>
+
+        <p style="text-align:center; color:#6f7d95; margin-top:2rem; font-size:0.85rem;">
+            Damot‑Union Backend Analysis · Generated 2026‑07‑31
+        </p>
+
+    </div>
+    <!-- end container -->
+
+</body>
+</html>
