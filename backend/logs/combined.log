@@ -2445,3 +2445,32 @@
 {"level":"http","message":"GET /api/products?sortBy=createdAt&sortOrder=desc&search=&page=1&limit=20 304 - - 3.424 ms","timestamp":"2026-08-01 05:36:11:3611"}
 {"cc":[],"emailId":"email_1785576004258_f2y0w1umlrw","level":"info","message":"Email sent successfully to newuser123@example.com","priority":"normal","subject":"Welcome to E-Commerce! 🎉","template":"welcome","timestamp":"2026-08-01 06:20:09:209","to":["newuser123@example.com"]}
 {"level":"info","message":"Processed failed emails: 1 succeeded, 0 remaining","timestamp":"2026-08-01 06:20:10:2010"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-08-01 10:40:06:406"}
+{"level":"info","message":"✅ Google OAuth strategy configured","timestamp":"2026-08-01 10:40:10:4010"}
+{"level":"info","message":"✅ Facebook OAuth strategy configured","timestamp":"2026-08-01 10:40:10:4010"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-08-01 10:40:10:4010"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-08-01 10:40:10:4010"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-08-01 10:40:10:4010"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-08-01 10:40:10:4010"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-08-01 10:40:10:4010"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-08-01 10:40:10:4010"}
+{"address":"142.250.153.109","code":"ESOCKET","command":"CONN","errno":-4039,"level":"error","message":"Email transporter verification failed: connect ETIMEDOUT 142.250.153.109:587","port":587,"stack":"Error: connect ETIMEDOUT 142.250.153.109:587\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2026-08-01 10:40:31:4031"}

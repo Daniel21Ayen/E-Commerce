@@ -1,6 +1,6 @@
 // frontend/src/js/pages/SocialLoginPage.js
 
-import BasePage from '../BasePage.js';
+import BasePage from './BasePage.js';
 import AuthService from '../modules/auth.js';
 import { showNotification } from '../modules/utils.js';
 
