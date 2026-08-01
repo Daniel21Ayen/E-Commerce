@@ -15,9 +15,11 @@ import LoginPage from './pages/auth/LoginPage.js';
 import RegisterPage from './pages/auth/RegisterPage.js';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage.js';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage.js';
+import SocialLoginPage from './pages/SocialLoginPage.js';
 
 class App {
     constructor() {
+        // Initialize all modules
         this.modules = {
             auth: AuthService,
             cart: cartService,
@@ -28,12 +30,17 @@ class App {
             search: searchService,
             admin: adminService
         };
+
+        // App state
         this.initialized = false;
         this.currentPage = 'home';
         this.listeners = [];
-        
-        // Page handlers
+        this.user = null;
+        this.loading = false;
+
+        // Page handlers - ALL pages with proper binding
         this.pageHandlers = {
+            // Main pages
             home: this.renderHome.bind(this),
             products: this.renderProducts.bind(this),
             product: this.renderProductDetail.bind(this),
@@ -43,10 +50,26 @@ class App {
             wishlist: this.renderWishlist.bind(this),
             profile: this.renderProfile.bind(this),
             admin: this.renderAdmin.bind(this),
+            
+            // Auth pages
             login: this.renderLoginPage.bind(this),
             register: this.renderRegisterPage.bind(this),
             'forgot-password': this.renderForgotPasswordPage.bind(this),
-            'reset-password': this.renderResetPasswordPage.bind(this)
+            'reset-password': this.renderResetPasswordPage.bind(this),
+            'social-login': this.renderSocialLoginPage.bind(this),
+            
+            // Fallback
+            '404': this.renderNotFound.bind(this)
+        };
+
+        // Route aliases
+        this.routeAliases = {
+            'signin': 'login',
+            'signup': 'register',
+            'sign-out': 'logout',
+            'my-account': 'profile',
+            'my-orders': 'orders',
+            'my-wishlist': 'wishlist'
         };
     }
 
@@ -98,16 +121,21 @@ class App {
                             <div id="search-results" class="search-results"></div>
                         </div>
                         <div class="header-actions">
-                            <a href="/wishlist" class="btn" data-page="wishlist">
+                            <!-- Wishlist -->
+                            <a href="/wishlist" class="btn" data-page="wishlist" aria-label="Wishlist">
                                 <i class="fas fa-heart"></i>
                                 <span class="badge" id="wishlist-badge" style="display:none;">0</span>
                             </a>
-                            <a href="/cart" class="btn" data-page="cart">
+                            
+                            <!-- Cart -->
+                            <a href="/cart" class="btn" data-page="cart" aria-label="Cart">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span class="badge" id="cart-badge" style="display:none;">0</span>
                             </a>
+                            
+                            <!-- User Menu -->
                             <div class="dropdown">
-                                <button class="btn" id="userMenuBtn">
+                                <button class="btn" id="userMenuBtn" aria-label="User Menu">
                                     <i class="fas fa-user"></i>
                                 </button>
                                 <div class="dropdown-menu" id="userDropdown">
@@ -120,6 +148,7 @@ class App {
                                             <i class="fas fa-user-plus"></i> Register
                                         </a>
                                     </div>
+                                    
                                     <!-- User Menu (Logged In) -->
                                     <div id="userMenu" style="display:none;">
                                         <div class="dropdown-header">
@@ -146,25 +175,35 @@ class App {
                                     </div>
                                 </div>
                             </div>
-                            <button class="mobile-toggle" id="mobileToggle">
+                            
+                            <!-- Mobile Toggle -->
+                            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
                                 <i class="fas fa-bars"></i>
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Mobile Navigation -->
                     <nav class="mobile-nav" id="mobileNav">
                         <ul>
                             <li><a href="/" data-page="home"><i class="fas fa-home"></i> Home</a></li>
                             <li><a href="/products" data-page="products"><i class="fas fa-box"></i> Products</a></li>
                             <li><a href="/cart" data-page="cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
                             <li><a href="/wishlist" data-page="wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
+                            
+                            <!-- Guest Menu (Mobile) -->
                             <div id="mobileGuestMenu">
                                 <li><a href="/login" data-page="login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                                 <li><a href="/register" data-page="register"><i class="fas fa-user-plus"></i> Register</a></li>
                             </div>
+                            
+                            <!-- User Menu (Mobile) -->
                             <div id="mobileUserMenu" style="display:none;">
                                 <li><a href="/profile" data-page="profile"><i class="fas fa-user-circle"></i> Profile</a></li>
                                 <li><a href="/orders" data-page="orders"><i class="fas fa-box"></i> Orders</a></li>
-                                <li><a href="/admin" data-page="admin" id="mobileAdminLink" style="display:none;"><i class="fas fa-tachometer-alt"></i> Admin</a></li>
+                                <li><a href="/admin" data-page="admin" id="mobileAdminLink" style="display:none;">
+                                    <i class="fas fa-tachometer-alt"></i> Admin
+                                </a></li>
                                 <li><button data-action="logout"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
                             </div>
                         </ul>
@@ -193,6 +232,7 @@ class App {
         try {
             const result = await AuthService.checkAuth();
             if (result.authenticated) {
+                this.user = getUser();
                 await this.loadUserData();
             }
             return result;
@@ -207,8 +247,8 @@ class App {
      */
     async loadUserData() {
         try {
-            const user = getUser();
-            if (user) {
+            this.user = getUser();
+            if (this.user) {
                 await cartService.init();
                 await wishlistService.init();
                 await orderService.loadOrders();
@@ -337,6 +377,40 @@ class App {
                 header.classList.toggle('scrolled', window.scrollY > 50);
             }
         });
+
+        // Social login click
+        document.addEventListener('click', (e) => {
+            const socialBtn = e.target.closest('[data-provider]');
+            if (socialBtn) {
+                e.preventDefault();
+                const provider = socialBtn.dataset.provider;
+                this.handleSocialLogin(provider);
+            }
+        });
+    }
+
+    /**
+     * Handle social login
+     */
+    handleSocialLogin(provider) {
+        try {
+            const btn = document.querySelector(`[data-provider="${provider}"]`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Connecting...`;
+            }
+            
+            if (provider === 'google') {
+                AuthService.googleLogin();
+            } else if (provider === 'facebook') {
+                AuthService.facebookLogin();
+            } else if (provider === 'github') {
+                AuthService.githubLogin();
+            }
+        } catch (error) {
+            console.error('Social login error:', error);
+            showNotification(`Failed to connect to ${provider}. Please try again.`, 'error');
+        }
     }
 
     /**
@@ -344,6 +418,7 @@ class App {
      */
     async handleLogout() {
         await AuthService.logout();
+        this.user = null;
         this.navigateTo('login');
     }
 
@@ -490,15 +565,27 @@ class App {
      */
     getCurrentPage() {
         const path = window.location.pathname;
-        return path.replace(/^\//, '').split('/')[0] || 'home';
+        let page = path.replace(/^\//, '').split('/')[0] || 'home';
+        
+        // Check route aliases
+        if (this.routeAliases[page]) {
+            page = this.routeAliases[page];
+        }
+        
+        return page;
     }
 
     /**
      * Navigate to page
      */
     navigateTo(page, params = {}) {
+        // Handle aliases
+        const aliasKeys = Object.keys(this.routeAliases);
+        const aliasEntry = aliasKeys.find(key => this.routeAliases[key] === page);
+        const urlPath = aliasEntry || page;
+        
         this.currentPage = page;
-        const url = page === 'home' ? '/' : `/${page}`;
+        const url = page === 'home' ? '/' : `/${urlPath}`;
         window.history.pushState({ page, params }, '', url);
         this.initPage();
     }
@@ -515,27 +602,53 @@ class App {
         const container = document.getElementById('page-content');
         if (!container) return;
 
+        // Show loading
         container.innerHTML = `
             <div class="loading-container">
                 <div class="spinner"></div>
-                <p>Loading...</p>
+                <p>Loading ${this.getPageTitle(page)}...</p>
             </div>
         `;
 
         try {
+            // Check if page requires authentication
+            const protectedPages = ['profile', 'orders', 'wishlist', 'checkout'];
+            if (protectedPages.includes(page) && !isAuthenticated()) {
+                showNotification('Please login to access this page', 'warning');
+                this.navigateTo('login');
+                return;
+            }
+
+            // Check if page requires admin access
+            const adminPages = ['admin'];
+            if (adminPages.includes(page) && !isAdmin()) {
+                showNotification('Admin access required', 'error');
+                this.navigateTo('home');
+                return;
+            }
+
+            // Get the page handler
             const handler = this.pageHandlers[page];
             if (handler) {
                 await handler(container);
             } else {
-                this.renderNotFound(container);
+                await this.renderNotFound(container);
             }
         } catch (error) {
             console.error('Page render error:', error);
             container.innerHTML = `
-                <div class="error-page">
-                    <h2>Error Loading Page</h2>
-                    <p>${error.message || 'Something went wrong'}</p>
-                    <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+                <div class="error-page text-center" style="padding:60px 20px;">
+                    <i class="fas fa-exclamation-circle" style="font-size:48px;color:var(--danger);"></i>
+                    <h2 style="margin-top:20px;">Something went wrong</h2>
+                    <p class="text-muted">${error.message || 'An unexpected error occurred'}</p>
+                    <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;">
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            <i class="fas fa-sync"></i> Retry
+                        </button>
+                        <a href="/" class="btn btn-outline" data-page="home">
+                            <i class="fas fa-home"></i> Go Home
+                        </a>
+                    </div>
                 </div>
             `;
         }
@@ -548,15 +661,20 @@ class App {
         const titles = {
             home: 'Home',
             products: 'Products',
-            cart: 'Cart',
+            product: 'Product Details',
+            cart: 'Shopping Cart',
+            checkout: 'Checkout',
+            orders: 'My Orders',
+            wishlist: 'Wishlist',
+            profile: 'My Profile',
+            admin: 'Admin Dashboard',
             login: 'Login',
             register: 'Register',
-            wishlist: 'Wishlist',
-            orders: 'Orders',
-            profile: 'Profile',
-            admin: 'Admin'
+            'forgot-password': 'Forgot Password',
+            'reset-password': 'Reset Password',
+            'social-login': 'Social Login'
         };
-        document.title = `${titles[page] || page} | E-Shop`;
+        document.title = `${titles[page] || 'E-Shop'} | E-Shop`;
     }
 
     /**
@@ -565,7 +683,10 @@ class App {
     updateActiveNav(page) {
         document.querySelectorAll('[data-page]').forEach(el => {
             const linkPage = el.dataset.page;
-            el.classList.toggle('active', linkPage === page);
+            const isActive = linkPage === page || 
+                           (page === 'home' && linkPage === 'home') ||
+                           (page === 'product' && linkPage === 'products');
+            el.classList.toggle('active', isActive);
         });
     }
 
@@ -574,14 +695,45 @@ class App {
      */
     renderNotFound(container) {
         container.innerHTML = `
-            <div class="error-page text-center">
+            <div class="error-page text-center" style="padding:80px 20px;">
                 <i class="fas fa-exclamation-triangle" style="font-size:64px;color:var(--gray-400);"></i>
-                <h1>404</h1>
+                <h1 style="font-size:72px;margin:20px 0;">404</h1>
                 <h2>Page Not Found</h2>
-                <p>The page you're looking for doesn't exist.</p>
-                <a href="/" class="btn btn-primary" data-page="home">Go Home</a>
+                <p class="text-muted">The page you're looking for doesn't exist or has been moved.</p>
+                <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;">
+                    <a href="/" class="btn btn-primary" data-page="home">
+                        <i class="fas fa-home"></i> Go Home
+                    </a>
+                    <a href="/products" class="btn btn-outline" data-page="products">
+                        <i class="fas fa-box"></i> Browse Products
+                    </a>
+                </div>
             </div>
         `;
+    }
+
+    // ============================================
+    // PAGE TITLE HELPER
+    // ============================================
+
+    getPageTitle(page) {
+        const titles = {
+            home: 'Home',
+            products: 'Products',
+            product: 'Product Details',
+            cart: 'Shopping Cart',
+            checkout: 'Checkout',
+            orders: 'My Orders',
+            wishlist: 'Wishlist',
+            profile: 'My Profile',
+            admin: 'Admin Dashboard',
+            login: 'Login',
+            register: 'Register',
+            'forgot-password': 'Forgot Password',
+            'reset-password': 'Reset Password',
+            'social-login': 'Social Login'
+        };
+        return titles[page] || 'E-Shop';
     }
 
     // ============================================
@@ -592,9 +744,10 @@ class App {
         const page = new LoginPage({
             app: this,
             onLogin: async (user) => {
+                this.user = user;
                 await this.loadUserData();
                 this.updateUI();
-                showNotification(`Welcome back, ${user.name}!`, 'success');
+                showNotification(`Welcome back, ${user.name}! 👋`, 'success');
             }
         });
         page.mount(container);
@@ -604,9 +757,10 @@ class App {
         const page = new RegisterPage({
             app: this,
             onRegister: async (user) => {
+                this.user = user;
                 await this.loadUserData();
                 this.updateUI();
-                showNotification(`Welcome to E-Shop, ${user.name}!`, 'success');
+                showNotification(`Welcome to E-Shop, ${user.name}! 🎉`, 'success');
             }
         });
         page.mount(container);
@@ -624,8 +778,13 @@ class App {
         page.mount(container);
     }
 
+    async renderSocialLoginPage(container) {
+        const page = new SocialLoginPage({ app: this });
+        await page.mount(container);
+    }
+
     // ============================================
-    // PAGE RENDERERS
+    // MAIN PAGE RENDERERS
     // ============================================
 
     /**

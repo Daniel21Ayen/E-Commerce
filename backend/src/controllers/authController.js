@@ -334,7 +334,54 @@ class AuthController {
       });
     }
   }
+ /**
+     * Generate token for social login
+     */
+    static generateSocialToken(user) {
+        const { Helpers } = require('../utils/helpers');
+        try {
+            const token = Helpers.generateJWT(user.id);
+            return token;
+        } catch (error) {
+            console.error('Generate social token error:', error);
+            throw error;
+        }
+    }
 
+    /**
+     * Verify social token and get user
+     */
+    static async verifySocialToken(token) {
+        const { Helpers } = require('../utils/helpers');
+        try {
+            const decoded = Helpers.verifyJWT(token);
+            if (!decoded) {
+                throw new Error('Invalid token');
+            }
+            
+            const user = await prisma.user.findUnique({
+                where: { id: decoded.id },
+                include: { 
+                    profile: true,
+                    addresses: true
+                }
+            });
+            
+            if (!user) {
+                throw new Error('User not found');
+            }
+            
+            if (!user.isActive) {
+                throw new Error('Account is deactivated');
+            }
+            
+            const { passwordHash, ...userData } = user;
+            return userData;
+        } catch (error) {
+            console.error('Verify social token error:', error);
+            throw error;
+        }
+    }
   /**
    * Refresh token
    */
