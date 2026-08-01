@@ -1,14 +1,16 @@
 // frontend/src/js/pages/auth/RegisterPage.js
 
-import BaseAuthPage from './BaseAuthPage';
-import { showNotification } from '../../modules/utils';
-import AuthService from '../../modules/auth';
+import BaseAuthPage from './BaseAuthPage.js';
+import { showNotification } from '../../modules/utils.js';
+import AuthService from '../../modules/auth.js';
 
 export default class RegisterPage extends BaseAuthPage {
   constructor(props) {
     super(props);
     this.title = 'Register';
     this.description = 'Create your account to start shopping';
+    this.app = props?.app || null;
+    this.onRegister = props?.onRegister || null;
   }
 
   template() {
@@ -22,6 +24,7 @@ export default class RegisterPage extends BaseAuthPage {
           </div>
           
           <form id="registerForm" data-action="register" novalidate>
+            <!-- Name -->
             <div class="form-group">
               <label class="form-label">Full Name <span class="required">*</span></label>
               <input 
@@ -35,6 +38,7 @@ export default class RegisterPage extends BaseAuthPage {
               />
             </div>
             
+            <!-- Email -->
             <div class="form-group">
               <label class="form-label">Email Address <span class="required">*</span></label>
               <input 
@@ -47,6 +51,7 @@ export default class RegisterPage extends BaseAuthPage {
               />
             </div>
             
+            <!-- Phone (Optional) -->
             <div class="form-group">
               <label class="form-label">Phone (optional)</label>
               <input 
@@ -58,6 +63,7 @@ export default class RegisterPage extends BaseAuthPage {
               />
             </div>
             
+            <!-- Password -->
             <div class="form-group">
               <label class="form-label">Password <span class="required">*</span></label>
               <input 
@@ -74,6 +80,7 @@ export default class RegisterPage extends BaseAuthPage {
               </div>
             </div>
             
+            <!-- Confirm Password -->
             <div class="form-group">
               <label class="form-label">Confirm Password <span class="required">*</span></label>
               <input 
@@ -86,6 +93,7 @@ export default class RegisterPage extends BaseAuthPage {
               />
             </div>
             
+            <!-- Terms -->
             <div class="form-group">
               <label class="checkbox-label">
                 <input type="checkbox" name="terms" required />
@@ -93,13 +101,16 @@ export default class RegisterPage extends BaseAuthPage {
               </label>
             </div>
             
+            <!-- Submit Button -->
             <button type="submit" class="btn btn-primary btn-block btn-lg" id="registerBtn">
               <i class="fas fa-user-plus"></i> Create Account
             </button>
           </form>
           
+          <!-- Divider -->
           <div class="auth-divider"><span>or continue with</span></div>
           
+          <!-- Social Login -->
           <div class="social-login">
             <button class="btn-social google" data-provider="google">
               <i class="fab fa-google"></i> Google
@@ -112,6 +123,7 @@ export default class RegisterPage extends BaseAuthPage {
             </button>
           </div>
           
+          <!-- Footer -->
           <div class="auth-footer">
             Already have an account? <a href="/login" data-page="login">Sign In</a>
           </div>
@@ -121,7 +133,7 @@ export default class RegisterPage extends BaseAuthPage {
   }
 
   attachEvents() {
-    const form = this.element.querySelector('#registerForm');
+    const form = this.element?.querySelector('#registerForm');
     if (form) {
       this.addListener(form, 'submit', async (e) => {
         e.preventDefault();
@@ -129,30 +141,33 @@ export default class RegisterPage extends BaseAuthPage {
       });
     }
 
-    // Password strength indicator (optional)
-    const passwordInput = this.element.querySelector('input[name="password"]');
-    if (passwordInput) {
-      this.addListener(passwordInput, 'input', () => {
-        this.updatePasswordStrength(passwordInput.value);
-      });
-    }
-
     // Social login buttons
-    this.element.querySelectorAll('.btn-social').forEach(btn => {
+    this.element?.querySelectorAll('.btn-social').forEach(btn => {
       this.addListener(btn, 'click', () => {
         const provider = btn.dataset.provider;
         this.handleSocialLogin(provider);
       });
     });
+
+    // Login link
+    const loginLink = this.element?.querySelector('[data-page="login"]');
+    if (loginLink) {
+      this.addListener(loginLink, 'click', (e) => {
+        e.preventDefault();
+        this.navigate('login');
+      });
+    }
   }
 
   async handleRegister(form) {
+    // Clear previous errors
     this.clearFormErrors(form);
     
+    // Get form data
     const data = this.getFormData(form);
     const { name, email, password, confirmPassword, phone, terms } = data;
 
-    // Validate
+    // Validation
     let hasError = false;
 
     if (!name || name.length < 2) {
@@ -162,6 +177,9 @@ export default class RegisterPage extends BaseAuthPage {
 
     if (!email) {
       this.showFieldError(form, 'email', 'Email is required');
+      hasError = true;
+    } else if (!this.isValidEmail(email)) {
+      this.showFieldError(form, 'email', 'Please enter a valid email address');
       hasError = true;
     }
 
@@ -198,45 +216,125 @@ export default class RegisterPage extends BaseAuthPage {
       });
 
       if (result.success) {
-        showNotification('Registration successful! Welcome!', 'success');
-        this.navigate('home');
-        if (this.props.onRegister) {
-          await this.props.onRegister(result.user);
-        }
+        // Show success message
+        showNotification('Registration successful! Please login.', 'success');
+        
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          this.navigate('login');
+        }, 1500);
+        
+        // Clear the form
+        form.reset();
+        
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        
+        return;
       } else {
-        // Show specific error
-        if (result.error.includes('already registered')) {
+        // Handle specific error types
+        const errorMsg = result.error || 'Registration failed';
+        
+        if (errorMsg.toLowerCase().includes('already registered')) {
           this.showFieldError(form, 'email', 'Email already registered. Please login.');
+        } else if (errorMsg.toLowerCase().includes('password')) {
+          this.showFieldError(form, 'password', errorMsg);
         } else {
-          this.showFieldError(form, 'email', result.error || 'Registration failed');
+          this.showFieldError(form, 'email', errorMsg);
+          showNotification(errorMsg, 'error');
         }
       }
     } catch (error) {
       console.error('Registration error:', error);
-      showNotification('Registration failed. Please try again.', 'error');
+      
+      // Handle network errors
+      if (error.message === 'Network Error' || error.code === 'ECONNABORTED') {
+        showNotification('Network error. Please check your connection.', 'error');
+      } else if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || 'Registration failed';
+        
+        if (status === 400) {
+          // Validation errors
+          const errors = error.response.data?.errors;
+          if (errors && Array.isArray(errors)) {
+            const firstError = errors[0];
+            this.showFieldError(form, firstError.field || 'email', firstError.message);
+          } else {
+            showNotification(message, 'error');
+          }
+        } else if (status === 409) {
+          this.showFieldError(form, 'email', 'Email already registered. Please login.');
+        } else {
+          showNotification(message, 'error');
+        }
+      } else {
+        showNotification('Registration failed. Please try again.', 'error');
+      }
     } finally {
+      // Reset button state
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
     }
   }
 
-  updatePasswordStrength(password) {
-    const strength = this.getPasswordStrength(password);
-    // You can add visual feedback here
+  /**
+   * Validate email format
+   */
+  isValidEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    return emailRegex.test(email);
   }
 
-  getPasswordStrength(password) {
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (/[a-z]/.test(password)) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[@$!%*?&]/.test(password)) score++;
-    return score;
+  /**
+   * Show field error
+   */
+  showFieldError(form, fieldName, message) {
+    const field = form.querySelector(`[name="${fieldName}"]`);
+    if (field) {
+      field.classList.add('is-invalid');
+      
+      // Remove existing error
+      const existingError = field.parentElement.querySelector('.form-error');
+      if (existingError) {
+        existingError.remove();
+      }
+      
+      // Add new error
+      const error = document.createElement('div');
+      error.className = 'form-error';
+      error.textContent = message;
+      field.parentElement.appendChild(error);
+    }
+  }
+
+  /**
+   * Clear form errors
+   */
+  clearFormErrors(form) {
+    form.querySelectorAll('.is-invalid').forEach(el => {
+      el.classList.remove('is-invalid');
+    });
+    form.querySelectorAll('.form-error').forEach(el => {
+      el.remove();
+    });
+  }
+
+  /**
+   * Get form data
+   */
+  getFormData(form) {
+    const formData = new FormData(form);
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+    return data;
   }
 
   async handleSocialLogin(provider) {
     showNotification(`Connecting to ${provider}...`, 'info');
-    // Implement social login logic
+    // Implement social login logic here
   }
 }
