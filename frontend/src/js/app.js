@@ -490,36 +490,201 @@ class App {
     // PAGE RENDERERS - STUB METHODS
     // ============================================
 
-    async renderHome(container) {
-        container.innerHTML = `
-            <div class="home-page fade-in">
-                <section class="hero-section">
-                    <div class="hero-content">
-                        <h1>Welcome to E-Shop</h1>
-                        <p>Discover amazing products at unbeatable prices.</p>
-                        <a href="/products" class="btn btn-primary" data-page="products">Start Shopping</a>
-                    </div>
-                </section>
-                <section class="products-section">
-                    <h2>Featured Products</h2>
-                    <div class="products-grid" id="featuredProducts">
-                        <p class="text-muted">Loading products...</p>
-                    </div>
-                </section>
-            </div>
-        `;
+  // frontend/src/js/app.js - Update renderHome method
+
+async renderHome(container) {
+  try {
+    // Load featured products
+    const products = await productService.getFeatured(8);
+    const categories = await productService.getCategories();
+    
+    container.innerHTML = `
+      <div class="home-page fade-in">
+        <section class="hero-section">
+          <div class="hero-content">
+            <h1>Welcome to E-Shop</h1>
+            <p>Discover amazing products at unbeatable prices.</p>
+            <a href="/products" class="btn btn-primary" data-page="products">Start Shopping</a>
+          </div>
+        </section>
+
+        <section class="categories-section">
+          <h2>Shop by Category</h2>
+          <div class="categories-grid">
+            ${categories && categories.length > 0 
+              ? categories.slice(0, 8).map(cat => `
+                <div class="category-item" data-category="${cat.id}">
+                  <div class="category-icon">${cat.iconUrl || '📦'}</div>
+                  <div class="category-name">${cat.name}</div>
+                </div>
+              `).join('')
+              : '<p class="text-muted">No categories available</p>'
+            }
+          </div>
+        </section>
+
+        <section class="products-section">
+          <div class="section-header">
+            <h2>Featured Products</h2>
+            <a href="/products" class="btn btn-outline" data-page="products">
+              View All <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+          <div class="products-grid" id="featuredProducts">
+            ${products && products.length > 0
+              ? products.map(p => this.renderProductCard(p)).join('')
+              : '<p class="text-muted">No featured products available</p>'
+            }
+          </div>
+        </section>
+      </div>
+    `;
+
+    // Add category click handlers
+    container.querySelectorAll('.category-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const categoryId = el.dataset.category;
+        this.navigateTo('products', { category: categoryId });
+      });
+    });
+
+  } catch (error) {
+    console.error('Error loading home page:', error);
+    container.innerHTML = `
+      <div class="error-page">
+        <h2>Error Loading Products</h2>
+        <p>${error.message || 'Something went wrong'}</p>
+        <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+      </div>
+    `;
+  }
+}
+// frontend/src/js/app.js - Add this method
+
+renderProductCard(product) {
+  const price = formatCurrency(product.price);
+  const comparePrice = product.comparePrice ? formatCurrency(product.comparePrice) : null;
+  const discount = product.comparePrice ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0;
+  const image = product.images?.[0]?.imageUrl || '/placeholder.jpg';
+  const inStock = product.stockQuantity > 0;
+  const rating = product.averageRating || 0;
+  const reviewCount = product.totalReviews || 0;
+  const inWishlist = wishlistService.isInWishlist(product.id);
+
+  let badges = '';
+  if (discount > 0) badges += `<span class="badge badge-sale">-${discount}%</span>`;
+  if (product.isFeatured) badges += `<span class="badge badge-featured">Featured</span>`;
+  if (!inStock) badges += `<span class="badge badge-sold-out">Sold Out</span>`;
+
+  return `
+    <div class="product-card" data-product-id="${product.id}">
+      <div class="product-image">
+        <img src="${image}" alt="${product.name}" loading="lazy" onerror="this.src='/placeholder.jpg'" />
+        ${badges ? `<div class="product-badges">${badges}</div>` : ''}
+        <button class="wishlist-btn ${inWishlist ? 'active' : ''}" 
+                data-action="wishlist-toggle" 
+                data-product-id="${product.id}">
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+      <div class="product-body">
+        <div class="product-rating">
+          <div class="stars">${this.renderStars(rating)}</div>
+          <span class="rating-count">(${reviewCount})</span>
+        </div>
+        <div class="product-name">
+          <a href="/product/${product.id}" data-page="product">${product.name}</a>
+        </div>
+        <div class="product-price">
+          <span class="current">${price}</span>
+          ${comparePrice ? `<span class="original">${comparePrice}</span>` : ''}
+        </div>
+        <div class="product-stock ${inStock ? 'in-stock' : 'out-of-stock'}">
+          ${inStock ? '✓ In Stock' : '✕ Out of Stock'}
+        </div>
+        <div class="product-actions">
+          <button class="btn btn-primary btn-add-cart" 
+                  data-action="add-to-cart" 
+                  data-product-id="${product.id}"
+                  ${!inStock ? 'disabled' : ''}>
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+          <button class="btn btn-outline btn-wishlist ${inWishlist ? 'active' : ''}" 
+                  data-action="wishlist-toggle" 
+                  data-product-id="${product.id}">
+            <i class="fas fa-heart"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+renderStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  const empty = 5 - full - (half ? 1 : 0);
+  return '★'.repeat(full) + (half ? '★' : '') + '☆'.repeat(empty);
+}
+// frontend/src/js/app.js - Update renderProducts method
+
+async renderProducts(container) {
+  try {
+    const result = await productService.loadProducts();
+    const products = result?.products || [];
+
+    container.innerHTML = `
+      <div class="products-page fade-in">
+        <div class="section-header">
+          <h1>All Products</h1>
+          <div class="filters">
+            <select id="sortProducts" class="form-control">
+              <option value="createdAt:desc">Newest</option>
+              <option value="price:asc">Price: Low to High</option>
+              <option value="price:desc">Price: High to Low</option>
+              <option value="salesCount:desc">Best Selling</option>
+              <option value="averageRating:desc">Highest Rated</option>
+            </select>
+          </div>
+        </div>
+        <div class="products-grid" id="productsGrid">
+          ${products && products.length > 0
+            ? products.map(p => this.renderProductCard(p)).join('')
+            : `
+              <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3>No products found</h3>
+                <p class="text-muted">Try adjusting your filters or search terms</p>
+                <a href="/products" class="btn btn-primary" data-page="products">Clear Filters</a>
+              </div>
+            `
+          }
+        </div>
+      </div>
+    `;
+
+    // Add sort handler
+    const sortSelect = container.querySelector('#sortProducts');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => {
+        const [sortBy, sortOrder] = sortSelect.value.split(':');
+        productService.setFilter('sortBy', sortBy);
+        productService.setFilter('sortOrder', sortOrder);
+        this.renderProducts(container);
+      });
     }
 
-    async renderProducts(container) {
-        container.innerHTML = `
-            <div class="products-page fade-in">
-                <h1>All Products</h1>
-                <div class="products-grid" id="productsGrid">
-                    <p class="text-muted">Loading products...</p>
-                </div>
-            </div>
-        `;
-    }
+  } catch (error) {
+    console.error('Error loading products:', error);
+    container.innerHTML = `
+      <div class="error-page">
+        <h2>Error Loading Products</h2>
+        <p>${error.message || 'Something went wrong'}</p>
+        <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+      </div>
+    `;
+  }
+}
 
     async renderProductDetail(container) {
         container.innerHTML = `
