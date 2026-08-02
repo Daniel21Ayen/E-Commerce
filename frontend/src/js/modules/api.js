@@ -239,6 +239,10 @@ const ApiService = {
     updateProfile: (data) => {
       console.log('👤 Updating profile');
       return api.put('/auth/profile', data);
+    },
+    socialLogin: (data) => {
+      console.log('🌐 Social login with token');
+      return api.post('/auth/social-login', data);
     }
   },
 

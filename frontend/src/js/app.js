@@ -779,7 +779,15 @@ class App {
     }
 
     async renderSocialLoginPage(container) {
-        const page = new SocialLoginPage({ app: this });
+        const page = new SocialLoginPage({
+            app: this,
+            onSocialLogin: async (user) => {
+                this.user = user;
+                await this.loadUserData();
+                this.updateUI();
+                showNotification(`Welcome ${user.name}! 🎉`, 'success');
+            }
+        });
         await page.mount(container);
     }
 

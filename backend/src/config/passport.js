@@ -70,13 +70,20 @@ const findOrCreateSocialUser = async (profile, provider) => {
     }
 
     if (user) {
-        // Update provider ID if not set
+        // Update provider ID / email verification / avatar if not set
         const updateData = {};
         if (!user[`${provider}Id`]) {
             updateData[`${provider}Id`] = providerId;
         }
         if (!user.isEmailVerified) {
             updateData.isEmailVerified = true;
+        }
+        if (!user.profile?.avatarUrl && avatar) {
+            updateData.profile = {
+                update: {
+                    avatarUrl: avatar
+                }
+            };
         }
         
         if (Object.keys(updateData).length > 0) {

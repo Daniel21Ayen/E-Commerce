@@ -77,7 +77,7 @@ const protect = async (req, res, next) => {
         lastLogin: true,
         createdAt: true,
         updatedAt: true,
-        userProfile: {
+        profile: {
           select: {
             avatarUrl: true,
             bio: true,
@@ -307,7 +307,7 @@ const optionalAuth = async (req, res, next) => {
             phone: true,
             isActive: true,
             isEmailVerified: true,
-            userProfile: {
+            profile: {
               select: {
                 avatarUrl: true,
                 preferredLanguage: true

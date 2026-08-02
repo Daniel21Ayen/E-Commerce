@@ -8,6 +8,7 @@ export default class SocialLoginPage extends BasePage {
     constructor(props) {
         super(props);
         this.app = props?.app || null;
+        this.onSocialLogin = props?.onSocialLogin || null;
     }
 
     async mount(container) {
@@ -19,9 +20,13 @@ export default class SocialLoginPage extends BasePage {
             const errorMessages = {
                 'google_auth_failed': 'Google authentication failed. Please try again.',
                 'facebook_auth_failed': 'Facebook authentication failed. Please try again.',
-                'github_auth_failed': 'GitHub authentication failed. Please try again.'
+                'github_auth_failed': 'GitHub authentication failed. Please try again.',
+                'google_not_configured': 'Google login is not configured yet. Please use email registration.',
+                'facebook_not_configured': 'Facebook login is not configured yet. Please use email registration.',
+                'github_not_configured': 'GitHub login is not configured yet. Please use email registration.'
             };
             showNotification(errorMessages[error] || 'Social login failed. Please try again.', 'error');
+            window.history.replaceState({}, '', '/login');
             setTimeout(() => {
                 window.location.href = '/login';
             }, 2000);
@@ -30,31 +35,11 @@ export default class SocialLoginPage extends BasePage {
 
         if (!token) {
             showNotification('Invalid login attempt.', 'error');
+            window.history.replaceState({}, '', '/login');
             setTimeout(() => {
                 window.location.href = '/login';
             }, 2000);
             return;
-        }
-
-        try {
-            const result = await AuthService.handleSocialLogin(token);
-            if (result.success) {
-                showNotification(`Welcome ${result.user.name}! 🎉`, 'success');
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 1500);
-            } else {
-                showNotification('Login failed. Please try again.', 'error');
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
-            }
-        } catch (error) {
-            console.error('Social login error:', error);
-            showNotification('Login failed. Please try again.', 'error');
-            setTimeout(() => {
-                window.location.href = '/login';
-            }, 2000);
         }
 
         container.innerHTML = `
@@ -72,6 +57,38 @@ export default class SocialLoginPage extends BasePage {
                 </div>
             </div>
         `;
+
+        try {
+            const result = await AuthService.handleSocialLogin(token);
+            if (result.success) {
+                // Clean the URL
+                window.history.replaceState({}, '', '/social-login');
+                
+                // Trigger app login callback to update state & load user data
+                if (this.app && typeof this.app.onSocialLogin === 'function') {
+                    await this.app.onSocialLogin(result.user);
+                } else if (this.app && this.app.user) {
+                    this.app.user = result.user;
+                    if (typeof this.app.updateUI === 'function') this.app.updateUI();
+                }
+                
+                showNotification(`Welcome ${result.user.name}! 🎉`, 'success');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                showNotification('Login failed. Please try again.', 'error');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Social login error:', error);
+            showNotification('Login failed. Please try again.', 'error');
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+        }
     }
 
     template() {

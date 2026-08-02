@@ -56,8 +56,31 @@ router.put('/profile', protect, Validators.validate(Validators.user.updateProfil
 // SOCIAL AUTH ROUTES
 // =============================================
 
+// Helper: check if a social strategy is configured
+const isStrategyConfigured = (name) => {
+    const strategies = {
+        google: !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET,
+        facebook: !!process.env.FACEBOOK_APP_ID && !!process.env.FACEBOOK_APP_SECRET,
+        github: !!process.env.GITHUB_CLIENT_ID && !!process.env.GITHUB_CLIENT_SECRET
+    };
+    return strategies[name] === true;
+};
+
+// Middleware: guard social auth routes
+const socialGuard = (provider) => {
+    return (req, res, next) => {
+        if (!isStrategyConfigured(provider)) {
+            return res.redirect(
+                `${process.env.FRONTEND_URL || 'http://localhost:3005'}/login?error=${provider}_not_configured`
+            );
+        }
+        next();
+    };
+};
+
 // Google OAuth
 router.get('/google',
+    socialGuard('google'),
     passport.authenticate('google', { 
         scope: ['profile', 'email'],
         prompt: 'select_account'
@@ -83,6 +106,7 @@ router.get('/google/callback',
 
 // GitHub OAuth
 router.get('/github',
+    socialGuard('github'),
     passport.authenticate('github', { 
         scope: ['user:email']
     })
@@ -107,6 +131,7 @@ router.get('/github/callback',
 
 // Facebook OAuth
 router.get('/facebook',
+    socialGuard('facebook'),
     passport.authenticate('facebook', { 
         scope: ['email', 'public_profile']
     })
