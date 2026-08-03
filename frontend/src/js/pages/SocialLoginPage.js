@@ -65,10 +65,11 @@ export default class SocialLoginPage extends BasePage {
                 window.history.replaceState({}, '', '/social-login');
                 
                 // Trigger app login callback to update state & load user data
-                if (this.app && typeof this.app.onSocialLogin === 'function') {
-                    await this.app.onSocialLogin(result.user);
-                } else if (this.app && this.app.user) {
+                if (typeof this.onSocialLogin === 'function') {
+                    await this.onSocialLogin(result.user);
+                } else if (this.app) {
                     this.app.user = result.user;
+                    if (typeof this.app.loadUserData === 'function') await this.app.loadUserData();
                     if (typeof this.app.updateUI === 'function') this.app.updateUI();
                 }
                 
