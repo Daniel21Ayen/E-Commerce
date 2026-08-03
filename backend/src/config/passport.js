@@ -2,7 +2,6 @@
 
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const GitHubStrategy = require('passport-github2').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const { prisma } = require('./database');
 const logger = require('../middleware/logger');
@@ -155,36 +154,6 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         )
     );
     logger.info('✅ Google OAuth strategy configured');
-}
-
-// =============================================
-// GITHUB OAUTH STRATEGY
-// =============================================
-
-if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
-    passport.use(
-        new GitHubStrategy(
-            {
-                clientID: process.env.GITHUB_CLIENT_ID,
-                clientSecret: process.env.GITHUB_CLIENT_SECRET,
-                callbackURL: process.env.GITHUB_CALLBACK_URL || 
-                    `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/github/callback`,
-                scope: ['user:email'],
-                proxy: true
-            },
-            async (accessToken, refreshToken, profile, done) => {
-                try {
-                    const user = await findOrCreateSocialUser(profile, 'github');
-                    logger.info(`GitHub OAuth user: ${user.email} (${user.id})`);
-                    return done(null, user);
-                } catch (error) {
-                    logger.error('GitHub OAuth error:', error);
-                    return done(error, null);
-                }
-            }
-        )
-    );
-    logger.info('✅ GitHub OAuth strategy configured');
 }
 
 // =============================================

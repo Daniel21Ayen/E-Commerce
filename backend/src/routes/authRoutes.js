@@ -60,8 +60,7 @@ router.put('/profile', protect, Validators.validate(Validators.user.updateProfil
 const isStrategyConfigured = (name) => {
     const strategies = {
         google: !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET,
-        facebook: !!process.env.FACEBOOK_APP_ID && !!process.env.FACEBOOK_APP_SECRET,
-        github: !!process.env.GITHUB_CLIENT_ID && !!process.env.GITHUB_CLIENT_SECRET
+        facebook: !!process.env.FACEBOOK_APP_ID && !!process.env.FACEBOOK_APP_SECRET
     };
     return strategies[name] === true;
 };
@@ -104,30 +103,7 @@ router.get('/google/callback',
     }
 );
 
-// GitHub OAuth
-router.get('/github',
-    socialGuard('github'),
-    passport.authenticate('github', { 
-        scope: ['user:email']
-    })
-);
-
-router.get('/github/callback',
-    passport.authenticate('github', { 
-        failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3005'}/login?error=github_auth_failed`,
-        session: true
-    }),
-    (req, res) => {
-        try {
-            const token = AuthController.generateSocialToken(req.user);
-            const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3005'}/social-login?token=${token}`;
-            res.redirect(redirectUrl);
-        } catch (error) {
-            console.error('GitHub callback error:', error);
-            res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3005'}/login?error=github_auth_failed`);
-        }
-    }
-);
+// GitHub OAuth (removed - not supported)
 
 // Facebook OAuth
 router.get('/facebook',
