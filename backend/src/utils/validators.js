@@ -125,6 +125,26 @@ class Validators {
     ]
   };
 
+/**
+   * Cart validation rules
+   */
+  static cart = {
+    addItem: [
+      body('productId')
+        .notEmpty().withMessage('Product ID is required')
+        .isUUID().withMessage('Invalid product ID format'),
+
+      body('quantity')
+        .optional()
+        .isInt({ min: 1, max: 999 }).withMessage('Quantity must be between 1 and 999')
+        .toInt(),
+
+      body('variantId')
+        .optional()
+        .isUUID().withMessage('Invalid variant ID format')
+    ]
+  };
+
   /**
    * Product validation rules
    */

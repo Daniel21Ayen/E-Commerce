@@ -60,9 +60,7 @@ router.get('/', protect, CartController.getCart);
 router.post(
   '/items',
   protect,
-  Validators.validate([
-    Validators.user.login[0], // Use existing validators or create new ones
-  ]),
+  Validators.validate(Validators.cart.addItem),
   CartController.addToCart
 );
 
@@ -188,4 +186,4 @@ router.post(
  */
 router.delete('/promo', protect, CartController.removePromoCode);
 
-module.exports = router;
+module.exports = router; 

@@ -196,8 +196,8 @@ class CartController {
         });
       }
 
-      // Update cart totals
-      await this.updateCartTotals(cart.id);
+// Update cart totals
+      await CartController.updateCartTotals(cart.id);
 
       logger.info('Item added to cart', {
         userId,
@@ -274,8 +274,8 @@ class CartController {
         }
       });
 
-      // Update cart totals
-      await this.updateCartTotals(cartItem.cartId);
+// Update cart totals
+      await CartController.updateCartTotals(cartItem.cartId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: 'success',
@@ -321,8 +321,8 @@ class CartController {
         where: { id: itemId }
       });
 
-      // Update cart totals
-      await this.updateCartTotals(cartItem.cartId);
+// Update cart totals
+      await CartController.updateCartTotals(cartItem.cartId);
 
       logger.info('Item removed from cart', {
         userId,
@@ -354,12 +354,12 @@ class CartController {
         where: { userId }
       });
 
-      if (cart) {
+if (cart) {
         await prisma.cartItem.deleteMany({
           where: { cartId: cart.id }
         });
 
-        await this.updateCartTotals(cart.id);
+        await CartController.updateCartTotals(cart.id);
       }
 
       logger.info('Cart cleared', { userId });
