@@ -1,0 +1,10 @@
+/* ============================================
+   PROFILE PAGE STYLES
+   ============================================ */
+
+.profile-page {
+  padding: var(--spacing-lg) 0;
+}
+
+.profile-layout {
+  display: grid;

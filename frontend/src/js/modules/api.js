@@ -236,13 +236,33 @@ const ApiService = {
       console.log('👤 Getting profile');
       return api.get('/auth/profile');
     },
-    updateProfile: (data) => {
+updateProfile: (data) => {
       console.log('👤 Updating profile');
       return api.put('/auth/profile', data);
     },
     socialLogin: (data) => {
       console.log('🌐 Social login with token');
       return api.post('/auth/social-login', data);
+    },
+    getAddresses: () => {
+      console.log('🏠 Getting addresses');
+      return api.get('/users/addresses');
+    },
+    addAddress: (data) => {
+      console.log('🏠 Adding address');
+      return api.post('/users/addresses', data);
+    },
+    updateAddress: (addressId, data) => {
+      console.log('🏠 Updating address:', addressId);
+      return api.put(`/users/addresses/${addressId}`, data);
+    },
+    deleteAddress: (addressId) => {
+      console.log('🏠 Deleting address:', addressId);
+      return api.delete(`/users/addresses/${addressId}`);
+    },
+    setDefaultAddress: (addressId) => {
+      console.log('🏠 Setting default address:', addressId);
+      return api.put(`/users/addresses/${addressId}/default`);
     }
   },
 
@@ -518,6 +538,15 @@ const ApiService = {
       const formData = new FormData();
       files.forEach(file => formData.append('files', file));
       return api.post('/uploads/multiple', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: onProgress
+      });
+    },
+    avatar: (file, onProgress) => {
+      console.log('👤 Uploading avatar:', file.name);
+      const formData = new FormData();
+      formData.append('avatar', file);
+      return api.post('/uploads/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: onProgress
       });

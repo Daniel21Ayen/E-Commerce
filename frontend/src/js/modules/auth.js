@@ -271,10 +271,14 @@ class AuthService {
         try {
             setLoading('profile');
             
-            const payload = {
+const payload = {
                 name: data.name?.trim(),
                 phone: data.phone || null,
-                bio: data.bio || null
+                bio: data.bio || null,
+                preferredLanguage: data.preferredLanguage || null,
+                avatarUrl: data.avatarUrl || null,
+                dateOfBirth: data.dateOfBirth || null,
+                gender: data.gender || null
             };
             
             const response = await ApiService.auth.updateProfile(payload);
@@ -290,6 +294,124 @@ class AuthService {
             return { success: false, error: message };
         } finally {
             removeLoading('profile');
+        }
+    }
+
+/**
+     * Update profile avatar
+     */
+    static async updateAvatar(file) {
+        try {
+            if (!file) {
+                throw new Error('No file selected');
+            }
+
+            setLoading('avatar');
+            
+            const response = await ApiService.upload.avatar(file);
+            const { url } = response.data.data;
+            
+            // Update profile with new avatar URL
+            const result = await this.updateProfile({ avatarUrl: url });
+            
+            if (result.success) {
+                showNotification('Avatar updated successfully!', 'success');
+            }
+            
+            return { success: true, url };
+        } catch (error) {
+            console.error('Avatar update error:', error);
+            const message = error.response?.data?.message || error.message || 'Failed to update avatar';
+            showNotification(message, 'error');
+            return { success: false, error: message };
+        } finally {
+            removeLoading('avatar');
+        }
+    }
+
+    /**
+     * Get user addresses
+     */
+    static async getAddresses() {
+        try {
+            const response = await ApiService.auth.getAddresses();
+            return { success: true, addresses: response.data.data };
+        } catch (error) {
+            console.error('Get addresses error:', error);
+            const message = error.response?.data?.message || error.message || 'Failed to get addresses';
+            return { success: false, error: message, addresses: [] };
+        }
+    }
+
+    /**
+     * Add new address
+     */
+    static async addAddress(data) {
+        try {
+            setLoading('address');
+            
+            const response = await ApiService.auth.addAddress(data);
+            showNotification('Address added successfully!', 'success');
+            return { success: true, address: response.data.data };
+        } catch (error) {
+            console.error('Add address error:', error);
+            const message = error.response?.data?.message || error.message || 'Failed to add address';
+            showNotification(message, 'error');
+            return { success: false, error: message };
+        } finally {
+            removeLoading('address');
+        }
+    }
+
+    /**
+     * Update address
+     */
+    static async updateAddress(addressId, data) {
+        try {
+            setLoading('address');
+            
+            const response = await ApiService.auth.updateAddress(addressId, data);
+            showNotification('Address updated successfully!', 'success');
+            return { success: true, address: response.data.data };
+        } catch (error) {
+            console.error('Update address error:', error);
+            const message = error.response?.data?.message || error.message || 'Failed to update address';
+            showNotification(message, 'error');
+            return { success: false, error: message };
+        } finally {
+            removeLoading('address');
+        }
+    }
+
+    /**
+     * Delete address
+     */
+    static async deleteAddress(addressId) {
+        try {
+            await ApiService.auth.deleteAddress(addressId);
+            showNotification('Address deleted!', 'success');
+            return { success: true };
+        } catch (error) {
+            console.error('Delete address error:', error);
+            const message = error.response?.data?.message || error.message || 'Failed to delete address';
+            showNotification(message, 'error');
+            return { success: false, error: message };
+        }
+    }
+
+    /**
+     * Set default address
+     */
+    static async setDefaultAddress(addressId) {
+        try {
+            const response = await ApiService.auth.setDefaultAddress(addressId);
+            showNotification('Default address set!', 'success');
+            return { success: true, address: response.data.data };
+        } catch (error) {
+            console.error('Set default address error:', error);
+            const message = error.response?.data?.message || error.message || 'Failed to set default address';
+            showNotification(message, 'error');
+            return { success: false, error: message };
         }
     }
 

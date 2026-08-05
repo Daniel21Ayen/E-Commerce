@@ -106,7 +106,7 @@ class Validators {
         .notEmpty().withMessage('Password is required')
     ],
 
-    updateProfile: [
+updateProfile: [
       body('name')
         .optional()
         .trim()
@@ -121,8 +121,109 @@ class Validators {
       body('bio')
         .optional()
         .trim()
-        .isLength({ max: 500 }).withMessage('Bio must not exceed 500 characters')
-    ]
+        .isLength({ max: 500 }).withMessage('Bio must not exceed 500 characters'),
+      
+      body('preferredLanguage')
+        .optional()
+        .trim()
+        .isLength({ max: 10 }).withMessage('Preferred language must not exceed 10 characters'),
+      
+      body('avatarUrl')
+        .optional()
+        .trim()
+        .isLength({ max: 500 }).withMessage('Avatar URL must not exceed 500 characters'),
+      
+      body('dateOfBirth')
+        .optional()
+        .isISO8601().withMessage('Date of birth must be a valid date')
+        .toDate()
+        .custom((value) => {
+          if (value && new Date(value) > new Date()) {
+            throw new Error('Date of birth cannot be in the future');
+          }
+          return true;
+        }),
+      
+      body('gender')
+        .optional()
+        .trim()
+        .isLength({ max: 20 }).withMessage('Gender must not exceed 20 characters')
+    ],
+
+    address: {
+      create: [
+        body('street')
+          .trim()
+          .notEmpty().withMessage('Street is required')
+          .isLength({ max: 255 }).withMessage('Street must not exceed 255 characters'),
+        
+        body('city')
+          .trim()
+          .notEmpty().withMessage('City is required')
+          .isLength({ max: 100 }).withMessage('City must not exceed 100 characters'),
+        
+        body('state')
+          .trim()
+          .notEmpty().withMessage('State is required')
+          .isLength({ max: 100 }).withMessage('State must not exceed 100 characters'),
+        
+        body('zipCode')
+          .trim()
+          .notEmpty().withMessage('Zip code is required')
+          .matches(/^\d{5}(-\d{4})?$/).withMessage('Invalid zip code format'),
+        
+        body('country')
+          .trim()
+          .notEmpty().withMessage('Country is required')
+          .isLength({ max: 100 }).withMessage('Country must not exceed 100 characters'),
+        
+        body('addressType')
+          .optional()
+          .trim()
+          .isIn(['shipping', 'billing']).withMessage('Address type must be shipping or billing'),
+        
+        body('isDefault')
+          .optional()
+          .isBoolean().withMessage('isDefault must be a boolean')
+          .toBoolean()
+      ],
+      update: [
+        body('street')
+          .optional()
+          .trim()
+          .isLength({ max: 255 }).withMessage('Street must not exceed 255 characters'),
+        
+        body('city')
+          .optional()
+          .trim()
+          .isLength({ max: 100 }).withMessage('City must not exceed 100 characters'),
+        
+        body('state')
+          .optional()
+          .trim()
+          .isLength({ max: 100 }).withMessage('State must not exceed 100 characters'),
+        
+        body('zipCode')
+          .optional()
+          .trim()
+          .matches(/^\d{5}(-\d{4})?$/).withMessage('Invalid zip code format'),
+        
+        body('country')
+          .optional()
+          .trim()
+          .isLength({ max: 100 }).withMessage('Country must not exceed 100 characters'),
+        
+        body('addressType')
+          .optional()
+          .trim()
+          .isIn(['shipping', 'billing']).withMessage('Address type must be shipping or billing'),
+        
+        body('isDefault')
+          .optional()
+          .isBoolean().withMessage('isDefault must be a boolean')
+          .toBoolean()
+      ]
+    }
   };
 
 /**

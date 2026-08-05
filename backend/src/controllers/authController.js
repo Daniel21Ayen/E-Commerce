@@ -800,12 +800,12 @@ class AuthController {
     }
   }
 
-  /**
+/**
    * Update user profile
    */
   static async updateProfile(req, res) {
     try {
-      const { name, phone, bio, preferredLanguage } = req.body;
+      const { name, phone, bio, preferredLanguage, avatarUrl, dateOfBirth, gender } = req.body;
       const userId = req.user.id;
 
       // Validate name if provided
@@ -820,17 +820,23 @@ class AuthController {
       const user = await prisma.user.update({
         where: { id: userId },
         data: {
-          name: name ? name.trim() : undefined,
-          phone: phone || null,
+          name: name !== undefined ? (name ? name.trim() : null) : undefined,
+          phone: phone !== undefined ? (phone || null) : undefined,
           profile: {
             upsert: {
               update: {
-                bio: bio || null,
-                preferredLanguage: preferredLanguage || 'en'
+                bio: bio !== undefined ? (bio || null) : undefined,
+                preferredLanguage: preferredLanguage !== undefined ? (preferredLanguage || 'en') : undefined,
+                avatarUrl: avatarUrl !== undefined ? (avatarUrl || null) : undefined,
+                dateOfBirth: dateOfBirth !== undefined ? (dateOfBirth || null) : undefined,
+                gender: gender !== undefined ? (gender || null) : undefined
               },
               create: {
                 bio: bio || null,
-                preferredLanguage: preferredLanguage || 'en'
+                preferredLanguage: preferredLanguage || 'en',
+                avatarUrl: avatarUrl || null,
+                dateOfBirth: dateOfBirth || null,
+                gender: gender || null
               }
             }
           }
@@ -860,6 +866,239 @@ class AuthController {
       return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         status: 'error',
         message: 'Profile update failed',
+        code: RESPONSE_CODES.ERROR
+      });
+    }
+  }
+
+  /**
+   * Get all addresses for current user
+   */
+  static async getAddresses(req, res) {
+    try {
+      const addresses = await prisma.address.findMany({
+        where: { userId: req.user.id },
+        orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }]
+      });
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: 'success',
+        data: addresses
+      });
+    } catch (error) {
+      logger.error('Get addresses error:', error);
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        status: 'error',
+        message: 'Failed to get addresses',
+        code: RESPONSE_CODES.ERROR
+      });
+    }
+  }
+
+  /**
+   * Add a new address
+   */
+  static async addAddress(req, res) {
+    try {
+      const { street, city, state, zipCode, country, addressType = 'shipping', isDefault = false } = req.body;
+      const userId = req.user.id;
+
+      // If this address is default, unset existing defaults
+      if (isDefault) {
+        await prisma.address.updateMany({
+          where: { userId },
+          data: { isDefault: false }
+        });
+      }
+
+      const address = await prisma.address.create({
+        data: {
+          userId,
+          street,
+          city,
+          state,
+          zipCode,
+          country,
+          addressType,
+          isDefault
+        }
+      });
+
+      logger.info('Address added', {
+        userId,
+        addressId: address.id
+      });
+
+      return res.status(HTTP_STATUS.CREATED).json({
+        status: 'success',
+        message: 'Address added successfully',
+        data: address
+      });
+    } catch (error) {
+      logger.error('Add address error:', error);
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        status: 'error',
+        message: 'Failed to add address',
+        code: RESPONSE_CODES.ERROR
+      });
+    }
+  }
+
+  /**
+   * Update an address
+   */
+  static async updateAddress(req, res) {
+    try {
+      const { addressId } = req.params;
+      const { street, city, state, zipCode, country, addressType, isDefault } = req.body;
+      const userId = req.user.id;
+
+      // Verify address belongs to user
+      const existing = await prisma.address.findFirst({
+        where: { id: addressId, userId }
+      });
+
+      if (!existing) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+          status: 'error',
+          message: 'Address not found',
+          code: RESPONSE_CODES.NOT_FOUND
+        });
+      }
+
+      // If setting as default, unset others
+      if (isDefault) {
+        await prisma.address.updateMany({
+          where: { userId },
+          data: { isDefault: false }
+        });
+      }
+
+      const address = await prisma.address.update({
+        where: { id: addressId },
+        data: {
+          street: street !== undefined ? street : undefined,
+          city: city !== undefined ? city : undefined,
+          state: state !== undefined ? state : undefined,
+          zipCode: zipCode !== undefined ? zipCode : undefined,
+          country: country !== undefined ? country : undefined,
+          addressType: addressType !== undefined ? addressType : undefined,
+          isDefault: isDefault !== undefined ? isDefault : undefined
+        }
+      });
+
+      logger.info('Address updated', {
+        userId,
+        addressId
+      });
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: 'success',
+        message: 'Address updated successfully',
+        data: address
+      });
+    } catch (error) {
+      logger.error('Update address error:', error);
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        status: 'error',
+        message: 'Failed to update address',
+        code: RESPONSE_CODES.ERROR
+      });
+    }
+  }
+
+  /**
+   * Delete an address
+   */
+  static async deleteAddress(req, res) {
+    try {
+      const { addressId } = req.params;
+      const userId = req.user.id;
+
+      // Verify address belongs to user
+      const existing = await prisma.address.findFirst({
+        where: { id: addressId, userId }
+      });
+
+      if (!existing) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+          status: 'error',
+          message: 'Address not found',
+          code: RESPONSE_CODES.NOT_FOUND
+        });
+      }
+
+      await prisma.address.delete({
+        where: { id: addressId }
+      });
+
+      logger.info('Address deleted', {
+        userId,
+        addressId
+      });
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: 'success',
+        message: 'Address deleted successfully'
+      });
+    } catch (error) {
+      logger.error('Delete address error:', error);
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        status: 'error',
+        message: 'Failed to delete address',
+        code: RESPONSE_CODES.ERROR
+      });
+    }
+  }
+
+  /**
+   * Set default address
+   */
+  static async setDefaultAddress(req, res) {
+    try {
+      const { addressId } = req.params;
+      const userId = req.user.id;
+
+      // Verify address belongs to user
+      const existing = await prisma.address.findFirst({
+        where: { id: addressId, userId }
+      });
+
+      if (!existing) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+          status: 'error',
+          message: 'Address not found',
+          code: RESPONSE_CODES.NOT_FOUND
+        });
+      }
+
+      // Unset all defaults
+      await prisma.address.updateMany({
+        where: { userId },
+        data: { isDefault: false }
+      });
+
+      // Set new default
+      const address = await prisma.address.update({
+        where: { id: addressId },
+        data: { isDefault: true }
+      });
+
+      logger.info('Default address set', {
+        userId,
+        addressId
+      });
+
+      return res.status(HTTP_STATUS.OK).json({
+        status: 'success',
+        message: 'Default address set successfully',
+        data: address
+      });
+    } catch (error) {
+      logger.error('Set default address error:', error);
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        status: 'error',
+        message: 'Failed to set default address',
         code: RESPONSE_CODES.ERROR
       });
     }
