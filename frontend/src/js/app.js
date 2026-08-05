@@ -16,6 +16,7 @@ import RegisterPage from './pages/auth/RegisterPage.js';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage.js';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage.js';
 import SocialLoginPage from './pages/SocialLoginPage.js';
+import ProfilePage from './pages/ProfilePage.js';
 
 class App {
     constructor() {
@@ -1079,16 +1080,12 @@ class App {
         `;
     }
 
-    /**
-     * Render Profile Page (Placeholder)
+/**
+     * Render Profile Page
      */
     async renderProfile(container) {
-        container.innerHTML = `
-            <div class="profile-page fade-in">
-                <h1>My Profile</h1>
-                <p class="text-muted">Loading profile...</p>
-            </div>
-        `;
+        const page = new ProfilePage({ app: this });
+        page.mount(container);
     }
 
     /**

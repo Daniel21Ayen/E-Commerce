@@ -9,6 +9,7 @@ import './../css/auth.css';
 import './../css/products.css';
 import './../css/cart.css';
 import './../css/admin.css';
+import './../css/profile.css';
 import './../css/responsive.css';
 import './../css/dark-mode.css';
 
