@@ -85,8 +85,8 @@ class CartController {
       const userId = req.user.id;
       const { productId, variantId, quantity = 1 } = req.body;
 
-      // Check product
-      const product = await prisma.product.findUnique({
+// Check product
+      const product = await prisma.product.findFirst({
         where: { 
           id: productId,
           isActive: true,
@@ -111,7 +111,7 @@ class CartController {
       let stockQuantity = product.stockQuantity;
 
       if (variantId) {
-        variant = await prisma.productVariant.findUnique({
+variant = await prisma.productVariant.findFirst({
           where: { 
             id: variantId,
             isActive: true

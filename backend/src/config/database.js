@@ -26,15 +26,19 @@ class Database {
 
       // Add middleware for soft delete
       this.prisma.$use(async (params, next) => {
-        // Handle soft delete for models with deletedAt field
+// Handle soft delete ONLY for models that have a deletedAt column.
+        // Models without a deletedAt field (Order, Review, PromoCode,
+        // ProductVariant, ProductAttribute) must NOT be filtered, otherwise
+        // Prisma throws `Unknown argument deletedAt` and returns 500.
         if (params.model && params.model !== 'User' && params.model !== 'AuditLog') {
           const modelsWithSoftDelete = [
-            'Product', 'Category', 'Review', 'Order', 
-            'PromoCode', 'ProductVariant', 'ProductAttribute'
+            'Product', 'Category'
           ];
           
           if (modelsWithSoftDelete.includes(params.model)) {
             if (params.action === 'findUnique' || params.action === 'findFirst') {
+              // Guard against findUnique without a `where` arg
+              if (!params.args.where) params.args.where = {};
               params.args.where.deletedAt = null;
             }
             if (params.action === 'findMany') {

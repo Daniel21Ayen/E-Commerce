@@ -229,11 +229,11 @@ updateProfile: [
 /**
    * Cart validation rules
    */
-  static cart = {
+static cart = {
     addItem: [
       body('productId')
         .notEmpty().withMessage('Product ID is required')
-        .isUUID().withMessage('Invalid product ID format'),
+        .isString().withMessage('Invalid product ID format'),
 
       body('quantity')
         .optional()
@@ -242,7 +242,7 @@ updateProfile: [
 
       body('variantId')
         .optional()
-        .isUUID().withMessage('Invalid variant ID format')
+        .isString().withMessage('Invalid variant ID format')
     ]
   };
 

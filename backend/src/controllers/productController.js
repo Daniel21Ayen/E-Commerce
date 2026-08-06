@@ -148,14 +148,15 @@ class ProductController {
       const cacheKey = `product:${id}`;
       let product = await cacheService.getCachedProduct(id);
 
-      if (!product) {
+if (!product) {
         // Fetch from database
+        // Determine whether the param is a UUID id or a slug to avoid
+        // Prisma P2023 UUID cast errors when querying `{ id: slug }`.
+        const isUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(String(id));
+
         product = await prisma.product.findFirst({
           where: {
-            OR: [
-              { id: id },
-              { slug: id }
-            ],
+            ...(isUuid ? { id } : { slug: id }),
             isActive: true,
             deletedAt: null
           },
@@ -242,16 +243,14 @@ class ProductController {
         });
       }
 
-      // Check if product is in user's wishlist
+// Check if product is in user's wishlist
       let isInWishlist = false;
       if (userId) {
-        const wishlist = await prisma.wishlist.findUnique({
+        const wishlist = await prisma.wishlist.findFirst({
           where: {
-            userId_productId_variantId: {
-              userId,
-              productId: product.id,
-              variantId: null
-            }
+            userId,
+            productId: product.id,
+            variantId: null
           }
         });
         isInWishlist = !!wishlist;

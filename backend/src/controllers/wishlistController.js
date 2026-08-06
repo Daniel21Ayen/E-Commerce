@@ -144,14 +144,12 @@ class WishlistController {
         }
       }
 
-      // Check if already in wishlist
-      const existing = await prisma.wishlist.findUnique({
+// Check if already in wishlist
+      const existing = await prisma.wishlist.findFirst({
         where: {
-          userId_productId_variantId: {
-            userId,
-            productId,
-            variantId: variantId || null
-          }
+          userId,
+          productId,
+          variantId: variantId || null
         }
       });
 
@@ -566,13 +564,11 @@ class WishlistController {
         });
       }
 
-      const wishlistItem = await prisma.wishlist.findUnique({
+const wishlistItem = await prisma.wishlist.findFirst({
         where: {
-          userId_productId_variantId: {
-            userId,
-            productId,
-            variantId: variantId || null
-          }
+          userId,
+          productId,
+          variantId: variantId || null
         },
         select: {
           id: true
