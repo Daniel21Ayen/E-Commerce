@@ -23,19 +23,28 @@ class CartService {
         }
       });
 
-      const subtotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+      const totalPrice = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
       const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+      // Get existing discount to compute final price
+      const cart = await prisma.cart.findUnique({
+        where: { id: cartId },
+        select: { discountAmount: true }
+      });
+      const discount = cart?.discountAmount || 0;
+      const finalPrice = totalPrice - discount;
 
       await prisma.cart.update({
         where: { id: cartId },
         data: {
-          subtotal,
+          totalPrice,
           totalItems,
+          finalPrice,
           updatedAt: new Date()
         }
       });
 
-      return { subtotal, totalItems };
+      return { totalPrice, totalItems, finalPrice };
     } catch (error) {
       logger.error('Error updating cart totals:', error);
       throw error;

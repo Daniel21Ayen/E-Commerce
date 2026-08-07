@@ -25,13 +25,14 @@ class WishlistController {
                 where: { isPrimary: true },
                 take: 1
               },
-              category: {
+category: {
                 select: {
                   id: true,
                   name: true,
                   slug: true
                 }
               },
+              variants: true,
               _count: {
                 select: {
                   reviews: {

@@ -3663,3 +3663,70 @@
 {"level":"info","message":"📋 Seeding orders...","timestamp":"2026-08-06 08:51:55:5155"}
 {"level":"info","message":"✅ Created 3 orders","timestamp":"2026-08-06 08:51:55:5155"}
 {"level":"info","message":"✅ Database seeding completed successfully!","timestamp":"2026-08-06 08:51:55:5155"}
+{"level":"info","message":"🌱 Starting database seeding...","timestamp":"2026-08-06 20:32:03:323"}
+{"level":"info","message":"🧹 Clearing existing data...","timestamp":"2026-08-06 20:32:03:323"}
+{"level":"info","message":"Cleared paymentTransaction","timestamp":"2026-08-06 20:32:03:323"}
+{"level":"info","message":"Cleared orderItem","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared order","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared review","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared reviewLike","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared wishlist","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared cartItem","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared cart","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared productVariant","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared productAttribute","timestamp":"2026-08-06 20:32:04:324"}
+{"level":"info","message":"Cleared productImage","timestamp":"2026-08-06 20:32:05:325"}
+{"level":"info","message":"Cleared product","timestamp":"2026-08-06 20:32:05:325"}
+{"level":"info","message":"Cleared category","timestamp":"2026-08-06 20:32:05:325"}
+{"level":"info","message":"Cleared promoCodeUsage","timestamp":"2026-08-06 20:32:05:325"}
+{"level":"info","message":"Cleared promoCode","timestamp":"2026-08-06 20:32:05:325"}
+{"level":"info","message":"Cleared userProfile","timestamp":"2026-08-06 20:32:05:325"}
+{"level":"info","message":"Cleared user","timestamp":"2026-08-06 20:32:06:326"}
+{"level":"info","message":"✅ Data cleared","timestamp":"2026-08-06 20:32:06:326"}
+{"level":"info","message":"👤 Seeding users...","timestamp":"2026-08-06 20:32:06:326"}
+{"level":"info","message":"✅ Created 4 users","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"📂 Seeding categories...","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"✅ Created 15 categories","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"📦 Seeding products...","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"✅ Created 8 products","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"🏷️ Seeding promo codes...","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"✅ Created 5 promo codes","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"⭐ Seeding reviews...","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"✅ Created 8 reviews","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"📋 Seeding orders...","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"✅ Created 3 orders","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"✅ Database seeding completed successfully!","timestamp":"2026-08-06 20:32:07:327"}
+{"level":"info","message":"Loaded email template: welcome","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: order-confirmation","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: order-status","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: password-reset","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: abandoned-cart","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: order-tracking","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: promo-code","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: review-request","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: low-stock","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: payment-receipt","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: shipping-confirmation","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: delivery-confirmation","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: password-change","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: email-verification","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: newsletter","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: order-cancellation","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: refund-confirmation","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: wishlist-reminder","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: price-drop","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"Loaded email template: back-in-stock","timestamp":"2026-08-06 20:33:24:3324"}
+{"level":"info","message":"✅ Google OAuth strategy configured","timestamp":"2026-08-06 20:33:33:3333"}
+{"level":"info","message":"✅ Facebook OAuth strategy configured","timestamp":"2026-08-06 20:33:33:3333"}
+{"level":"info","message":"✅ Passport configuration loaded","timestamp":"2026-08-06 20:33:33:3333"}
+{"level":"info","message":"Redis Client Connected","timestamp":"2026-08-06 20:33:33:3333"}
+{"level":"info","message":"Redis Client Ready","timestamp":"2026-08-06 20:33:33:3333"}
+{"level":"info","message":"✅ Redis connected successfully","timestamp":"2026-08-06 20:33:33:3333"}
+{"level":"info","message":"✅ Redis connection test successful","timestamp":"2026-08-06 20:33:33:3333"}
+{"level":"info","message":"Redis already connected","timestamp":"2026-08-06 20:33:34:3334"}
+{"level":"info","message":"✅ Email transporter configured successfully","timestamp":"2026-08-06 20:33:36:3336"}
+{"level":"http","message":"GET /api/health 200 267 - 9.275 ms","timestamp":"2026-08-06 20:34:07:347"}
+{"level":"debug","message":"Cache miss: cache:products:list:{}","timestamp":"2026-08-06 20:34:07:347"}
+{"level":"http","message":"GET /api/products 200 23818 - 465.579 ms","timestamp":"2026-08-06 20:34:07:347"}
+{"email":"user@ecommerce.com","ip":"::1","level":"info","message":"User logged in","timestamp":"2026-08-06 20:35:01:351","userId":"56dd6848-18b2-4b7a-87c5-af29bb440801"}
+{"level":"http","message":"POST /api/auth/login 200 1202 - 1297.565 ms","timestamp":"2026-08-06 20:35:01:351"}

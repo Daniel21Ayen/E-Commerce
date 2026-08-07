@@ -85,9 +85,9 @@ class CartController {
       const userId = req.user.id;
       const { productId, variantId, quantity = 1 } = req.body;
 
-// Check product
+      // Check product
       const product = await prisma.product.findFirst({
-        where: { 
+        where: {
           id: productId,
           isActive: true,
           deletedAt: null
@@ -111,8 +111,8 @@ class CartController {
       let stockQuantity = product.stockQuantity;
 
       if (variantId) {
-variant = await prisma.productVariant.findFirst({
-          where: { 
+        variant = await prisma.productVariant.findFirst({
+          where: {
             id: variantId,
             isActive: true
           }
@@ -163,7 +163,7 @@ variant = await prisma.productVariant.findFirst({
       if (existingItem) {
         // Update quantity
         const newQuantity = existingItem.quantity + quantity;
-        
+
         // Check stock
         if (stockQuantity < newQuantity) {
           return res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -196,8 +196,8 @@ variant = await prisma.productVariant.findFirst({
         });
       }
 
-// Update cart totals
-      await CartController.updateCartTotals(cart.id);
+      // Update cart totals
+      await this.updateCartTotals(cart.id);
 
       logger.info('Item added to cart', {
         userId,
@@ -252,8 +252,8 @@ variant = await prisma.productVariant.findFirst({
       }
 
       // Check stock
-      const stockQuantity = cartItem.variant 
-        ? cartItem.variant.stockQuantity 
+      const stockQuantity = cartItem.variant
+        ? cartItem.variant.stockQuantity
         : cartItem.product.stockQuantity;
 
       if (stockQuantity < quantity) {
@@ -274,8 +274,8 @@ variant = await prisma.productVariant.findFirst({
         }
       });
 
-// Update cart totals
-      await CartController.updateCartTotals(cartItem.cartId);
+      // Update cart totals
+      await this.updateCartTotals(cartItem.cartId);
 
       return res.status(HTTP_STATUS.OK).json({
         status: 'success',
@@ -321,8 +321,8 @@ variant = await prisma.productVariant.findFirst({
         where: { id: itemId }
       });
 
-// Update cart totals
-      await CartController.updateCartTotals(cartItem.cartId);
+      // Update cart totals
+      await this.updateCartTotals(cartItem.cartId);
 
       logger.info('Item removed from cart', {
         userId,
@@ -354,12 +354,12 @@ variant = await prisma.productVariant.findFirst({
         where: { userId }
       });
 
-if (cart) {
+      if (cart) {
         await prisma.cartItem.deleteMany({
           where: { cartId: cart.id }
         });
 
-        await CartController.updateCartTotals(cart.id);
+        await this.updateCartTotals(cart.id);
       }
 
       logger.info('Cart cleared', { userId });
@@ -395,7 +395,7 @@ if (cart) {
             { expiresAt: null },
             { expiresAt: { gt: new Date() } }
           ],
-          OR: [
+          AND: [
             { startsAt: null },
             { startsAt: { lte: new Date() } }
           ]

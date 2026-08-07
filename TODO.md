@@ -1,7 +1,9 @@
 # FIX TODO - Orders 500 & Cart Validation 400
 
 ## Steps
-- [ ] 1. Fix `productController.getProduct` slug lookup (avoid P2023 UUID cast crash)
-- [ ] 2. Relax cart `addItem` validator (`productId`/`variantId` accept string IDs)
-- [ ] 3. Re-seed database to restore valid UUID primary keys
-- [ ] 4. Verify `GET /api/orders` and `POST /api/cart/items` work
+- [x] 1. Create DB schema: `prisma db push` (tables missing — `public.users does not exist`)
+- [x] 2. Fix `cartController.js`: `CartController.updateCartTotals` → `this.updateCartTotals` (4 places)
+- [x] 3. Fix `wishlistController.js`: add `variants: true` to product include in `getWishlist`
+- [x] 4. Fix `cartService.js`: `updateCartTotals` writes nonexistent `subtotal` — use `totalPrice`/`finalPrice`
+- [x] 5. Re-seed database: `node src/utils/seedData.js` (4 users, 8 products, 3 orders)
+- [ ] 6. Verify `GET /api/orders` and `POST /api/cart/items` work
